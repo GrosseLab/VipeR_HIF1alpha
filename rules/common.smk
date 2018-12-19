@@ -21,6 +21,24 @@ rule gzip:
     threads: 10
     shell: "pigz -f -c -p {threads} {input} > {output}"
 
+rule build_R_package:
+    input: "{pack}"
+    output: "{pack}_{vers}.tar.gz"
+    conda: "../envs/r35.yaml"
+    log: "logs/build_R_package_{pack}_{vers}.log"    
+    shell: 
+        "R CMD build {input} "#" && "
+        # "R CMD check {output} --no-manual --no-build-vignettes "
+
+rule install_R_package:
+    input: "{pack}_{vers}.tar.gz"
+    output: "{pack}_{vers}.txt"
+    conda: "../envs/r35.yaml"
+    log: "logs/build_R_install_{pack}_{vers}.log"    
+    script:
+        "../scripts/installPack.R"
+
+
 ##### Helper functions #####
 
 def get_fastq(wildcards):

@@ -4,6 +4,7 @@ sink(log, type="message")
 
 library("edgeR")
 library("data.table")
+library("viper")
 
 
 source_here <- function(x, dir = ".", ...) {
@@ -18,8 +19,8 @@ source_here <- function(x, dir = ".", ...) {
     source(file.path(dir, x), ...)
 }
 
-source_here("edegR_function.R",dir=paste0(snakemake@scriptdir,'/../R/'))
-source_here("VennFunction.R",dir=paste0(snakemake@scriptdir,'/../R/'))
+# source_here("edegR_function.R",dir=paste0(snakemake@scriptdir,'/../R/'))
+# source_here("VennFunction.R",dir=paste0(snakemake@scriptdir,'/../R/'))
 
 
 # colData and countData must have the same sample order, but this is ensured
