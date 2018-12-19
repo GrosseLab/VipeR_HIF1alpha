@@ -1,0 +1,14 @@
+### /home/adsvy/bin/STAR-2.5.2b/bin/Linux_x86_64_static/STAR   --runMode genomeGenerate   --runThreadN 30   --genomeDir /home/adsvy/Behrens/Referenzgenom/STAR_Ensembl_Homo_sapiens.GRCh38   --genomeFastaFiles /home/adsvy/KapplerIG1/Reference/ensembl/Homo_sapiens.GRCh38.dna.primary_assembly.fa      --limitGenomeGenerateRAM 80000000000   --sjdbGTFfile /home/adsvy/KapplerIG1/Reference/ensembl/Homo_sapiens.GRCh38.82.gtf   --sjdbGTFfeatureExon exon   --sjdbGTFtagExonParentTranscript transcript_id   --sjdbOverhang 199
+versionGenome   20201
+genomeFastaFiles        /home/adsvy/KapplerIG1/Reference/ensembl/Homo_sapiens.GRCh38.dna.primary_assembly.fa 
+genomeSAindexNbases     14
+genomeChrBinNbits       18
+genomeSAsparseD 1
+sjdbOverhang    199
+sjdbFileChrStartEnd     - 
+sjdbGTFfile     /home/adsvy/KapplerIG1/Reference/ensembl/Homo_sapiens.GRCh38.82.gtf
+sjdbGTFchrPrefix        -
+sjdbGTFfeatureExon      exon
+sjdbGTFtagExonParentTranscript  transcript_id
+sjdbGTFtagExonParentGene        gene_id
+sjdbInsertSave  Basic
