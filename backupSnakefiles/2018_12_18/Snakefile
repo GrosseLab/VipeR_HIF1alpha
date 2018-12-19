@@ -1,0 +1,147 @@
+import pandas as pd
+import os
+from snakemake.utils import validate, min_version
+##### set minimum snakemake version #####
+min_version("5.1.2")
+
+
+##### load config and sample sheets #####
+
+os.system("export PATH=/home/adsvy/anaconda3/bin:$PATH")
+print(os.system("$PATH"))
+
+configfile: "config.yaml"
+validate(config, schema="viper/schemas/config.schema.yaml")
+
+samples = pd.read_table(config["samples"]).set_index("sample", drop=False)
+validate(samples, schema="viper/schemas/samples.schema.yaml")
+
+units = pd.read_table(config["units"], dtype=str).set_index(["sample", "unit"], drop=False)
+units.index = units.index.set_levels([i.astype(str) for i in units.index.levels])  # enforce str in index
+validate(units, schema="viper/schemas/units.schema.yaml")
+
+
+##### target rules #####
+
+rule all:
+	input:
+		"results/qc/hg38/multiqc.html",
+		"results/qc/hg38/multiqc_salmonReads.html",
+		"results/qc/hg38/multiqc_FeatC_fraction.html",
+		"results/qc/hg38/multiqc_FeatC_all.html",
+		# expand(["results/plot/deseq2/hg38/diffexp/{contrast}.diffexp.tsv",
+		# 		"results/plot/deseq2/hg38/diffexp/{contrast}.ma-plot.svg"],
+		# 		 contrast=config["diffexp"]["contrasts"]),
+		# "results/plot/deseq2/hg38/pca.svg"
+	 	# "references/hg38/STAR_INDEX",
+		expand("results/quantification/salmonAlignment/hg38/{unit.sample}-{unit.unit}/quant.sf", unit=units.itertuples()),
+		expand("results/quantification/salmonReads/hg38/{unit.sample}-{unit.unit}/quant.sf", unit=units.itertuples()),
+		# featureCounts
+		# expand("results/quantification/featureCounts/hg38/PE/fraction/{unit.sample}-{unit.unit}.feature_counts.result", unit=units.itertuples()),
+		# expand("results/quantification/featureCounts/hg38/PE/all/{unit.sample}-{unit.unit}.feature_counts.result", unit=units.itertuples()),
+		# expand("results/quantification/featureCounts/hg38/PE/unique/{unit.sample}-{unit.unit}.feature_counts.result", unit=units.itertuples()),
+		# summarize 
+		# "results/quantification/counts/hg38/PE/unique/CT.csv",
+		# "results/quantification/counts/hg38/PE/fraction/CT.csv",
+		# "results/quantification/counts/hg38/PE/all/CT.csv",
+		# edgeR 
+		# "results/quantification/counts/hg38/TrGe.rds",
+		# "results/deg/edegR/hg38/PE/unique/count_edegR_Res.rds",
+		# "results/deg/edegR/hg38/PE/fraction/count_edegR_Res.rds",
+		# "results/deg/edegR/hg38/PE/all/count_edegR_Res.rds",
+		# # "results/quantification/counts/hg38/PE/salmonReads/estcount.rds",
+		# # "results/quantification/counts/hg38/PE/salmonAlignment/estcount.rds",
+		# "results/deg/edegR/hg38/PE/salmonReads/estcount_edegR_Res.rds",
+		#"results/deg/edegR/hg38/PE/salmonAlignment/estcount_NSQ-vs-NSQsi_edegR_Res.rds"
+		expand(["results/deg/edegR/hg38/PE/unique/count_{contrast}_edegR_Res.rds",
+				"results/deg/edegR/hg38/PE/fraction/count_{contrast}_edegR_Res.rds",
+				"results/deg/edegR/hg38/PE/all/count_{contrast}_edegR_Res.rds",
+				"results/deg/edegR/hg38/PE/salmonAlignment/estcount_{contrast}_edegR_Res.rds",
+				"results/deg/edegR/hg38/PE/salmonReads/estcount_{contrast}_edegR_Res.rds"],
+				contrast=config["diffexp"]["contrasts"])
+
+
+##### setup singularity #####
+
+# this container defines the underlying OS for each job when using the workflow
+# with --use-conda --use-singularity
+singularity: "docker://continuumio/miniconda3"
+
+
+##### setup report ##### 
+# /home/adsvy/anaconda3/bin/snakemake --report report.html
+report: "viper/report/workflow.rst"
+
+
+##### load rules #####
+include: "viper/rules/common.smk"
+#qc
+include: "viper/rules/qc/qc.smk"
+#pre
+include: "viper/rules/pre/trim.smk"
+#mapping
+include: "viper/wrapper/star_index/rule.smk"
+include: "viper/rules/mapping/align.smk"
+include: "viper/rules/mapping/sambamba.smk"
+include: "viper/rules/mapping/salmon.smk"
+#quantification
+include: "viper/rules/quantification/featureCounts.smk"
+#deg
+include: "viper/rules/deg/qunatSummary.smk"
+include: "viper/rules/deg/diffexp.smk"
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# expand("results/qa/fastqc/raw/{unit}_fastqc.html", unit = [w.replace('.fastq.gz', '') for w in sum(config["units"].values(), [])] )
+		# ,expand("results/quantification/salmon_quant/Athaliana_36/raw/{unit}/quant.sf", unit = config["units"].keys())
+		# ,expand("results/quantification/kallisto_quant/Athaliana_36/raw/{unit}/abundance.tsv", unit = config["units"].keys())
+
+
+
+# import pandas as pd
+# from snakemake.utils import validate
+
+# report: "../report/workflow.rst"
+
+# ###### Config file and sample sheets #####
+# configfile: "config.yaml"
+# validate(config, schema="../schemas/config.schema.yaml")
+
+# samples = pd.read_table(config["samples"]).set_index("sample", drop=False)
+# validate(samples, schema="../schemas/samples.schema.yaml")
+
+# units = pd.read_table(config["units"], dtype=str).set_index(["sample", "unit"], drop=False)
+# units.index = units.index.set_levels([i.astype(str) for i in units.index.levels])  # enforce str in index
+# validate(units, schema="../schemas/units.schema.yaml")
+
+# # contigs in reference genome
+# contigs = pd.read_table(config["ref"]["genome"] + ".fai",
+#                         header=None, usecols=[0], squeeze=True, dtype=str)
+
+
+# ##### Wildcard constraints #####
+# wildcard_constraints:
+#     vartype="snvs|indels",
+#     sample="|".join(samples.index),
+#     unit="|".join(units["unit"]),
+#     contig="|".join(contigs)		
