@@ -18,7 +18,7 @@ rule gzip:
     """gzip any file for compression"""
     input: "{file}"
     output: "{file}.gz"
-    threads: 10
+    threads: 20
     shell: "pigz -f -c -p {threads} {input} > {output}"
 
 rule build_R_package:

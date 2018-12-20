@@ -19,7 +19,7 @@ rule feature_counts:
         # Minimum number of overlapping bases in a read that is required for read assignment.
         # [default: 1]
         min_overlap = 1,
-    threads: 4
+    threads: 24
     wrapper:
         "file:viper/wrapper/featureCounts"
         #'http://dohlee-bio.info:9193/feature-counts'
@@ -46,7 +46,7 @@ rule featureCounts:
         # Minimum number of overlapping bases in a read that is required for read assignment.
         # [default: 1]
         min_overlap = 1,
-    threads: 10
+    threads: 24
     wrapper:
         "file:viper/wrapper/featureCounts"
         #'http://dohlee-bio.info:9193/feature-counts'

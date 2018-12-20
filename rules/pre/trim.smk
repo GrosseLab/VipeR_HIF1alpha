@@ -54,18 +54,21 @@ rule sickle_pe:
         r1="results/trimmed/cutadapt/{sample}-{unit}.1.fastq.gz",
         r2="results/trimmed/cutadapt/{sample}-{unit}.2.fastq.gz"
     output:
-        r1="results/trimmed/sickle/{sample}-{unit}.1.fastq.gz",
-        r2="results/trimmed/sickle/{sample}-{unit}.2.fastq.gz",
-        rs="results/trimmed/sickle/{sample}-{unit}.output_single.fastq.gz",
+        r1="results/trimmed/sickle/{sample}-{unit}.1.fastq",
+        r2="results/trimmed/sickle/{sample}-{unit}.2.fastq",
+        rs="results/trimmed/sickle/{sample}-{unit}.output_single.fastq",
+        # r1="results/trimmed/sickle/{sample}-{unit}.1.fastq.gz",
+        # r2="results/trimmed/sickle/{sample}-{unit}.2.fastq.gz",
+        # rs="results/trimmed/sickle/{sample}-{unit}.output_single.fastq.gz",
         r1tmp=temp("results/trimmed/sickle/TMP---{sample}-{unit}.1.fastq"),
         r2tmp=temp("results/trimmed/sickle/TMP---{sample}-{unit}.2.fastq")
     params:
         qual_type="sanger",
         # optional extra parameters
-        extra="-q 20 -l 40 --gzip-output"
+        extra="-q 20 -l 40 " #--gzip-output"
     log:
         # optional log file
-        "logs/sickle/{sample}-{unit}.log"
+        "results/trimmed/sickle/{sample}-{unit}.log"
     threads: 24  
     wrapper:
         "file:viper/wrapper/sickle_PE"

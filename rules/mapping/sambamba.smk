@@ -7,7 +7,7 @@ rule sambamba_sort:
         "{path}.sorted.bam"
     params:
         ""  # optional parameters
-    threads: 8
+    threads: 20
     wrapper:
         "0.30.0/bio/sambamba/sort"
 
@@ -18,7 +18,7 @@ rule sambamba_index:
         "{path}.bam.bai"
     params:
         ""  # optional parameters
-    threads: 8
+    threads: 20
     wrapper:
         "file:viper/wrapper/sambamba_Index"        
 
