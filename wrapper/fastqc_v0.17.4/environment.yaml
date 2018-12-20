@@ -1,0 +1,7 @@
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - fastqc ==0.11.5
+  - fontconfig ==2.12.1

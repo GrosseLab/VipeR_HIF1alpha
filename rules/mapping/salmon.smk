@@ -21,9 +21,9 @@ rule salmon_quant_reads:
 		r2 = "results/trimmed/sickle/{sample}-{unit}.2.fastq.gz",
 		index = "references/{ref}/salmon_transcriptome_index"
 	output: 
+		# auxDIR = directory('results/quantification/salmonReads/{ref}/{sample}-{unit}/aux_info'),
 		quant = 'results/quantification/salmonReads/{ref}/{sample}-{unit}/quant.sf',
-		lib = 'results/quantification/salmonReads/{ref}/{sample}-{unit}/lib_format_counts.json',
-		auxDIR = directory('results/quantification/salmonReads/{ref}/{sample}-{unit}/aux_info')
+		lib = 'results/quantification/salmonReads/{ref}/{sample}-{unit}/lib_format_counts.json'
 	log:
 		'logs/salmonReads/{ref}/{sample}-{unit}.log'
 	params:
@@ -43,8 +43,8 @@ rule salmon_quant_alignment:
 		transcriptome = lambda wildcards: config["ref"][wildcards.ref]["transcriptome"],
 		gtf = lambda wildcards: config["ref"][wildcards.ref]["annotation"]
 	output:
-		quant = "results/quantification/salmonAlignment/{ref}/{sample}-{unit}/quant.sf",
-		auxDIR = directory('results/quantification/salmonAlignment/{ref}/{sample}-{unit}/aux_info')
+		# auxDIR = directory('results/quantification/salmonAlignment/{ref}/{sample}-{unit}/aux_info'),
+		quant = "results/quantification/salmonAlignment/{ref}/{sample}-{unit}/quant.sf"
 	log:
 		'logs/salmonAlignment/{ref}/{sample}-{unit}.log'
 	threads: 24

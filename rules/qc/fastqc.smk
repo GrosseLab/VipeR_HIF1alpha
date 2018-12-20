@@ -4,6 +4,16 @@ def get_fastq_fq1(wildcards):
 def get_fastq_fq2(wildcards):
     return units.loc[(wildcards.sample, wildcards.unit), ["fq2"]].dropna()
 
+rule fastqc:
+    input:
+        get_fastq
+    output:
+        html="results/qc/fastqc/{sample}-{unit}.html",
+        zip="results/qc/fastqc/{sample}-{unit}_fastqc.zip"
+    wrapper:
+        "file:viper/wrapper/fastqc_v0.30.0"
+        # "0.30.0/bio/fastqc"
+
 rule fastqc_q1:
     input:
         get_fastq_fq1
@@ -11,10 +21,13 @@ rule fastqc_q1:
         html="results/qc/fastqc/{sample}-{unit}_R1.html",
         zip="results/qc/fastqc/{sample}-{unit}_R1.zip"
     params: "-k 10"
+    threads: 10
     log:
         "logs/fastqc/{sample}-{unit}_R1.log"
     wrapper:
-        "0.30.0/bio/fastqc"
+        "file:viper/wrapper/fastqc_v0.17.4" ###add threads to fastqc
+        # "file:viper/wrapper/fastqc_v0.30.0"
+        # "0.30.0/bio/fastqc"
 
 rule fastqc_q2:
     input:
@@ -23,10 +36,12 @@ rule fastqc_q2:
         html="results/qc/fastqc/{sample}-{unit}_R2.html",
         zip="results/qc/fastqc/{sample}-{unit}_R2.zip"
     params: "-k 10"
+    threads: 10
     log:
         "logs/fastqc/{sample}-{unit}_R2.log"
     wrapper:
-        "0.30.0/bio/fastqc"
+        "file:viper/wrapper/fastqc_v0.17.4" ###add threads to fastqc
+        # "0.30.0/bio/fastqc"
 
 # rule cutadapt_pe:
 #     input:

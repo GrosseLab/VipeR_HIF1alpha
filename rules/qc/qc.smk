@@ -1,12 +1,3 @@
-rule fastqc:
-    input:
-        get_fastq
-    output:
-        html="results/qc/fastqc/{sample}-{unit}.html",
-        zip="results/qc/fastqc/{sample}-{unit}_fastqc.zip"
-    wrapper:
-        "0.30.0/bio/fastqc"
-
 
 rule samtools_stats:
     input:
@@ -16,14 +7,17 @@ rule samtools_stats:
     log:
         "logs/samtools-stats/{ref}/{sample}-{unit}.log"
     wrapper:
-        "0.30.0/bio/samtools/stats"
-
+        "file:viper/wrapper/samtools_v0.30.0/stats"
+        #"0.30.0/bio/samtools/stats"
+        
 ### Note multiple inputs like from featureCounts or salmon can not be distinguished -> split in independent multiqc rules
 rule multiqc:
     input:
         expand(["results/trimmed/cutadapt/{u.sample}-{u.unit}.qc.txt",
                 "results/qc/samtools-stats/{{ref}}/{u.sample}-{u.unit}.txt",
-                "results/qc/fastqc/{u.sample}-{u.unit}_fastqc.zip",
+                # "results/qc/fastqc/{u.sample}-{u.unit}_fastqc.zip",
+                "results/qc/fastqc/{u.sample}-{u.unit}_R1.zip",
+                "results/qc/fastqc/{u.sample}-{u.unit}_R2.zip",
                 "results/quantification/featureCounts/{{ref}}/PE/unique/{u.sample}-{u.unit}/feature_counts.result.summary",
                 "results/mapping/star/{{ref}}/{u.sample}-{u.unit}/Log.final.out",
                 "results/quantification/salmonAlignment/{{ref}}/{u.sample}-{u.unit}/aux_info"
@@ -34,7 +28,8 @@ rule multiqc:
     log:
         "logs/{ref}/multiqc.log"
     wrapper:
-        "0.30.0/bio/multiqc"
+        "file:viper/wrapper/multiqc_v0.30.0"
+        # "0.30.0/bio/multiqc"
 
 rule multiqc_salmonReads:
     input:
@@ -46,7 +41,8 @@ rule multiqc_salmonReads:
     log:
         "logs/{ref}/multiqc_salmonReads.log"
     wrapper:
-        "0.30.0/bio/multiqc"
+        "file:viper/wrapper/multiqc_v0.30.0"
+        # "0.30.0/bio/multiqc"
 
 rule multiqc_FeatC_fraction:
     input:
@@ -59,7 +55,8 @@ rule multiqc_FeatC_fraction:
     log:
         "logs/{ref}/multiqc_FeatC_fraction.log"
     wrapper:
-        "0.30.0/bio/multiqc"
+        "file:viper/wrapper/multiqc_v0.30.0"
+        # "0.30.0/bio/multiqc"
 
 rule multiqc_FeatC_all:
     input:
@@ -71,4 +68,5 @@ rule multiqc_FeatC_all:
     log:
         "logs/{ref}/multiqc_FeatC_all.log"
     wrapper:
-        "0.30.0/bio/multiqc"
+        "file:viper/wrapper/multiqc_v0.30.0"
+        # "0.30.0/bio/multiqc"
