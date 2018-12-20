@@ -7,7 +7,6 @@ Depends: R (>= 3.4.0),
      data.table
 Imports:
   Biostrings,
-  DEXSeq,
   rtracklayer,
   RColorBrewer,
   edgeR,
@@ -16,7 +15,8 @@ Imports:
   methods,
   scales,
   VennDiagram,
-  plyr
+  plyr,
+  magrittr
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true

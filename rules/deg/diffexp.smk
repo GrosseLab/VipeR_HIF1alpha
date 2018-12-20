@@ -79,5 +79,21 @@ rule edegR_deg:
     script:
         "../../scripts/edegR-deg.R"
 
-
+rule edegR_plot_global:
+    input:
+        counts="results/quantification/counts/{ref}/{readtype}/{ctype}/{RDStype}.rds"
+    output:
+        report("results/plot/edegR/{ref}_{readtype}_{ctype}_{RDStype}_edegR_plot_MDS.png", caption="../../report/edegR_plot_MDS.rst", category="MDS"),
+        report("results/plot/edegR/{ref}_{readtype}_{ctype}_{RDStype}_edegR_plot_PCA.png", caption="../../report/pca.rst", category="PCA"),
+        report("results/plot/edegR/{ref}_{readtype}_{ctype}_{RDStype}_edegR_plot_biotype.png", caption="../../report/edegR_plot_biotype.rst", category="Pie biotype")
+    params:
+        samples=config["samples"],
+        units=config["units"]
+    conda:
+        "../../envs/r35.yaml"
+    log:
+        "logs/edegR/{ref}/{readtype}/{ctype}/{RDStype}_edegR_plot_global.log"
+    threads: get_deseq2_threads()
+    script:
+        "../../scripts/edegR-plot.R"
 

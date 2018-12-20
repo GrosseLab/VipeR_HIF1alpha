@@ -26,6 +26,7 @@ rule build_R_package:
     output: "{pack}_{vers}.tar.gz"
     conda: "../envs/r35.yaml"
     log: "logs/build_R_package_{pack}_{vers}.log"    
+    priority: 100
     shell: 
         "R CMD build {input} "#" && "
         # "R CMD check {output} --no-manual --no-build-vignettes "
@@ -35,6 +36,7 @@ rule install_R_package:
     output: "{pack}_{vers}.txt"
     conda: "../envs/r35.yaml"
     log: "logs/build_R_install_{pack}_{vers}.log"    
+    priority: 100
     script:
         "../scripts/installPack.R"
 

@@ -5,6 +5,7 @@ channels:
   - conda-forge/label/gcc7
   - defaults
 dependencies:
+  - r-venndiagram=1.6.20
   - bioconductor-annotate=1.58.0=r351_0
   - bioconductor-annotationdbi=1.42.1=r351_0
   - bioconductor-biobase=2.40.0=r351h470a237_0

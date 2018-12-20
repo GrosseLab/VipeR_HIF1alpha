@@ -2,7 +2,7 @@
 % Please edit documentation in R/VennFunction.R
 \name{f.input.list}
 \alias{f.input.list}
-\title{Venndiagramm Whrapper}
+\title{Venndiagramm wrapper}
 \usage{
 f.input.list(inList, VennPlot = TRUE, VennOut = FALSE)
 }

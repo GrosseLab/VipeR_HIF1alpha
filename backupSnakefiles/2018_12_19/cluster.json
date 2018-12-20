@@ -1,0 +1,57 @@
+{
+	"__default__" :
+	{
+		"job-name": "{rule}",
+		"D": "/home/adsvy/GitHubRepo/SnakeWF_HIF",
+		"output": "logs/Log_Out/{rule}.o.%j.log",
+		"error": "logs/Log_Err/{rule}.e.%j.log",
+		"partition": "standard,special",
+		"cpus-per-task": "{threads}",
+		"mem": "2G",
+		"time": "00:10:00"
+	},
+	"fastqc": {
+		"mem": "10G",
+		"time": "00:10:00"
+	},
+	"trimmomatic_pe_quality_trimming": {
+		"mem": "30G",
+		"time": "05:00:00"
+	},	
+	"trimmomatic_pe_adapter_trimming": {
+		"mem": "30G",
+		"time": "05:00:00"
+	},
+	"star_mapping": {
+		"mem": "200G",
+		"time": "02:00:00"
+	},
+	"star_index": {
+		"mem": "200G",
+		"time": "02:00:00"
+	},
+	"salmon": {
+		"mem": "10G",
+		"time": "01:00:00"
+	},
+	"salmon_quant": {
+		"mem": "40G",
+		"time": "02:00:00"
+	},
+	"salmon_index": {
+		"mem": "100G",
+		"time": "02:00:00"
+	},
+	"kallisto_quant": {
+		"mem": "40G",
+		"time": "02:00:00"
+	},
+	"kallisto_index": {
+		"mem": "100G",
+		"time": "02:00:00"
+	},
+	"feature_count": {
+		"mem": "50G",
+		"time": "10:00:00"
+	}		
+}

@@ -2,10 +2,9 @@ log <- file(snakemake@log[[1]], open="wt")
 sink(log)
 sink(log, type="message")
 
+library("viper")
 library("edgeR")
 library("data.table")
-library("viper")
-
 
 source_here <- function(x, dir = ".", ...) {
     
@@ -46,10 +45,10 @@ if(Ctype == "est_count"){
 	
 	EstCounts <- TRUE
 
-	ct       <- DataList[["Ge"]]$counts  
-  	EffLen   <- DataList[["Ge"]]$length
-  	TPM      <- DataList[["Ge"]]$abundance 
-	eR_total <- make.edgeR.total(ct = as.matrix(ct) ,EstCounts = EstCounts , EffLen = EffLen)
+  ct       <- DataList[["Ge"]]$counts  
+  EffLen   <- DataList[["Ge"]]$length
+  TPM      <- DataList[["Ge"]]$abundance 
+  eR_total <- make.edgeR.total(ct = as.matrix(ct) ,EstCounts = EstCounts , EffLen = EffLen)
 
 } else {
 
