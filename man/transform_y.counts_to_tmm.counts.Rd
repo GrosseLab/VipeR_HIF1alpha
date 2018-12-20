@@ -8,6 +8,8 @@ transform_y.counts_to_tmm.counts(y, totalNF = NA)
 }
 \arguments{
 \item{y}{is a edgeR object or matrix}
+
+\item{totalNF}{boolean}
 }
 \value{
 a \code{list}

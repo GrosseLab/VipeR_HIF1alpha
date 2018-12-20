@@ -4,16 +4,16 @@
 \alias{f.input2}
 \title{Venndiagramm 2-Set}
 \usage{
-f.input2(p, q, name = c("A", "B"), plotVENN = TRUE)
+f.input2(l1, l2, name = c("A", "B"), plotVENN = TRUE)
 }
 \arguments{
+\item{l1}{is the 1. set}
+
+\item{l2}{is the 2. set}
+
 \item{name}{vector with names of sets}
 
 \item{plotVENN}{is boolean to enable venn plot}
-
-\item{A}{is the 1. set}
-
-\item{B}{is the 2. set}
 }
 \description{
 Venndiagramm for 2-Set

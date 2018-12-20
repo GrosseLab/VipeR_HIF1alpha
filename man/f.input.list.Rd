@@ -12,8 +12,6 @@ f.input.list(inList, VennPlot = TRUE, VennOut = FALSE)
 \item{VennPlot}{is boolean to enable venn plot}
 
 \item{VennOut}{is boolean to enable venn plot}
-
-\item{name}{vector with names of sets}
 }
 \description{
 Venndiagramm for 2-Set

@@ -6,6 +6,9 @@
 \usage{
 MSG(..., nl = TRUE)
 }
+\arguments{
+\item{nl}{boolean for new line}
+}
 \description{
 ...
 }

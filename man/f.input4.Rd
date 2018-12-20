@@ -4,8 +4,23 @@
 \alias{f.input4}
 \title{Venndiagramm 4-Set}
 \usage{
-f.input4(p, q, r, s, t, name = c("A", "B", "C", "D"), plotVENN = TRUE,
+f.input4(l1, l2, l3, l4, name = c("A", "B", "C", "D"), plotVENN = TRUE,
   vennOut = FALSE)
+}
+\arguments{
+\item{l1}{is the 1. set}
+
+\item{l2}{is the 2. set}
+
+\item{l3}{is the 3. set}
+
+\item{l4}{is the 4. set}
+
+\item{name}{vector with names of sets}
+
+\item{plotVENN}{is boolean to enable venn plot}
+
+\item{vennOut}{is boolean getting venn object or intersecting list}
 }
 \description{
 Venndiagramm for 4-Set

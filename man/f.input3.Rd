@@ -4,19 +4,21 @@
 \alias{f.input3}
 \title{Venndiagramm 3-Set}
 \usage{
-f.input3(p, q, r, name = c("A", "B", "C"), plotVENN = TRUE,
+f.input3(l1, l2, l3, name = c("A", "B", "C"), plotVENN = TRUE,
   vennOut = FALSE)
 }
 \arguments{
+\item{l1}{is the 1. set}
+
+\item{l2}{is the 2. set}
+
+\item{l3}{is the 3. set}
+
 \item{name}{vector with names of sets}
 
 \item{plotVENN}{is boolean to enable venn plot}
 
-\item{A}{is the 1. set}
-
-\item{B}{is the 2. set}
-
-\item{C}{is the 3. set}
+\item{vennOut}{is boolean getting venn object or intersecting list}
 }
 \description{
 Venndiagramm for 3-Set

@@ -8,6 +8,8 @@ geoMean(ctrow, pcount = 0.25)
 }
 \arguments{
 \item{ctrow}{is a matrix}
+
+\item{pcount}{is pseudocount}
 }
 \description{
 ...

@@ -13,9 +13,19 @@ call.edgeR.OneWay.general(ct, Samples, total = FALSE, totalNF = NA,
 
 \item{Samples}{data.frame describing the groups -> 'Group'}
 
+\item{total}{boolean}
+
+\item{totalNF}{normalisation factor}
+
 \item{EstCounts}{TRUE for Salmon and Kallisto}
 
 \item{EffLen}{required for Salmon and Kallisto}
+
+\item{totalOFF}{boolean}
+
+\item{LogRaTrim}{parameter for calcNormFactors}
+
+\item{SumTrim}{parameter for calcNormFactors}
 }
 \value{
 a \code{list} with res containg the log2FC and MYlog2FC, scalingFactors is a \code{vector} for normalizing the counts, countsNormalized is a \code{matrix} with the normalized 'counts'

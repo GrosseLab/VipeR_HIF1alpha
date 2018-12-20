@@ -3,8 +3,23 @@ Title: Snakemake WorkFlow for RNA-Seq combinded with R
 Version: 0.0.0.9000
 Authors@R: person("Claus", "Weinholdt", email = "claus.weinholdt@informatik.uni-halle.de", role = c("aut", "cre"))
 Description: Snakemake WorkFlow 
-Depends: R (>= 3.4.1)
+Depends: R (>= 3.4.0),
+     data.table
+Imports:
+  Biostrings,
+  DEXSeq,
+  rtracklayer,
+  RColorBrewer,
+  edgeR,
+  ggplot2,
+  gplots,
+  methods,
+  scales,
+  VennDiagram,
+  plyr
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 6.0.1
+
+

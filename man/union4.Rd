@@ -6,6 +6,15 @@
 \usage{
 union4(A, B, C, D)
 }
+\arguments{
+\item{A}{is the 1. set}
+
+\item{B}{is the 2. set}
+
+\item{C}{is the 3. set}
+
+\item{D}{is the 4. set}
+}
 \description{
 union for 4-Set
 }

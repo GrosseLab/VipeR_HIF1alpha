@@ -2,11 +2,12 @@
 
 #' @title Summarize replicates in an expression matrix
 #' @description This method summarizes the replicated expression values in an expression matrix 
-#' @author Alexander Gabel
+#' @author Alexander Gabel,Claus Weinholdt
 #' 
 #' @param exp_mat is a matrix or a data.frame, in which expression of genes are described by rows
 #' @param groups vector describing which columns should be summarized
 #' @param method defines how the expression values shall be summarized. One of mean (default), median, geometric mean, min, max, sum or any other method that is implemented in R
+#' @param changeColNames boolean for adjusting colnames 
 #' @return a \code{vector} or \code{matrix} of normalized expression values per row
 #' @export
 summarize_replicates <- function(exp_mat, groups, method=mean, changeColNames = T){
@@ -39,6 +40,7 @@ summarize_replicates <- function(exp_mat, groups, method=mean, changeColNames = 
 #' @description ...
 #' @author Claus Weinholdt
 #' @param ctrow is a matrix 
+#' @param pcount is pseudocount 
 #' @export
 geoMean <-function(ctrow,pcount=0.25){ 2^mean(log2(ctrow+pcount)) }
 
@@ -46,6 +48,7 @@ geoMean <-function(ctrow,pcount=0.25){ 2^mean(log2(ctrow+pcount)) }
 #' @title write out message 
 #' @description ...
 #' @author Claus Weinholdt
+#' @param nl boolean for new line 
 #' @note https://github.com/pachterlab/sleuth/blob/048f0551a31c4aee6e59b75c86cab46ae1b3ca3a/R/misc.R#L70
 #' @export
 MSG <- function(..., nl = TRUE) {
@@ -84,8 +87,8 @@ make.MYlog2FC <- function(ct,pscount=0.25,group,logIt=TRUE){
 #' @title transform y$counts to tmm.counts
 #' @description Run edgeR and tmm normalization
 #' @author Claus Weinholdt
-#' 
 #' @param y is a edgeR object or matrix
+#' @param totalNF boolean  
 #' @note use calcNormFactors(y,logratioTrim=0.499,sumTrim=0.0,doWeighting=T)
 #' @return a \code{list} 
 #' @export
@@ -93,7 +96,7 @@ transform_y.counts_to_tmm.counts <- function(y,totalNF=NA){
   
   # y have be be a edgeR DGEList 
   
-  if(sum(is(y) == "DGEList") != 1){
+  if(sum(methods::is(y) == "DGEList") != 1){
     MSG('Input will be tranformed to a DGEList')
     y <- edgeR::DGEList(counts=y,group=factor(colnames(y)))
     y <- edgeR::calcNormFactors(y,logratioTrim=0.499,sumTrim=0.0,doWeighting=T)
@@ -139,10 +142,13 @@ transform_y.counts_to_tmm.counts <- function(y,totalNF=NA){
 #-------------------------------------------
 #' @title make tolal Normalisation factor for edgeR 
 #' @author Claus Weinholdt
+#' @description Run edgeR and tmm normalization
 #' 
 #' @param ct is a matrix or a data.frame with counts
 #' @param EstCounts TRUE for Salmon and Kallisto
 #' @param EffLen required for Salmon and Kallisto
+#' @param LogRaTrim parameter for calcNormFactors
+#' @param SumTrim parameter for calcNormFactors
 #' @return a \code{list} 
 #' @export
 make.edgeR.total <- function(ct, EstCounts=FALSE, EffLen=NA, LogRaTrim=0.499, SumTrim=0){
@@ -177,8 +183,13 @@ make.edgeR.total <- function(ct, EstCounts=FALSE, EffLen=NA, LogRaTrim=0.499, Su
 #' 
 #' @param ct is a matrix or a data.frame with counts
 #' @param Samples data.frame describing the groups -> 'Group'
+#' @param total boolean
+#' @param totalNF normalisation factor
 #' @param EstCounts TRUE for Salmon and Kallisto
 #' @param EffLen required for Salmon and Kallisto
+#' @param totalOFF boolean
+#' @param LogRaTrim parameter for calcNormFactors
+#' @param SumTrim parameter for calcNormFactors 
 #' @return a \code{list} with res containg the log2FC and MYlog2FC, scalingFactors is a \code{vector} for normalizing the counts, countsNormalized is a \code{matrix} with the normalized 'counts' 
 #' @export
 call.edgeR <- function(ct, Samples,total=FALSE, totalNF=NA, EstCounts=FALSE, EffLen=NA , totalOFF=NA, LogRaTrim=0.499, SumTrim=0 ){
@@ -288,8 +299,13 @@ call.edgeR <- function(ct, Samples,total=FALSE, totalNF=NA, EstCounts=FALSE, Eff
 #' 
 #' @param ct is a matrix or a data.frame with counts
 #' @param Samples data.frame describing the groups -> 'Group'
+#' @param total boolean
+#' @param totalNF normalisation factor
 #' @param EstCounts TRUE for Salmon and Kallisto
 #' @param EffLen required for Salmon and Kallisto
+#' @param totalOFF boolean
+#' @param LogRaTrim parameter for calcNormFactors
+#' @param SumTrim parameter for calcNormFactors 
 #' @return a \code{list} with res containg the log2FC and MYlog2FC, scalingFactors is a \code{vector} for normalizing the counts, countsNormalized is a \code{matrix} with the normalized 'counts' 
 #' @export
 call.edgeR.OneWay.general <- function(ct, Samples,total=FALSE, totalNF=NA, EstCounts=FALSE, EffLen=NA , totalOFF=NA, LogRaTrim=0.499, SumTrim=0 ){
