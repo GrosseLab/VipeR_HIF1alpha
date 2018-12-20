@@ -1,15 +1,30 @@
-def get_fastq(wildcards):
+def get_fastq_fq1(wildcards):
     return units.loc[(wildcards.sample, wildcards.unit), ["fq1"]].dropna()
 
-rule fastqc:
+def get_fastq_fq2(wildcards):
+    return units.loc[(wildcards.sample, wildcards.unit), ["fq2"]].dropna()
+
+rule fastqc_q1:
     input:
-        get_fastq
+        get_fastq_fq1
     output:
-        html="results/qc/fastqc/{sample}-{unit}.1.html",
-        zip="results/qc/fastqc/{sample}-{unit}.1.zip"
+        html="results/qc/fastqc/{sample}-{unit}_R1.html",
+        zip="results/qc/fastqc/{sample}-{unit}_R1.zip"
     params: "-k 10"
     log:
-        "logs/fastqc/{sample}-{unit}.1.log"
+        "logs/fastqc/{sample}-{unit}_R1.log"
+    wrapper:
+        "0.30.0/bio/fastqc"
+
+rule fastqc_q2:
+    input:
+        get_fastq_fq2
+    output:
+        html="results/qc/fastqc/{sample}-{unit}_R2.html",
+        zip="results/qc/fastqc/{sample}-{unit}_R2.zip"
+    params: "-k 10"
+    log:
+        "logs/fastqc/{sample}-{unit}_R2.log"
     wrapper:
         "0.30.0/bio/fastqc"
 
