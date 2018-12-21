@@ -19,7 +19,7 @@ rule fastqc_q1:
         get_fastq_fq1
     output:
         html="results/qc/fastqc/{sample}-{unit}_R1.html",
-        zip="results/qc/fastqc/{sample}-{unit}_R1.zip"
+        zip="results/qc/fastqc/{sample}-{unit}_R1_fastqc.zip"
     params: "-k 10"
     threads: 10
     log:
@@ -34,7 +34,7 @@ rule fastqc_q2:
         get_fastq_fq2
     output:
         html="results/qc/fastqc/{sample}-{unit}_R2.html",
-        zip="results/qc/fastqc/{sample}-{unit}_R2.zip"
+        zip="results/qc/fastqc/{sample}-{unit}_R2_fastqc.zip"
     params: "-k 10"
     threads: 10
     log:

@@ -27,6 +27,9 @@ if ( stringr::str_detect(countFile[1],'salmon') ) {
   print('Qtype error')
 }
 
+# OlsonNames()
+options(readr.default_locale=readr::locale(tz="Europe/Berlin"))
+
 txi.Tr <- tximport(files = countFile, type=tolower(Qtype),tx2gene = TrGe,txOut = TRUE)
 txi.Ge <- summarizeToGene(txi.Tr, TrGe)
 

@@ -16,8 +16,8 @@ rule multiqc:
         expand(["results/trimmed/cutadapt/{u.sample}-{u.unit}.qc.txt",
                 "results/qc/samtools-stats/{{ref}}/{u.sample}-{u.unit}.txt",
                 # "results/qc/fastqc/{u.sample}-{u.unit}_fastqc.zip",
-                "results/qc/fastqc/{u.sample}-{u.unit}_R1.zip",
-                "results/qc/fastqc/{u.sample}-{u.unit}_R2.zip",
+                "results/qc/fastqc/{u.sample}-{u.unit}_R1_fastqc.zip",
+                "results/qc/fastqc/{u.sample}-{u.unit}_R2_fastqc.zip",
                 "results/quantification/featureCounts/{{ref}}/PE/unique/{u.sample}-{u.unit}/feature_counts.result.summary",
                 "results/mapping/star/{{ref}}/{u.sample}-{u.unit}/Log.final.out",
                 "results/quantification/salmonAlignment/{{ref}}/{u.sample}-{u.unit}/aux_info"

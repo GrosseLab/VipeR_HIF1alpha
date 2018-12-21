@@ -9,7 +9,8 @@ rule sambamba_sort:
         ""  # optional parameters
     threads: 20
     wrapper:
-        "0.30.0/bio/sambamba/sort"
+        "file:viper/wrapper/sambamba_v0.30.0/sort"        
+        # "0.30.0/bio/sambamba/sort"
 
 rule sambamba_index:
     input:

@@ -6,6 +6,18 @@ library("viper")
 library("edgeR")
 library("data.table")
 
+# cond = switch(subNR,
+#               '1' = c('NSQ'   , 'HSQ'),
+#               '2' = c('NSQ'   , 'NSQsi'),
+#               '3' = c('NSQ'   , 'HSQsi'),
+#               
+#               '4' = c('HSQ'   , 'NSQsi'),
+#               '5' = c('HSQ'   , 'HSQsi'),
+#               
+#               '6' = c('NSQsi'  , 'HSQsi')
+# )
+
+
 source_here <- function(x, dir = ".", ...) {
     
     if(sys.nframe()>0) {
