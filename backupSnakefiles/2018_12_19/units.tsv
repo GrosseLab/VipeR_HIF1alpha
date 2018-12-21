@@ -1,0 +1,5 @@
+sample	unit	fq1	fq2
+A	MK_1	data/MK_1_R1.fastq.gz	data/MK_1_R2.fastq.gz
+A	MK_2	data/MK_2_R1.fastq.gz	data/MK_2_R2.fastq.gz
+B	MK_3	data/MK_3_R1.fastq.gz	data/MK_3_R2.fastq.gz
+B	MK_4	data/MK_4_R1.fastq.gz	data/MK_4_R2.fastq.gz

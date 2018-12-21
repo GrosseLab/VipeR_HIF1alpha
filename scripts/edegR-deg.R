@@ -2,8 +2,20 @@ log <- file(snakemake@log[[1]], open="wt")
 sink(log)
 sink(log, type="message")
 
+library("viper")
 library("edgeR")
 library("data.table")
+
+# cond = switch(subNR,
+#               '1' = c('NSQ'   , 'HSQ'),
+#               '2' = c('NSQ'   , 'NSQsi'),
+#               '3' = c('NSQ'   , 'HSQsi'),
+#               
+#               '4' = c('HSQ'   , 'NSQsi'),
+#               '5' = c('HSQ'   , 'HSQsi'),
+#               
+#               '6' = c('NSQsi'  , 'HSQsi')
+# )
 
 
 source_here <- function(x, dir = ".", ...) {
@@ -18,8 +30,8 @@ source_here <- function(x, dir = ".", ...) {
     source(file.path(dir, x), ...)
 }
 
-source_here("edegR_function.R",dir=paste0(snakemake@scriptdir,'/../R/'))
-source_here("VennFunction.R",dir=paste0(snakemake@scriptdir,'/../R/'))
+# source_here("edegR_function.R",dir=paste0(snakemake@scriptdir,'/../R/'))
+# source_here("VennFunction.R",dir=paste0(snakemake@scriptdir,'/../R/'))
 
 
 # colData and countData must have the same sample order, but this is ensured
@@ -45,10 +57,10 @@ if(Ctype == "est_count"){
 	
 	EstCounts <- TRUE
 
-	ct       <- DataList[["Ge"]]$counts  
-  	EffLen   <- DataList[["Ge"]]$length
-  	TPM      <- DataList[["Ge"]]$abundance 
-	eR_total <- make.edgeR.total(ct = as.matrix(ct) ,EstCounts = EstCounts , EffLen = EffLen)
+  ct       <- DataList[["Ge"]]$counts  
+  EffLen   <- DataList[["Ge"]]$length
+  TPM      <- DataList[["Ge"]]$abundance 
+  eR_total <- make.edgeR.total(ct = as.matrix(ct) ,EstCounts = EstCounts , EffLen = EffLen)
 
 } else {
 

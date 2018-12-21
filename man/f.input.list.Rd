@@ -2,7 +2,7 @@
 % Please edit documentation in R/VennFunction.R
 \name{f.input.list}
 \alias{f.input.list}
-\title{Venndiagramm Whrapper}
+\title{Venndiagramm wrapper}
 \usage{
 f.input.list(inList, VennPlot = TRUE, VennOut = FALSE)
 }
@@ -12,8 +12,6 @@ f.input.list(inList, VennPlot = TRUE, VennOut = FALSE)
 \item{VennPlot}{is boolean to enable venn plot}
 
 \item{VennOut}{is boolean to enable venn plot}
-
-\item{name}{vector with names of sets}
 }
 \description{
 Venndiagramm for 2-Set

@@ -1,0 +1,60 @@
+{
+	"__default__" :
+	{
+		"job-name": "{rule}",
+		"D": "/home/adsvy/GitHubRepo/SnakeWF_HIF",
+		"output": "logs/Log_Out/{rule}.o.%j.log",
+		"error": "logs/Log_Err/{rule}.e.%j.log",
+		"partition": "standard,special",
+		"mem": "50G",
+		"time": "01:00:00"
+	},
+	"fastqc": {
+		"mem": "20G",
+		"time": "00:30:00"
+	},
+	"fastqc_q1": {
+		"mem": "20G",
+		"time": "00:30:00"
+	},
+	"fastqc_q2": {
+		"mem": "20G",
+		"time": "00:30:00"
+	},
+	"cutadapt_pe": {
+		"mem": "50G",
+		"time": "05:00:00"
+	},
+	"sickle_pe": {
+		"mem": "50G",
+		"time": "05:00:00"
+	},
+	"star_index": {
+		"mem": "80G",
+		"time": "05:00:00"
+	},
+	"star": {
+		"mem": "80G",
+		"time": "05:00:00"
+	},
+	"sambamba_sort": {
+		"mem": "80G",
+		"time": "01:00:00"
+	},
+	"featureCounts": {
+		"mem": "50G",
+		"time": "10:00:00"
+	},
+	"salmon_index": {
+		"mem": "80G",
+		"time": "02:00:00"
+	},
+	"salmon_quant_alignment": {
+		"mem": "80G",
+		"time": "02:00:00"
+	},
+	"salmon_quant_reads": {
+		"mem": "80G",
+		"time": "02:00:00"
+	}
+}

@@ -101,7 +101,7 @@ plotPCA <- function(exp_mat, groups, do.legend=T, log=T, do.MDS=F,do.ggplot=T,ep
     }
     
     if(plot_title!=""){
-      pcaPlot <- pcaPlot + labs(title=plot_title) + theme(plot.title = element_text(hjust = 0.5))
+      pcaPlot <- pcaPlot + ggplot2::labs(title=plot_title) + ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5))
     }
 
 

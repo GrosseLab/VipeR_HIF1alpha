@@ -25,5 +25,5 @@ shell("salmon quant "
 	"-l {libtype} -o {outdir} "
 	"-p {snakemake.threads} {extra} {log} ")
 
-shell("cp {outdir}/libParams/flenDist.txt {outdir}/aux_info/ ")
-shell("cp {outdir}/libParams/salmon_quant.log {outdir}/aux_info/ ")
+# shell("cp {outdir}/libParams/flenDist.txt {outdir}/aux_info/ ")
+# shell("cp {outdir}/libParams/salmon_quant.log {outdir}/aux_info/ ")

@@ -13,9 +13,16 @@ make.edgeR.total(ct, EstCounts = FALSE, EffLen = NA, LogRaTrim = 0.499,
 \item{EstCounts}{TRUE for Salmon and Kallisto}
 
 \item{EffLen}{required for Salmon and Kallisto}
+
+\item{LogRaTrim}{parameter for calcNormFactors}
+
+\item{SumTrim}{parameter for calcNormFactors}
 }
 \value{
 a \code{list}
+}
+\description{
+Run edgeR and tmm normalization
 }
 \author{
 Claus Weinholdt

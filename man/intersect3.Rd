@@ -6,6 +6,13 @@
 \usage{
 intersect3(A, B, C)
 }
+\arguments{
+\item{A}{is the 1. set}
+
+\item{B}{is the 2. set}
+
+\item{C}{is the 3. set}
+}
 \description{
 intersect for 3-Set
 }

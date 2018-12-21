@@ -27,8 +27,10 @@ rule cutadapt_pe:
         "-a {} {}".format(config["adapter"] ,config["params"]["cutadapt-pe"])
     log:
         "logs/cutadapt/{sample}-{unit}.log"
+    threads: 24         
     wrapper:
-        "0.30.0/bio/cutadapt/pe"
+        "file:viper/wrapper/cutadapt_v0.30.0/pe"
+        # "0.30.0/bio/cutadapt/pe"
 
 rule cutadapt:
     input:
@@ -40,10 +42,13 @@ rule cutadapt:
         "-a {} {}".format(config["adapter"], config["params"]["cutadapt-se"])
     log:
         "logs/cutadapt/{sample}-{unit}.log"
+    threads: 24       
     wrapper:
-        "0.30.0/bio/cutadapt/se"
+        "file:viper/wrapper/cutadapt_v0.30.0/se"
+        # "0.30.0/bio/cutadapt/se"
 
 
+ruleorder: sickle_pe > gzip
 rule sickle_pe:
     input:
         r1="results/trimmed/cutadapt/{sample}-{unit}.1.fastq.gz",
@@ -52,15 +57,18 @@ rule sickle_pe:
         r1="results/trimmed/sickle/{sample}-{unit}.1.fastq",
         r2="results/trimmed/sickle/{sample}-{unit}.2.fastq",
         rs="results/trimmed/sickle/{sample}-{unit}.output_single.fastq",
+        # r1="results/trimmed/sickle/{sample}-{unit}.1.fastq.gz",
+        # r2="results/trimmed/sickle/{sample}-{unit}.2.fastq.gz",
+        # rs="results/trimmed/sickle/{sample}-{unit}.output_single.fastq.gz",
         r1tmp=temp("results/trimmed/sickle/TMP---{sample}-{unit}.1.fastq"),
         r2tmp=temp("results/trimmed/sickle/TMP---{sample}-{unit}.2.fastq")
     params:
         qual_type="sanger",
         # optional extra parameters
-        extra="-q 20 -l 40"
+        extra="-q 20 -l 40 " #--gzip-output"
     log:
         # optional log file
-        "logs/sickle/{sample}-{unit}.log"
+        "results/trimmed/sickle/{sample}-{unit}.log"
     threads: 24  
     wrapper:
         "file:viper/wrapper/sickle_PE"

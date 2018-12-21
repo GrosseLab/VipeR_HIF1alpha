@@ -7,6 +7,23 @@
 f.input5(l1, l2, l3, l4, l5, name = c("A", "B", "C", "D", "E"),
   plotVENN = TRUE, vennOut = FALSE)
 }
+\arguments{
+\item{l1}{is the 1. set}
+
+\item{l2}{is the 2. set}
+
+\item{l3}{is the 3. set}
+
+\item{l4}{is the 4. set}
+
+\item{l5}{is the 5. set}
+
+\item{name}{vector with names of sets}
+
+\item{plotVENN}{is boolean to enable venn plot}
+
+\item{vennOut}{is boolean getting venn object or intersecting list}
+}
 \description{
 Venndiagramm for 5-Set
 }

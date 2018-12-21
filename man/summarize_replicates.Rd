@@ -12,6 +12,8 @@ summarize_replicates(exp_mat, groups, method = mean, changeColNames = T)
 \item{groups}{vector describing which columns should be summarized}
 
 \item{method}{defines how the expression values shall be summarized. One of mean (default), median, geometric mean, min, max, sum or any other method that is implemented in R}
+
+\item{changeColNames}{boolean for adjusting colnames}
 }
 \value{
 a \code{vector} or \code{matrix} of normalized expression values per row
@@ -20,5 +22,5 @@ a \code{vector} or \code{matrix} of normalized expression values per row
 This method summarizes the replicated expression values in an expression matrix
 }
 \author{
-Alexander Gabel
+Alexander Gabel,Claus Weinholdt
 }
