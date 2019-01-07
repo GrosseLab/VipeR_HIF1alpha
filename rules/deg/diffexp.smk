@@ -70,7 +70,9 @@ rule edegR_deg:
     params:
         samples=config["samples"],
         units=config["units"],
-        contrast=get_contrast
+        contrast=get_contrast,
+        sig=config["diffexp"]["sig"],
+        log2FC=config["diffexp"]["log2FC"]
     conda:
         "../../envs/r35.yaml"
     log:

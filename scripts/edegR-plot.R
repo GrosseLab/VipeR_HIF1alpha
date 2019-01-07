@@ -31,7 +31,7 @@ source_here <- function(x, dir = ".", ...) {
 # process data  ------------------------------------------------------------
   # print(DataList)
   anno <- DataList[["Anno"]]
-  annoGe <- unique(anno[,c(2,3)] )
+  annoGe <- unique(anno[,-1] )
   rownames(annoGe) <- as.character(annoGe$gene_id)
   annoGe.dt <- data.table(annoGe,key='gene_id')
   

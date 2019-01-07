@@ -1,0 +1,32 @@
+cd viper
+(r35-ENVc3) [adsvy@login001 viper]$ git add *
+(r35-ENVc3) [adsvy@login001 viper]$ git commit -m "new rule to build and install  Rpackage 'viper' "
+[develop d12a2b7] new rule to build and install  Rpackage 'viper'
+ 4 files changed, 35 insertions(+), 4 deletions(-)
+ create mode 100644 scripts/installPack.R
+(r35-ENVc3) [adsvy@login001 viper]$ git push
+warning: push.default is unset; its implicit value is changing in
+Git 2.0 from 'matching' to 'simple'. To squelch this message
+and maintain the current behavior after the default changes, use:
+
+  git config --global push.default matching
+
+To squelch this message and adopt the new behavior now, use:
+
+  git config --global push.default simple
+
+See 'git help config' and search for 'push.default' for further information.
+(the 'simple' mode was introduced in Git 1.7.11. Use the similar mode
+'current' instead of 'simple' if you sometimes use older versions of Git)
+
+Username for 'https://github.com': aehr2
+Password for 'https://aehr2@github.com': 
+Counting objects: 14, done.
+Delta compression using up to 48 threads.
+Compressing objects: 100% (8/8), done.
+Writing objects: 100% (8/8), 1.14 KiB | 0 bytes/s, done.
+Total 8 (delta 6), reused 0 (delta 0)
+remote: Resolving deltas: 100% (6/6), completed with 6 local objects.
+To https://github.com/GrosseLab/ViperWF.git
+   18f79fb..d12a2b7  develop -> develop
+(r35-ENVc3) [adsvy@login001 viper]$ 
