@@ -34,7 +34,8 @@ rule FeatCountSummary:
 
 rule TximporTrGe:
     input:
-        gtf = lambda wildcards: config["ref"][wildcards.ref]["annotation"]
+        gtf = lambda wildcards: config["ref"][wildcards.ref]["annotation"],
+        viper=rules.install_R_package_viper.output
     output:
         "results/quantification/counts/{ref}/TrGe.csv",
         "results/quantification/counts/{ref}/TrGe.rds"
@@ -48,7 +49,8 @@ rule TximporTrGe:
 rule FeatCountSummarySetType:
     input:
         files = expand("results/quantification/featureCounts/{{ref}}/{{readtype}}/{{ctype}}/{unit.sample}-{unit.unit}/feature_counts.result", unit=units.itertuples()),
-        TrGe = "results/quantification/counts/{ref}/TrGe.rds"
+        TrGe = "results/quantification/counts/{ref}/TrGe.rds",
+        viper=rules.install_R_package_viper.output
     output:
         "results/quantification/counts/{ref}/{readtype}/{ctype}/count.csv",
         "results/quantification/counts/{ref}/{readtype}/{ctype}/count.rds"
@@ -65,7 +67,8 @@ rule FeatCountSummarySetType:
 rule TximportData:
     input:
         files = expand("results/quantification/{{SalType}}/{{ref}}/{unit.sample}-{unit.unit}/quant.sf", unit=units.itertuples()),
-        TrGe = "results/quantification/counts/{ref}/TrGe.rds"
+        TrGe = "results/quantification/counts/{ref}/TrGe.rds",
+        viper=rules.install_R_package_viper.output
     output:
         "results/quantification/counts/{ref}/{readtype}/{SalType}/estcount.rds" ### readtype currently not used for salmon
     params:

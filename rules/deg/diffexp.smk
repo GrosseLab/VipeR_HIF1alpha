@@ -62,7 +62,8 @@ rule deseq2:
 rule edegR_deg:
     input:
         # counts="results/quantification/counts/{ref}/allFC.rds"
-        counts="results/quantification/counts/{ref}/{readtype}/{ctype}/{RDStype}.rds"
+        counts="results/quantification/counts/{ref}/{readtype}/{ctype}/{RDStype}.rds",
+        viper=rules.install_R_package_viper.output
     output:
         "results/deg/edegR/{ref}/{readtype}/{ctype}/{RDStype}_{contrast}_edegR_ResData.rds",
         "results/deg/edegR/{ref}/{readtype}/{ctype}/{RDStype}_{contrast}_edegR_Res.csv",
@@ -83,7 +84,8 @@ rule edegR_deg:
 
 rule edegR_plot_global:
     input:
-        counts="results/quantification/counts/{ref}/{readtype}/{ctype}/{RDStype}.rds"
+        counts="results/quantification/counts/{ref}/{readtype}/{ctype}/{RDStype}.rds",
+        viper=rules.install_R_package_viper.output
     output:
         report("results/plot/edegR/{ref}_{readtype}_{ctype}_{RDStype}_edegR_plot_MDS.png", caption="../../report/edegR_plot_MDS.rst", category="MDS"),
         report("results/plot/edegR/{ref}_{readtype}_{ctype}_{RDStype}_edegR_plot_PCA.png", caption="../../report/pca.rst", category="PCA"),

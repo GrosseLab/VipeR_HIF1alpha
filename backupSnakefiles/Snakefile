@@ -48,8 +48,9 @@ validate(units, schema="viper/schemas/units.schema.yaml")
 rule all:
 	input:
 		#"viper_0.0.0.9000.tar.gz", ### have to be build before DEG detected !!!! 
-		"viper_0.0.0.9000.txt", 
-		"results/qc/hg38/multiqc.html",
+		#"viper.txt",
+		"results/plot/qPCR/Anova_Normoxie_Q-GLC.pdf", 
+		# "results/qc/hg38/multiqc.html",
 		# "results/qc/hg38/multiqc_salmonReads.html",
 		# "results/qc/hg38/multiqc_FeatC_fraction.html",
 		# "results/qc/hg38/multiqc_FeatC_all.html",
@@ -92,7 +93,7 @@ singularity: "docker://continuumio/miniconda3"
 
 
 ##### setup report ##### 
-# /home/adsvy/anaconda3/bin/snakemake --report report/report_2018_12_21.html
+# /home/adsvy/anaconda3/bin/snakemake --report report/report_2019_01_08.html
 report: "viper/report/workflow.rst"
 
 
@@ -113,7 +114,8 @@ include: "viper/rules/quantification/featureCounts.smk"
 #deg
 include: "viper/rules/deg/qunatSummary.smk"
 include: "viper/rules/deg/diffexp.smk"
-
+#qPCR
+include: "viper/rules/deg/qPCR.smk"
  
 
 

@@ -25,6 +25,9 @@ samples: samples.tsv
 # sample).
 units: units.tsv
 
+#qPCR data
+qPCR: data/qPCR/copy.csv
+
 # the sequencing adapter
 adapter: ACGGATCGATCGATCGATCGAT
 adapter_sequences: /data/references/illumina/adapters/TruSeq3-PE.fa

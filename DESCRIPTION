@@ -1,6 +1,6 @@
 Package: viper
 Title: Snakemake WorkFlow for RNA-Seq combinded with R
-Version: 0.0.0.9000
+Version: 0.1
 Authors@R: person("Claus", "Weinholdt", email = "claus.weinholdt@informatik.uni-halle.de", role = c("aut", "cre"))
 Description: Snakemake WorkFlow 
 Depends: R (>= 3.4.0),
