@@ -28,4 +28,3 @@ if(!is.null(packName) & !is.null(packV)) {
   
   write(paste0("install ",pack),file=snakemake@output[[1]][1])
 }
-

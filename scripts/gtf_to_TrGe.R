@@ -4,19 +4,17 @@ sink(log, type="message")
 
 print(snakemake)
 
-library("viper")
+fil <- file(snakemake@input[["viper"]]) #"install viper_0.1.tar.gz"
+tmp <- readLines(fil, n = -1)
+library( as.character(stringr::str_split(stringr::str_split(tmp,' ')[[1]][2],'_')[[1]][1]),character.only = T )
+# library("viper")
+
 library("rtracklayer")
 library("magrittr")
 
 anno.file <- snakemake@input[["gtf"]]
 # anno.file <- '/home/adsvy/GitHubRepo/SnakeWF_HIF/references/hg38/Homo_sapiens.GRCh38.82.gtf'
 
-# file_ext <- function(f_name) {
-#   x <- f_name %>%
-#     strsplit(".", fixed = TRUE) %>%
-#     unlist
-#   x[length(x)]
-# }
 anno.format <- file_ext(anno.file)
 
 anno <- import.gff(con=anno.file ,format=anno.format ) 
