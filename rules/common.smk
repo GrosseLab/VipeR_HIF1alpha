@@ -21,21 +21,22 @@ rule gzip:
     threads: 20
     shell: "pigz -f -c -p {threads} {input} > {output}"
 
-rule build_R_package:
-    input: "{pack}"
-    output: "{pack}_{vers}.tar.gz"
+rule build_R_package_viper:
+    input: "viper" #"{pack}"
+    output: "viper.build.txt" # "{pack}_{vers}.tar.gz"
     conda: "../envs/r35.yaml"
-    log: "logs/build_R_package_{pack}_{vers}.log"    
+    log: "logs/build_R_package_viper.log"#"logs/build_R_package_{pack}_{vers}.log"    
     priority: 100
     shell: 
-        "R CMD build {input} "#" && "
+        "R CMD build {input} && "
+        " touch {output} "
         # "R CMD check {output} --no-manual --no-build-vignettes "
 
-rule install_R_package:
-    input: "{pack}_{vers}.tar.gz"
-    output: "{pack}_{vers}.txt"
+rule install_R_package_viper:
+    input: rules.build_R_package_viper.output #"{pack}_{vers}.tar.gz"
+    output: "viper.txt" #"{pack}_{vers}.txt"
     conda: "../envs/r35.yaml"
-    log: "logs/build_R_install_{pack}_{vers}.log"    
+    log: "logs/build_R_install_viper.log" #"logs/build_R_install_{pack}_{vers}.log"    
     priority: 100
     script:
         "../scripts/installPack.R"

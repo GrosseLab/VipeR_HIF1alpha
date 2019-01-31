@@ -3,7 +3,7 @@
 rule star:
 	input:
 		# path to STAR reference genome index
-		index= directory("references/{ref}/STAR_INDEX"), #lambda wildcards: directory(config["ref"][wildcards.ref]["index"]),
+		index= "references/{ref}/STAR_INDEX", #lambda wildcards: directory(config["ref"][wildcards.ref]["index"]),
 		sample = get_trimmed_sickle
 		#fq1 = "results/trimmed/cutadapt/{sample}-{unit}.1.fastq.gz",       ### -> work with 0.30.0/bio/star/align
 		#fq2 = "results/trimmed/cutadapt/{sample}-{unit}.2.fastq.gz"        ### -> work with 0.30.0/bio/star/align

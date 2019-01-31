@@ -1,0 +1,24 @@
+sample	unit	rep	fq1	fq2
+NSQ	MK_1	1	data/MK_1_R1.fastq.gz	data/MK_1_R2.fastq.gz
+NSQsi	MK_2	1	data/MK_2_R1.fastq.gz	data/MK_2_R2.fastq.gz
+HSQ	MK_3	1	data/MK_3_R1.fastq.gz	data/MK_3_R2.fastq.gz
+HSQsi	MK_4	1	data/MK_4_R1.fastq.gz	data/MK_4_R2.fastq.gz
+
+
+   SID BioID BioIDrep
+1   MK_1   NSQ    NSQ_1
+2   MK_2 NSQsi  NSQsi_1
+3   MK_3   HSQ    HSQ_1
+4   MK_4 HSQsi  HSQsi_1
+5   MK_5   NSQ    NSQ_2
+6   MK_6 NSQsi  NSQsi_2
+7   MK_7   HSQ    HSQ_2
+8   MK_8 HSQsi  HSQsi_2
+9   MK_9   NSQ    NSQ_3
+10 MK_10 NSQsi  NSQsi_3
+11 MK_11   HSQ    HSQ_3
+12 MK_12 HSQsi  HSQsi_3
+13 MK_13   NSQ    NSQ_4
+14 MK_14 NSQsi  NSQsi_4
+15 MK_15   HSQ    HSQ_4
+16 MK_16 HSQsi  HSQsi_4

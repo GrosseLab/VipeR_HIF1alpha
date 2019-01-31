@@ -2,7 +2,11 @@ log <- file(snakemake@log[[1]], open="wt")
 sink(log)
 sink(log, type="message")
 
-library("viper")
+fil <- file(snakemake@input[["viper"]]) #"install viper_0.1.tar.gz"
+tmp <- readLines(fil, n = -1)
+library( as.character(stringr::str_split(stringr::str_split(tmp,' ')[[1]][2],'_')[[1]][1]),character.only = T )
+# library("viper")
+
 library("edgeR")
 library("data.table")
 
@@ -43,9 +47,12 @@ DataList <- readRDS(snakemake@input[["counts"]])
 samples <- read.table(snakemake@params[["samples"]], header=TRUE)
 units <- read.table(as.character(snakemake@params[["units"]]), header=TRUE)
 
+LevelSig <- as.double(snakemake@params[["sig"]]) # LevelSig <- 0.05
+LevelLog2FC <- as.double(snakemake@params[["log2FC"]]) # LevelLog2FC <- 1
+
 # print(DataList)
 anno <- DataList[["Anno"]]
-annoGe <- unique(anno[,c(2,3)] )
+annoGe <- unique(anno[,-1] )
 rownames(annoGe) <- as.character(annoGe$gene_id)
 annoGe.dt <- data.table(annoGe,key='gene_id')
 
@@ -99,16 +106,33 @@ eRALL.dt <- merge(eRALL.dt,annoGe.dt,by.x='rn',by.y='gene_id')
 
 print(head(eRTwoSet$res))
 
+## Filtering for FDR and FDR+log2FC
+setkey(eRALL.dt,'rn')
+eRALL.sig.dt <- eRALL.dt[FDR < LevelSig,]
+eRALL.sig.log2FC.dt <- eRALL.sig.dt[abs(log2FC) >= LevelLog2FC,]
+eRALL.sig.MYlog2FC.dt <- eRALL.sig.dt[abs(MYlog2FC) >= LevelLog2FC,]
 
+eR.dt <- list()
+eR.dt[['res']] <- eRALL.dt
+eR.dt[['res_sig']] <- eRALL.sig.dt
+eR.dt[['res_sig_log2FC']] <- eRALL.sig.log2FC.dt
+eR.dt[['res_sig_MYlog2FC']] <- eRALL.sig.MYlog2FC.dt
 
 # OUTpath <- paste0(OUTdir,'edgeR_total__',sets) 
+setkey(eRALL.dt,'FDR')
+setkey(eRALL.sig.dt,'FDR')
+setkey(eRALL.sig.MYlog2FC.dt,'FDR')
 
 saveRDS(eRTwoSet, file=snakemake@output[[1]][1])
 write.csv2(eRALL.dt,snakemake@output[[2]][1])
-saveRDS(eRALL.dt, file=snakemake@output[[3]][1])
+saveRDS(eR.dt, file=snakemake@output[[3]][1])
 
-
-
+output21 <- snakemake@output[[2]][1]
+output21 <- stringr::str_remove(output21,paste0('.',file_ext(output21)) )
+output21 <- paste0(output21,'_sig_',LevelSig)
+write.csv2(eRALL.sig.dt,paste0(output21,'.csv'))
+output21 <- paste0(output21,'_MYlog2FC_',LevelLog2FC)
+write.csv2(eRALL.sig.MYlog2FC.dt,paste0(output21,'.csv'))
 
 # print(samples)
 # print(units)

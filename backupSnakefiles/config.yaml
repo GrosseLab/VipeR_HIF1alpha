@@ -1,0 +1,125 @@
+---
+run: HIF1alpha
+machine: na
+platform: illumina
+project_management_version: '1.0'
+path_rules: viper/rules
+
+description:
+  experiment_start: ''
+  experiment_finish: ''
+  analysis_start: 12.12.2018
+  analysis_finish: ''
+  keep_until: ''
+  pid: 'Mathias Kappler'
+  researcher: ''
+  institution: ''
+  emails: [""]
+  text: ''
+  publication: [""]
+
+# path or URL to sample sheet (TSV format, columns: sample, condition, ...)
+samples: samples.tsv
+# path or URL to sequencing unit sheet (TSV format, columns: sample, unit, fq1, fq2)
+# Units are technical replicates (e.g. lanes, or resequencing of the same biological
+# sample).
+units: units.tsv
+
+#qPCR data
+qPCR: data/qPCR/copy.csv
+
+# the sequencing adapter
+adapter: ACGGATCGATCGATCGATCGAT
+adapter_sequences: /data/references/illumina/adapters/TruSeq3-PE.fa
+
+# references
+ref_dir: /data/references/
+ref:
+  hg38:
+    # the STAR index  #"/home/adsvy/Behrens/Referenzgenom/STAR_Ensembl_Homo_sapiens.GRCh38"
+    index: "/home/adsvy/GitHubRepo/SnakeWF_HIF/references/hg38/STAR_INDEX"
+    # genome.fa
+    genome: "/home/adsvy/GitHubRepo/SnakeWF_HIF/references/hg38/Homo_sapiens.GRCh38.dna.primary_assembly.fa"
+    # transcriptome.fa
+    transcriptome: "/home/adsvy/GitHubRepo/SnakeWF_HIF/references/hg38/Homo_sapiens.GRCh38.82.EXON.fa" #"/home/adsvy/GitHubRepo/SnakeWF_HIF/references/hg38/Homo_sapiens.GRCh38.87.cds.all.fa"
+    # gtf file with transcripts
+    annotation: "/home/adsvy/GitHubRepo/SnakeWF_HIF/references/hg38/Homo_sapiens.GRCh38.82.gtf"
+    # gtf sjdbGTFfeatureExon
+    sjdbGTFfeatureExon: "exon"
+    #star gtf sjdbGTFtagExonParentTranscript
+    sjdbGTFtagExonParentTranscript: "transcript_id"
+    # Star sjdbOverhang -> singel: readlength -1 or paired: (readlength*2)-1
+    sjdbOverhang: "199"
+  hg38v94:
+    # the STAR index  #"/home/adsvy/Behrens/Referenzgenom/STAR_Ensembl_Homo_sapiens.GRCh38"
+    index: "/home/adsvy/GitHubRepo/SnakeWF_HIF/references/hg38v94/STAR_INDEX"
+    # genome.fa
+    genome: "/home/adsvy/GitHubRepo/SnakeWF_HIF/references/hg38v94/Homo_sapiens.GRCh38.dna.primary_assembly.fa"
+    # transcriptome.fa
+    transcriptome: "/home/adsvy/GitHubRepo/SnakeWF_HIF/references/hg38v94/Homo_sapiens.GRCh38.94.fixed.EXON.fa"
+    # gtf file with transcripts
+    annotation: "/home/adsvy/GitHubRepo/SnakeWF_HIF/references/hg38v94/Homo_sapiens.GRCh38.94.fixed.gtf"
+    # gtf sjdbGTFfeatureExon
+    sjdbGTFfeatureExon: "exon"
+    #star gtf sjdbGTFtagExonParentTranscript
+    sjdbGTFtagExonParentTranscript: "transcript_id"
+    # Star sjdbOverhang -> singel: readlength -1 or paired: (readlength*2)-1
+    sjdbOverhang: "199"    
+
+# Araport11:
+#   genome: ''
+#   genome_annotation: Athaliana/Araport11/annotation/Athaliana_447_Araport11.gene_exons.gff3
+#   transcriptome: ''
+#   proteins: Athaliana/Araport11/annotation/Athaliana_447_Araport11.protein.fa
+# TAIR10:
+#   genome: Athaliana/TAIR10/assembly/Athaliana_167_TAIR9.fa
+#   genome_annotation: Athaliana/TAIR10/annotation/Athaliana_167_TAIR10.gene_exons.gff3
+#   transcriptome: Athaliana/TAIR10/annotation/Athaliana_167_TAIR10.gene_exons.gff3.mRNA.fa
+#   proteins: Athaliana/TAIR10/annotation/Athaliana_167_TAIR10.protein.fa
+
+
+pca:
+  labels:
+    # columns of sample sheet to use for PCA
+    - condition
+
+diffexp:
+  # contrasts for the DEG results method
+  contrasts:
+    NSQ-vs-HSQ:
+      - NSQ
+      - HSQ
+    NSQ-vs-NSQsi:
+      - NSQ
+      - NSQsi
+    NSQ-vs-HSQsi:
+      - NSQ
+      - HSQsi
+    HSQ-vs-NSQsi:
+      - HSQ
+      - NSQsi
+    HSQ-vs-HSQsi:
+      - HSQ
+      - HSQsi
+    NSQsi-vs-HSQsi:
+      - NSQsi
+      - HSQsi
+  sig: "0.05"
+  log2FC: "1"
+
+params:
+  star: "--alignIntronMin 20 --alignIntronMax 4000 --outFilterMismatchNmax 3 --outFilterMultimapNmax 1000"
+  cutadapt-se: ""
+  cutadapt-pe: ""
+
+featureCounts:
+  PE:
+    unique: "-P -d 10 -D 10000 -p -C -B"
+    all: "-P -d 10 -D 10000 -p -C -B -M -O"
+    fraction: "-P -d 10 -D 10000 -p -C -B -M -O --fraction"
+
+# ### use with getParams()
+# parameters:
+#   gtf_adj:
+#     star: ["--sjdbGTFfeatureExon", "exon", "--sjdbGTFtagExonParentTranscript", "Parent"]
+#     salmon: ["--fldMean",  "190"]

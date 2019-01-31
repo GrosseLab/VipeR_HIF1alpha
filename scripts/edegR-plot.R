@@ -2,7 +2,11 @@ log <- file(snakemake@log[[1]], open="wt")
 sink(log)
 sink(log, type="message")
 
-library("viper")
+fil <- file(snakemake@input[["viper"]]) #"install viper_0.1.tar.gz"
+tmp <- readLines(fil, n = -1)
+library( as.character(stringr::str_split(stringr::str_split(tmp,' ')[[1]][2],'_')[[1]][1]),character.only = T )
+# library("viper")
+
 library("edgeR")
 library("data.table")
 
@@ -31,7 +35,7 @@ source_here <- function(x, dir = ".", ...) {
 # process data  ------------------------------------------------------------
   # print(DataList)
   anno <- DataList[["Anno"]]
-  annoGe <- unique(anno[,c(2,3)] )
+  annoGe <- unique(anno[,-1] )
   rownames(annoGe) <- as.character(annoGe$gene_id)
   annoGe.dt <- data.table(annoGe,key='gene_id')
   
