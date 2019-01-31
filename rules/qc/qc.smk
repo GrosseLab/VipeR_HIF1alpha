@@ -31,6 +31,11 @@ rule multiqc:
         "file:viper/wrapper/multiqc_v0.30.0"
         # "0.30.0/bio/multiqc"
 
+
+### !!!! ####
+#TODO salmon rule generate only the result folder not the aux_info as output !! missing link in report  
+### !!!! ####
+
 rule multiqc_salmonReads:
     input:
         expand(["results/quantification/salmonReads/{{ref}}/{u.sample}-{u.unit}/aux_info"

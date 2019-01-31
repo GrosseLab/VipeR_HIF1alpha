@@ -119,13 +119,13 @@ pdf(p1filenamePDF,width = 10,height = 14)
     tmpGrid[[i]] <- grid.arrange(plt, tbl,nrow=2,as.table=TRUE,heights=c(1,1))
   }
 dev.off()
-rownames(ANOV.PVAL) <-  GENES;
-rownames(SUMMARY.PVAL) <-  GENES;
+rownames(ANOV.PVAL) <- GENES;
+rownames(SUMMARY.PVAL) <- GENES;
 
-ANOV.PVAL <-  ANOV.PVAL[order(ANOV.PVAL[,"Q:GLC"]),]
-print(ANOV.PVAL[ANOV.PVAL[,"Q:GLC"]<0.05  , ] )
-write.csv2( ANOV.PVAL,file=    snakemake@output[[2]][1] )
-saveRDS(ANOV.PVAL,file =  snakemake@output[[3]][1] ) #
+ANOV.PVAL <- ANOV.PVAL[order(ANOV.PVAL[,"Q:GLC"]),]
+print(ANOV.PVAL[ANOV.PVAL[,"Q:GLC"] < 0.05  , ] )
+write.csv2( ANOV.PVAL,file = snakemake@output[[2]][1] )
+saveRDS(ANOV.PVAL,file = snakemake@output[[3]][1] ) #
 
 ## plot png
 for (i in GENES){  
