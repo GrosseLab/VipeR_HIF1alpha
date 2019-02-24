@@ -12,3 +12,42 @@ sjdbGTFfeatureExon      exon
 sjdbGTFtagExonParentTranscript  transcript_id
 sjdbGTFtagExonParentGene        gene_id
 sjdbInsertSave  Basic
+
+
+	##################### Mapping Parameters ######################
+	#                                                             #
+	MaxMultimap=50                                                #
+	MaxMismatch=3                                                 #
+	readLength=100                                                #
+	maxIntronLength=10000                                         #
+	parentID="transcript_id"                                      #
+	parentGeneID="gene_id"                                        #
+	#                                                             #
+	#                                                             #
+	###############################################################
+
+	genomeDir=$p_genome"/STAR_"$genome_S
+	# rm -R $genomeDir
+	if [ ! -d "$genomeDir" ]
+	then
+	  #note: mkdir into the folder what contains the genome.fa !!! -> /home/adsvy/RIP/Reference/Marquez/
+
+	  mkdir $genomeDir  
+	  echo STAR --runMode genomeGenerate --genomeDir "$genomeDir" --genomeFastaFiles "$p_genome"/"$genome".fa --runThreadN "$Thread" --limitGenomeGenerateRAM "$ram" --sjdbOverhang "$(($readLength-1))" --sjdbGTFfile "$gtf" --sjdbGTFfeatureExon exon --sjdbGTFtagExonParentTranscript "$parentID "--sjdbGTFtagExonParentGene" $parentGeneID"
+	  # STAR --runMode genomeGenerate --genomeDir "$genomeDir" --genomeFastaFiles "$p_genome"/"$genome" --runThreadN "$Thread" --limitGenomeGenerateRAM "$ram" --sjdbOverhang "$(($readLength-1))" --sjdbGTFfile "$gtf" --sjdbGTFfeatureExon exon --sjdbGTFtagExonParentTranscript "$parentID "--sjdbGTFtagExonParentGene" $parentGeneID"
+
+	  # STAR --runMode genomeGenerate --genomeDir /home/adsvy/RIP/Reference/Marquez/STAR_TAIR10.STieJ10C1 --genomeFastaFiles /home/adsvy/RIP/Reference/Marquez/Arabidopsis_thaliana.TAIR10.22.dna.genome.fa --runThreadN 1 --limitGenomeGenerateRAM 120000000000 --sjdbOverhang 99 --sjdbGTFfile /home/adsvy/RIP/stringtie/atRTD_mergeALL1_gffcompare.annotated.gtf --sjdbGTFfeatureExon exon --sjdbGTFtagExonParentTranscript transcript_id --sjdbGTFtagExonParentGene gene_id
+
+	  # mkdir /home/adsvy/RIP/Reference/Marquez/STAR_TAIR10.atRTD2
+	  # STAR --runMode genomeGenerate --genomeDir /home/adsvy/RIP/Reference/Marquez/STAR_TAIR10.atRTD2 --genomeFastaFiles /home/adsvy/RIP/Reference/Marquez/Arabidopsis_thaliana.TAIR10.22.dna.genome.fa --runThreadN 1 --limitGenomeGenerateRAM 120000000000 --sjdbOverhang 99 --sjdbGTFfile /home/adsvy/RIP/Reference/atRTD2/AtRTD2_19April2016.noCHR.gtf --sjdbGTFfeatureExon exon --sjdbGTFtagExonParentTranscript transcript_id --sjdbGTFtagExonParentGene gene_id
+	
+	  # mkdir /home/adsvy/RIP/Reference/Marquez/STAR_TAIR10.atRTD2QUASI
+	  # STAR --runMode genomeGenerate --genomeDir /home/adsvy/RIP/Reference/Marquez/STAR_TAIR10.atRTD2QUASI --genomeFastaFiles /home/adsvy/RIP/Reference/Marquez/Arabidopsis_thaliana.TAIR10.22.dna.genome.fa --runThreadN 1 --limitGenomeGenerateRAM 120000000000 --sjdbOverhang 99 --sjdbGTFfile /home/adsvy/RIP/Reference/atRTD2/AtRTDv2_QUASI_19April2016.noCHR.gtf --sjdbGTFfeatureExon exon --sjdbGTFtagExonParentTranscript transcript_id --sjdbGTFtagExonParentGene gene_id
+
+	  # mkdir /home/adsvy/RIP/Reference/Marquez/STAR_TAIR10.atRTD2TCONS
+	  # STAR   --runMode genomeGenerate   --runThreadN 1   --genomeDir /home/adsvy/RIP/Reference/Marquez/STAR_TAIR10.atRTD2TCONS   --genomeFastaFiles /home/adsvy/RIP/Reference/Marquez/Arabidopsis_thaliana.TAIR10.22.dna.genome.fa      --limitGenomeGenerateRAM 120000000000   --sjdbGTFfile /home/adsvy/RIP/TranscriptPrediction/merge_cuff_strg_wo_overlaps_anno.gtf   --sjdbGTFfeatureExon exon   --sjdbGTFtagExonParentTranscript transcript_id   --sjdbGTFtagExonParentGene gene_id   --sjdbOverhang 99
+
+
+	fi
+
+	local name="

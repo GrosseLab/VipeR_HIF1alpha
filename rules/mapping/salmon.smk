@@ -17,8 +17,9 @@ rule salmon_quant_reads:
 	input:
 		# If you have multiple fastq files for a single sample (e.g. technical replicates)
 		# use a list for r1 and r2.
-		r1 = "results/trimmed/sickle/{sample}-{unit}.1.fastq.gz",
-		r2 = "results/trimmed/sickle/{sample}-{unit}.2.fastq.gz",
+		# r1 = "results/trimmed/sickle/{sample}-{unit}.1.fastq.gz",
+		# r2 = "results/trimmed/sickle/{sample}-{unit}.2.fastq.gz",
+		sample = get_trimmed_sickle,
 		index = "references/{ref}/salmon_transcriptome_index"
 	output: 
 		# auxDIR = directory('results/quantification/salmonReads/{ref}/{sample}-{unit}/aux_info'),

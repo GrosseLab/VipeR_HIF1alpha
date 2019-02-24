@@ -5,7 +5,7 @@ __copyright__ = "Copyright 2017, Julian de Ruiter"
 __email__ = "julianderuiter@gmail.com"
 __license__ = "MIT"
 
-### Claus Weinholdt added {snakemake.threads}
+### Claus Weinholdt added {snakemake.threads} and change dependence to cutadapt ==1.18
 
 from snakemake.shell import shell
 

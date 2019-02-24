@@ -11,6 +11,7 @@ rule star_index:
 		# optional parameters
 		sjdbGTFfeatureExon = lambda wildcards: config["ref"][wildcards.ref]["sjdbGTFfeatureExon"],
 		sjdbGTFtagExonParentTranscript = lambda wildcards: config["ref"][wildcards.ref]["sjdbGTFtagExonParentTranscript"],
+		sjdbGTFtagExonParentGene = lambda wildcards: config["ref"][wildcards.ref]["sjdbGTFtagExonParentGene"],
 		sjdbOverhang = lambda wildcards: config["ref"][wildcards.ref]["sjdbOverhang"],
 		limitGenomeGenerateRAM = '80000000000',
 		extra=""
