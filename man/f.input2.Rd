@@ -4,7 +4,7 @@
 \alias{f.input2}
 \title{Venndiagramm 2-Set}
 \usage{
-f.input2(l1, l2, name = c("A", "B"), plotVENN = TRUE)
+f.input2(l1, l2, name = c("A", "B"), plotVENN = TRUE, vennOut = FALSE)
 }
 \arguments{
 \item{l1}{is the 1. set}
@@ -14,6 +14,8 @@ f.input2(l1, l2, name = c("A", "B"), plotVENN = TRUE)
 \item{name}{vector with names of sets}
 
 \item{plotVENN}{is boolean to enable venn plot}
+
+\item{vennOut}{is boolean getting venn object or intersecting list}
 }
 \description{
 Venndiagramm for 2-Set

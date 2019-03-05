@@ -12,7 +12,7 @@ f.input.list <- function(inList,VennPlot=TRUE,VennOut=FALSE){
   
   switch( 
      as.character(length( N )),  
-     "2"=f.input2(inList[[1]],inList[[2]],name=N,plotVENN=VennPlot),
+     "2"=f.input2(inList[[1]],inList[[2]],name=N,plotVENN=VennPlot,vennOut=VennOut),
      "3"=f.input3(inList[[1]],inList[[2]],inList[[3]],name=N,plotVENN=VennPlot,vennOut=VennOut),
      "4"=f.input4(inList[[1]],inList[[2]],inList[[3]],inList[[4]],name=N,plotVENN=VennPlot,vennOut=VennOut),
      "5"=f.input5(inList[[1]],inList[[2]],inList[[3]],inList[[4]],inList[[5]],name=N,plotVENN=VennPlot,vennOut=VennOut)
@@ -21,6 +21,44 @@ f.input.list <- function(inList,VennPlot=TRUE,VennOut=FALSE){
   
 }
 
+#' @title Venndiagramm wrapper to plot all sub venn diagram
+#' @author Claus Weinholdt
+#' @description Venndiagramm for 2-Set
+#' @param inList is list
+#' @param VennPlot is boolean to enable venn plot
+#' @param VennOut is boolean to enable venn plot
+#' @import rlist 
+#' @export
+f.input.list.All.subVenn <- function(inList,VennPlot=TRUE,VennOut=FALSE){
+  
+  InLen <- length(inList)
+  tvennData <- NULL
+  
+  if(InLen > 1 ){
+    
+    if(InLen > 5){
+      print("max 5 set venn diagram")
+      InLen <- 5
+    }
+    
+    tvennData <- lapply(2:InLen,function(x){
+      combs <- combn(names(inList),x)
+      tmp <- list()
+      for(i in 1:ncol(combs)){
+        tmp[[i]] <- f.input.list(rlist::list.remove(inList, setdiff(names(inList), combs[,i] ) ),
+                                VennPlot, VennOut )
+      }
+      tmp
+    }
+    )
+    
+  } else {
+    tvennData <- NULL
+  }
+
+  return(tvennData)
+  
+}
 
 #-------------------------------------------
 #' @title Venndiagramm 2-Set
@@ -30,8 +68,9 @@ f.input.list <- function(inList,VennPlot=TRUE,VennOut=FALSE){
 #' @param l2 is the 2. set
 #' @param name vector with names of sets
 #' @param plotVENN is boolean to enable venn plot
+#' @param vennOut is boolean getting venn object or intersecting list
 #' @export
-f.input2 = function (l1,l2,name=c("A","B"),plotVENN=TRUE){
+f.input2 = function (l1,l2,name=c("A","B"),plotVENN=TRUE,vennOut=FALSE){
   # require(gplots)
   input <- list(A=l1,B=l2)
   names(input)<-name
@@ -53,7 +92,10 @@ f.input2 = function (l1,l2,name=c("A","B"),plotVENN=TRUE){
   s1<-setdiff(input[[1]],input[[2]])
   s2<-setdiff(input[[2]],input[[1]])
   
-  return(list(inter=i,diffAB=s1,diffBA=s2))
+  if(vennOut){     
+    ve <- gplots::venn(input,show.plot = F)
+    return(ve) 
+  } else { return(list(inter=i,diffAB=s1,diffBA=s2)) }
 }
 
 #-------------------------------------------
@@ -86,7 +128,9 @@ f.input3 = function (l1,l2,l3,name=c("A","B","C"),plotVENN=TRUE,vennOut=FALSE){
   
   if(plotVENN){ ve <- gplots::venn(input) }
   
-  if(vennOut){ return(ve) 
+  if(vennOut){ 
+    ve <- gplots::venn(input,show.plot = F)
+    return(ve) 
   } else { return(intersect3(l1,l2,l3)) }
 }
 
