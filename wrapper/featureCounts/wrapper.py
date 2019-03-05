@@ -38,7 +38,7 @@ def optionify_params(parameter, option):
         return ''
 
 # Extract required inputs.
-alignment = snakemake.input.alignment
+alignment = snakemake.input.bam
 annotation = snakemake.input.annotation
 
 # Extract required outputs.

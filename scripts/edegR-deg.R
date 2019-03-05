@@ -44,8 +44,19 @@ source_here <- function(x, dir = ".", ...) {
 # print(snakemake@input[["counts"]])
 
 DataList <- readRDS(snakemake@input[["counts"]])
-samples <- read.table(snakemake@params[["samples"]], header=TRUE)
-units <- read.table(as.character(snakemake@params[["units"]]), header=TRUE)
+samples <- read.table(snakemake@params[["samples"]], header=TRUE)    # samples <- read.table("samples_R1.tsv", header=TRUE)
+units <- read.table(as.character(snakemake@params[["units"]]), header=TRUE, fill=TRUE) # units <- read.table("units_R1.tsv", header=TRUE,fill=TRUE)
+if ( is.na(units[1,'fq2']) ){
+  units <- units[,setdiff(colnames(units),"fq2")]
+}
+
+### build condition column for multiple condition
+condCols <- colnames(samples)[stringr::str_detect(colnames(samples),'condition')]
+if ( length(condCols) > 1 ){
+  tmp <- apply(samples[,condCols],1,function(x) paste(x,collapse = '--') )
+  colnames(samples)[which(colnames(samples) == 'condition')] <- 'conditionXXX'
+  samples$condition <- tmp
+}
 
 LevelSig <- as.double(snakemake@params[["sig"]]) # LevelSig <- 0.05
 LevelLog2FC <- as.double(snakemake@params[["log2FC"]]) # LevelLog2FC <- 1

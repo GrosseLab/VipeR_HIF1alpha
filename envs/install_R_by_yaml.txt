@@ -1,0 +1,5 @@
+conda env create --file=myfile.yaml
+
+
+
+conda env create -n TEST --file=/home/adsvy/RIP/GitHub/SnakeWF_RIP/viper/envs/r35.yaml

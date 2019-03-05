@@ -19,7 +19,8 @@ rule gzip:
     input: "{file}"
     output: "{file}.gz"
     threads: 20
-    shell: "pigz -f -c -p {threads} {input} > {output}"
+    shell: "pigz -f -c -p {threads} {input} > {output} && "
+           " rm {input} "
 
 rule build_R_package_viper:
     input: "viper" #"{pack}"
