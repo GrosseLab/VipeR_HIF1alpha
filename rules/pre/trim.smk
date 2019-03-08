@@ -1,6 +1,8 @@
 # def get_fastq(wildcards):
 #     return units.loc[(wildcards.sample, wildcards.unit), ["fq1", "fq2"]].dropna()
 
+
+ruleorder: cutadapt_pe > cutadapt
 rule cutadapt_pe:
 	input:
 		get_fastq
@@ -60,6 +62,8 @@ rule cutadapt:
 
 
 ruleorder: sickle_pe > gzip
+ruleorder: sickle_pe > sickle_se
+
 rule sickle_pe:
 	input:
 		r1="results/trimmed/cutadapt/{sample}-{unit}.1.fastq.gz",

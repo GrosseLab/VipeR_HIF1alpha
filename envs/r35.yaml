@@ -4,6 +4,8 @@ channels:
   - bioconda
   - defaults
 dependencies:
+  - r-pheatmap
+  - r-rlist
   - r-venndiagram=1.6.20
   - bioconductor-annotate=1.58.0=r351_0
   - bioconductor-annotationdbi=1.42.1=r351_0

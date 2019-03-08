@@ -67,7 +67,9 @@ rule edegR_deg:
     output:
         "results/deg/edegR/{ref}/{readtype}/{ctype}/{RDStype}_{contrast}_edegR_ResData.rds",
         "results/deg/edegR/{ref}/{readtype}/{ctype}/{RDStype}_{contrast}_edegR_Res.csv",
-        "results/deg/edegR/{ref}/{readtype}/{ctype}/{RDStype}_{contrast}_edegR_Res.rds"
+        "results/deg/edegR/{ref}/{readtype}/{ctype}/{RDStype}_{contrast}_edegR_Res.rds",
+        "results/deg/edegR/{ref}/{readtype}/{ctype}/{RDStype}_{contrast}_edegR_Res_sig_"+config["diffexp"]["sig"]+"_MYlog2FC_"+config["diffexp"]["log2FC"]+".csv",
+        "results/deg/edegR/{ref}/{readtype}/{ctype}/{RDStype}_{contrast}_edegR_Res_sig_"+config["diffexp"]["sig"]+".csv"
     params:
         samples=config["samples"],
         units=config["units"],
