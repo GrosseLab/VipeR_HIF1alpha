@@ -73,7 +73,7 @@ library("data.table")
   }
   rownames(units) <- as.character(units$sample)
   
-  annoGe <- unique(TrGe[,c(2,3)] )
+  annoGe <- unique(TrGe[,c(2,3,4)] )
   rownames(annoGe) <- as.character(annoGe$gene_id)
   annoGe.dt <- data.table(annoGe,key='gene_id')
   
@@ -95,6 +95,15 @@ library("data.table")
   DAVID <- lapply(DAVIDResInput,function(x) {fread(paste0(x),head=TRUE)})
   names(DAVID) <- contrastNames
   
+  ### add Gene Names to output 
+  DAVID <- lapply(DAVID,function(x) {
+   tmpG <- x$Genes
+   tmpGname <- sapply(tmpG,function(y){
+      paste0(as.character(annoGe.dt[stringr::str_split(stringr::str_replace_all(y,' ',''),pattern = ','),][['gene_name']]),collapse = ', ')
+    } )
+   x$'gene_name' <- tmpGname
+   return(x)
+  })
   
   # print(unitsTwoSet)
   # print(SamplesTwoSet)
@@ -138,6 +147,8 @@ library("data.table")
       
     }
   }
+  
+  # ChartReportSigList$KEGG_PATHWAY[[2]]
   
   print("write Sig out")
   print(paste0(DAVIDoutFolder,'ChartReportSigList.RDS'))
