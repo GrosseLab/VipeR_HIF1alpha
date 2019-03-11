@@ -18,7 +18,10 @@ Imports:
   plyr,
   magrittr,
   parallel,
-  rlist
+  rlist,
+  GenomicFeatures,
+  Rsamtools,
+  furrr
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true

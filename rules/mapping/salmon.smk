@@ -1,6 +1,24 @@
+rule make_transciptome_exon_fasta:
+	input:
+		gtf = lambda wildcards: config["ref"][wildcards.ref]["annotation"],
+		genome = lambda wildcards: config["ref"][wildcards.ref]["genome"],
+		viper=rules.install_R_package_viper.output
+	output:
+		outputFile= "references/{ref}/GTF_EXON.fa" #config["ref"][wildcards.ref]["transcriptome"] 
+	log:
+		"logs/salmon/{ref}/build_transcriptome_fasta.log"
+	threads: 15
+	params:
+		# optional parameters
+		extra=""
+	conda:
+		"../../envs/r35.yaml"
+	script:
+		"../../scripts/convert_gtf_fasta.R"
+
 rule salmon_index:
 	input:
-		lambda wildcards: config["ref"][wildcards.ref]["transcriptome"]
+		"references/{ref}/GTF_EXON.fa" #lambda wildcards: config["ref"][wildcards.ref]["transcriptome"]
 	output:
 		directory("references/{ref}/salmon_transcriptome_index")
 	log:
@@ -41,7 +59,7 @@ rule salmon_quant_reads:
 rule salmon_quant_alignment:
 	input:
 		bam = "results/mapping/star/{ref}/{sample}-{unit}/Aligned.toTranscriptome.out.bam",
-		transcriptome = lambda wildcards: config["ref"][wildcards.ref]["transcriptome"],
+		transcriptome = "references/{ref}/GTF_EXON.fa", #lambda wildcards: config["ref"][wildcards.ref]["transcriptome"],
 		gtf = lambda wildcards: config["ref"][wildcards.ref]["annotation"]
 	output:
 		# auxDIR = directory('results/quantification/salmonAlignment/{ref}/{sample}-{unit}/aux_info'),

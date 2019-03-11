@@ -4,6 +4,8 @@ channels:
   - bioconda
   - defaults
 dependencies:
+  - bioconductor-genomicfeatures
+  - bioconductor-rsamtools
   - r-pheatmap
   - r-rlist
   - r-venndiagram=1.6.20
