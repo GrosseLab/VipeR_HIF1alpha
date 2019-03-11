@@ -1,0 +1,9 @@
+
+add to .bashrc
+
+alias slurmmake='snakemake -k -p --use-conda --cluster "sbatch --job-name={cluster.job-name} --cpus-per-task={threads} --output={cluster.output} --error={cluster.error} --partition={cluster.partition} --time={cluster.time} --mem={cluster.mem}" -j 100 --cluster-config cluster.json --cluster-status /home/adsvy/GitHubRepo/SnakeWF_HIF/slurm_status.py'
+
+
+https://github.com/Snakemake-Profiles/slurm
+
+alias slurmmake='snakemake --use-conda -k -p --cluster "sbatch --job-name={cluster.job-name} --cpus-per-task={threads} --output={cluster.output} --error={cluster.error} --partition={cluster.partition} --time={cluster.time} --mem={cluster.mem}" -j 100 --cluster-config cluster.json --cluster-status /home/adsvy/GitHubRepo/SnakeWF_HIF/slurm/adsvy/slurm-status.py'

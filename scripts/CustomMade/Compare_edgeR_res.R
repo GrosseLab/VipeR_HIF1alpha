@@ -37,20 +37,23 @@ if(ALL_data){
 
 #### ###### PAPER #### ######
 if(PAPER){
+
   # install.packages("rlist")
   library('rlist')
   library(ggplot2)
   outDir <- paste0('/home/adsvy/GitHubRepo/SnakeWF_HIF/results/plot/edegR/hg38_PE/')
   if(!dir.exists(outDir)){ dir.create(outDir) }
   
-  samples <- read.table('/home/adsvy/GitHubRepo/SnakeWF_HIF/samples.tsv', header=TRUE)
+  samples <- read.table('/home/adsvy/GitHubRepo/SnakeW
+                        
+                        F_HIF/samples.tsv', header=TRUE)
   units <- read.table('/home/adsvy/GitHubRepo/SnakeWF_HIF/units.tsv', header=TRUE)
+  
+  quantNamesPaper <- c('unique','salmonAlignment')
+  quantName <- quantNamesPaper[2]
   DataList <- readRDS(system(paste0('ls /home/adsvy/GitHubRepo/SnakeWF_HIF/results/quantification/counts/hg38/PE/',quantName,'/*.rds') , intern = T))
   Ctype <- DataList$Ctype
   
-  
-  
-  quantNamesPaper <- c('unique','salmonAlignment')
   contrastNamesPaper <- c('NSQ-vs-NSQsi','HSQ-vs-HSQsi','NSQsi-vs-HSQsi','NSQ-vs-HSQ')
   
   eRpaper <- list()
@@ -86,6 +89,61 @@ if(PAPER){
     }
     )
     names(veDataPaper[[i]]) <- c('res_sig','res_sig_log2FC','res_sig_MYlog2FC')
+  }
+  
+  ### GeneSet of Mathias 
+  if(GeneSet){
+    GeneSetPaper <- c("ENSG00000117394","ENSG00000059804","ENSG00000156515","ENSG00000159399","ENSG00000105220","ENSG00000141959","ENSG00000152556","ENSG00000067057","ENSG00000158571","ENSG00000123836","ENSG00000170525","ENSG00000114268","ENSG00000149925","ENSG00000136872","ENSG00000109107","ENSG00000111669","ENSG00000111640","ENSG00000102144","ENSG00000079739","ENSG00000169299","ENSG00000013375","ENSG00000074800","ENSG00000111674","ENSG00000108515","ENSG00000067225","ENSG00000131828","ENSG00000152256","ENSG00000005882","ENSG00000067992","ENSG00000004799","ENSG00000134333","ENSG00000141526","ENSG00000100644","ENSG00000107159","ENSG00000163682","ENSG00000104419")
+    names(GeneSetPaper) <- c("SLC2A1","SLC2A3","HK1","HK2","GPI","PFKL","PFKM","PFKP","PFKFB1","PFKFB2","PFKFB3","PFKFB4","ALDOA","ALDOB","ALDOC","TPI1","GAPDH","PGK1","PGM1","PGM2","PGM3","ENO1","ENO2","ENO3","PKM","PDHA1","PDK1","PDK2","PDK3","PDK4","LDHA","SLC16A3","HIF1A","CA9","RPL9","NDRG1")
+
+    eRpaperRESGeneSetPaper <- list()
+    eRpaperRESsigGeneSetPaper <- list()
+    eRpaperRESGeneALL <- list()
+    for(i in names(eRpaper)){
+      tmp <- eRpaper[[ i ]][[ quantName ]][['res']]
+      setkey(tmp,'rn')
+      eRpaperRESGeneSetPaper[[i]] <- tmp[GeneSetPaper,] #[intersect(rn,GeneSetPaper),]
+      setkey(eRpaperRESGeneSetPaper[[i]],'rn')
+      
+      tmp <- eRpaper[[ i ]][[ quantName ]][[sigName]]
+      setkey(tmp,'rn')
+      eRpaperRESsigGeneSetPaper[[i]] <- tmp[intersect(rn,GeneSetPaper),]
+      setkey(eRpaperRESsigGeneSetPaper[[i]],'rn')
+      
+      tmp <- eRpaper[[ i ]][[ quantName ]][['res']]
+      setkey(tmp,'rn')
+      eRpaperRESGeneALL[[i]] <- tmp #[intersect(rn,GeneSetPaper),]
+      setkey(eRpaperRESGeneALL[[i]],'rn')
+    }
+    
+    SigGenesListGeneSetPaper <- list(
+      as.character(eRpaperRESsigGeneSetPaper[[ contrastNamesPaper[1] ]]$rn),
+      as.character(eRpaperRESsigGeneSetPaper[[ contrastNamesPaper[2] ]]$rn),
+      as.character(eRpaperRESsigGeneSetPaper[[ contrastNamesPaper[3] ]]$rn),
+      as.character(eRpaperRESsigGeneSetPaper[[ contrastNamesPaper[4] ]]$rn)
+    )
+    names(SigGenesListGeneSetPaper) <- c(contrastNamesPaper)
+    
+    eRpaperRESGeneSetPaper_Merge <-  merge(eRpaperRESGeneSetPaper[['HSQ-vs-HSQsi']][,.(gene_name,gene_biotype,rn,HSQ,HSQsi,MYlog2FC,FDR)],
+                                           eRpaperRESGeneSetPaper[['NSQ-vs-NSQsi']][,.(gene_name,gene_biotype,rn,NSQ,NSQsi,MYlog2FC,FDR)],
+                                           by.x = c('gene_name','gene_biotype','rn'),by.y = c('gene_name','gene_biotype','rn'),suffixes = c('_H','_N') )
+    
+    setkey(eRpaperRESGeneSetPaper_Merge,'gene_name')
+    eRpaperRESGeneSetPaper_Merge <- eRpaperRESGeneSetPaper_Merge[names(GeneSetPaper),]
+    write.csv2(eRpaperRESGeneSetPaper_Merge,paste0(outDir,'GeneSetPaper.csv'))
+    
+    pdf(paste0(outDir,'GeneSetPaper.pdf'),width = 10,8)
+      tvenn <- f.input.list.All.subVenn(SigGenesListGeneSetPaper)
+    dev.off()
+    
+    eRpaperRESGeneALL <-  merge(eRpaperRESGeneALL[['HSQ-vs-HSQsi']][,.(gene_name,gene_biotype,rn,HSQ,HSQsi,MYlog2FC,FDR)],
+                                eRpaperRESGeneALL[['NSQ-vs-NSQsi']][,.(gene_name,gene_biotype,rn,NSQ,NSQsi,MYlog2FC,FDR)],
+                                by.x = c('gene_name','gene_biotype','rn'),by.y = c('gene_name','gene_biotype','rn'),suffixes = c('_H','_N') )
+
+    setkey(eRpaperRESGeneALL,'rn')
+    write.csv2(eRpaperRESGeneALL,paste0(outDir,'Genes.csv'))
+  
+    
   }
   
   if( do.plot ){

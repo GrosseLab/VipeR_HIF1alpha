@@ -10,52 +10,52 @@ def get_deseq2_threads(wildcards=None):
     return 1 if len(samples) < 100 or few_coeffs else 6
 
 
-rule deseq2_init:
-    input:
-        counts="results/quantification/counts/{ref}/allFC.rds"#"results/quantification/counts/all.tsv"
-    output:
-        "results/deg/deseq2/{ref}/all.rds"
-    params:
-        samples=config["samples"],
-        units=config["units"]
-    conda:
-        "../../envs/r35.yaml"
-    log:
-        "logs/deseq2/{ref}/init.log"
-    threads: get_deseq2_threads()
-    script:
-        "../../scripts/deseq2-init.R"
+# rule deseq2_init:
+#     input:
+#         counts="results/quantification/counts/{ref}/allFC.rds"#"results/quantification/counts/all.tsv"
+#     output:
+#         "results/deg/deseq2/{ref}/all.rds"
+#     params:
+#         samples=config["samples"],
+#         units=config["units"]
+#     conda:
+#         "../../envs/r35.yaml"
+#     log:
+#         "logs/deseq2/{ref}/init.log"
+#     threads: get_deseq2_threads()
+#     script:
+#         "../../scripts/deseq2-init.R"
 
-rule pca:
-    input:
-        "results/deg/deseq2/{ref}/all.rds"
-    output:
-        report("results/plot/deseq2/{ref}/pca.svg", "../../report/pca.rst")
-    params:
-        pca_labels=config["pca"]["labels"]
-    conda:
-        "../../envs/r35.yaml"
-    log:
-        "logs/deseq2/{ref}/pca.log"
-    script:
-        "../../scripts/plot-pca.R"
+# rule pca:
+#     input:
+#         "results/deg/deseq2/{ref}/all.rds"
+#     output:
+#         report("results/plot/deseq2/{ref}/pca.svg", "../../report/pca.rst")
+#     params:
+#         pca_labels=config["pca"]["labels"]
+#     conda:
+#         "../../envs/r35.yaml"
+#     log:
+#         "logs/deseq2/{ref}/pca.log"
+#     script:
+#         "../../scripts/plot-pca.R"
 
 
-rule deseq2:
-    input:
-        "results/deg/deseq2/{ref}/all.rds"
-    output:
-        table=report("results/plot/deseq2/{ref}/diffexp/{contrast}.diffexp.tsv", "../../report/diffexp.rst"),
-        ma_plot=report("results/plot/deseq2/{ref}/diffexp/{contrast}.ma-plot.svg", "../../report/ma.rst"),
-    params:
-        contrast=get_contrast
-    conda:
-        "../../envs/r35.yaml"
-    log:
-        "logs/deseq2/{ref}/{contrast}.diffexp.log"
-    threads: get_deseq2_threads
-    script:
-        "../../scripts/deseq2.R"
+# rule deseq2:
+#     input:
+#         "results/deg/deseq2/{ref}/all.rds"
+#     output:
+#         table=report("results/plot/deseq2/{ref}/diffexp/{contrast}.diffexp.tsv", "../../report/diffexp.rst"),
+#         ma_plot=report("results/plot/deseq2/{ref}/diffexp/{contrast}.ma-plot.svg", "../../report/ma.rst"),
+#     params:
+#         contrast=get_contrast
+#     conda:
+#         "../../envs/r35.yaml"
+#     log:
+#         "logs/deseq2/{ref}/{contrast}.diffexp.log"
+#     threads: get_deseq2_threads
+#     script:
+#         "../../scripts/deseq2.R"
 
 ############## edegR
 

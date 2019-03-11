@@ -1,0 +1,81 @@
+import pandas as pd
+import os
+from snakemake.utils import validate, min_version
+##### set minimum snakemake version #####
+min_version("5.1.2")
+
+
+# snakemake -kn 
+# snakemake --create-envs-only   --use-conda
+# snakemake -k -p --use-conda -j 20
+# slurmmake
+# watch squeue -u adsvy
+
+# source activate r35-ENVc3
+# conda install -c conda-forge r-venndiagram 
+# conda env export > r35.yaml
+
+
+
+##### load config and sample sheets #####
+
+# os.system("export PATH=/home/adsvy/anaconda3/bin:$PATH")
+# print(os.system("$PATH"))
+
+configfile: "config.yaml"
+validate(config, schema="viper/schemas/config.schema.yaml")
+
+samples = pd.read_table(config["samples"]).set_index("sample", drop=False)
+validate(samples, schema="viper/schemas/samples.schema.yaml")
+
+units = pd.read_table(config["units"], dtype=str).set_index(["sample", "unit"], drop=False)
+units.index = units.index.set_levels([i.astype(str) for i in units.index.levels])  # enforce str in index
+validate(units, schema="viper/schemas/units.schema.yaml")
+
+### run with slurmmake [ -> alias slurmmake='snakemake -k -p --use-conda --cluster "sbatch ... ]
+rule all:
+	input:
+		"results/plot/qPCR/Anova_Normoxie_Q-GLC.pdf", 
+		"results/qc/hg38/multiqc.html",
+		expand("results/deg/edegR/hg38/PE/salmonAlignment/estcount_{contrast}_edegR_Res.rds",contrast=config["diffexp"]["contrasts"]),
+		"results/annotation/DAVID/hg38_PE_salmonAlignment_estcount_DAVID68_ResSiglog2FC/NSQ-vs-NSQsi_HSQ-vs-HSQsi/ChartReportSigList.RDS"
+
+##### setup singularity #####
+
+# this container defines the underlying OS for each job when using the workflow
+# with --use-conda --use-singularity
+singularity: "docker://continuumio/miniconda3"
+
+
+##### setup report ##### 
+# /home/adsvy/anaconda3/bin/snakemake --report report/report_2019_03_08_salmonAlignment.html
+report: "viper/report/workflow.rst"
+
+### dot
+# snakemake --dag | dot -Tpdf > report/dag_2019_03_08_salmonAlignment.pdf
+
+
+##### load rules #####
+include: "viper/rules/common.smk"
+#qc
+include: "viper/rules/qc/qc.smk"
+include: "viper/rules/qc/fastqc.smk"
+#pre
+include: "viper/rules/pre/trim.smk"
+#mapping
+include: "viper/wrapper/star_index/rule.smk"
+include: "viper/rules/mapping/align.smk"
+include: "viper/rules/mapping/sambamba.smk"
+include: "viper/rules/mapping/salmon.smk"
+#quantification
+include: "viper/rules/quantification/featureCounts.smk"
+#deg
+include: "viper/rules/deg/qunatSummary.smk"
+include: "viper/rules/deg/diffexp.smk"
+#qPCR
+include: "viper/rules/deg/qPCR.smk"
+#DAVID
+include: "viper/rules/annotation/david.smk"
+
+
+
