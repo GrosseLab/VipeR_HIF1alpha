@@ -4,17 +4,24 @@ sink(log, type="message")
 
 print(snakemake)
 
-fil <- file(snakemake@input[["viper"]]) #"install viper_0.1.tar.gz"
-tmp <- readLines(fil, n = -1)
-library( as.character(stringr::str_split(stringr::str_split(tmp,' ')[[1]][2],'_')[[1]][1]),character.only = T )
-# library("viper")
+# fil <- file(snakemake@input[["viper"]]) #"install viper_0.1.tar.gz"
+# tmp <- readLines(fil, n = -1)
+# library( as.character(stringr::str_split(stringr::str_split(tmp,' ')[[1]][2],'_')[[1]][1]),character.only = T )
+# # library("viper")
 
 threads = as.integer(snakemake@threads[[1]])
 print(paste0("used threads:",threads))
 
-# library("rtracklayer")
-# library("magrittr")
+library("rtracklayer")
+library("magrittr")
 library("furrr")
+
+file_ext <- function(f_name) {
+  x <- f_name %>%
+    strsplit(".", fixed = TRUE) %>%
+    unlist
+  x[length(x)]
+}
 
 # make EXON.fa ---------------------------------------------------------------
   anno.file <- snakemake@input[["gtf"]]

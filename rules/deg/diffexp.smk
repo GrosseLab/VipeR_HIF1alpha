@@ -103,3 +103,18 @@ rule edegR_plot_global:
     script:
         "../../scripts/edegR-plot.R"
 
+rule edegR_ResSigFC_pair_R:
+    input:
+        e1="results/deg/edegR/{ref}/{readtype}/{ctype}/{RDStype}_{contrast1}_edegR_ResData.rds",
+        e2="results/deg/edegR/{ref}/{readtype}/{ctype}/{RDStype}_{contrast2}_edegR_ResData.rds",
+        viper=rules.install_R_package_viper.output
+    output:    
+        o1="results/plot/edegR/{ref}_{readtype}/{ctype}_{RDStype}_ResSiglog2FC/{contrast1}_{contrast2}/VennSet_Filter.pdf"
+    params:
+        MeanReads=20 ### Todo move param to config
+    conda:
+        "../../envs/r35.yaml"
+    log:
+        "logs/plot/edegR/{ref}_{readtype}_{ctype}_{RDStype}_ResSiglog2FC_{contrast1}_{contrast2}.log"
+    script:
+        "../../scripts/edegR-deg_res_pairwise.R"       

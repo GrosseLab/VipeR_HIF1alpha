@@ -8,41 +8,36 @@ library( as.character(stringr::str_split(stringr::str_split(tmp,' ')[[1]][2],'_'
 # library("viper")
 
 library("data.table")
-# library("tidyverse")
-###
 library('rlist')
 library("ggplot2")
 library("edgeR")
 
-# head  ----------------------------------------------------------------
+# load input from snakemake rule  ----------------------------------------------------------------
   
   print(snakemake)
   
   ### input 
-  D1 <- as.character(snakemake@input[["D1"]]) # 
-  D2 <- as.character(snakemake@input[["D2"]]) # 
-  TrGe <- readRDS(snakemake@input[["TrGe"]]) # 
+  e1 <- as.character(snakemake@input[["e1"]]) # 
+  e2 <- as.character(snakemake@input[["e2"]]) # 
 
   ### output
-  outDir <- c(as.character(snakemake@output[["o1"]]))
+  outDirFile <- c(as.character(snakemake@output[["o1"]]))
+  outDir <- paste0(dirname(outDirFile),'/')
   # outDir <- paste0('/home/adsvy/GitHubRepo/SnakeWF_HIF/results/plot/edegR/hg38_PE/')
   
   # ### params
   MeanReads <- as.double(snakemake@params[["MeanReads"]]) # 
-  # samples <- read.table(snakemake@params[["samples"]], header=TRUE)    
-  # units <- read.table(as.character(snakemake@params[["units"]]), header=TRUE, fill=TRUE) 
-  # LevelSig <- as.double(snakemake@params[["sig"]]) # 
-  # LevelLog2FC <- as.double(snakemake@params[["log2FC"]]) # 
-  
+  # MeanReads <- 20
+  sigName <- "res_sig_MYlog2FC"
+   
   ### wildcards
   contrastNames <- c(snakemake@wildcards[["contrast1"]],snakemake@wildcards[["contrast2"]]) 
-  # contrastNames <- c('NSQ-vs-NSQsi','HSQ-vs-HSQsi')
-  
   ref <- as.character(snakemake@wildcards[["ref"]])
   readtype <- as.character(snakemake@wildcards[["readtype"]])
   ctype <- as.character(snakemake@wildcards[["ctype"]])
   RDStype <- as.character(snakemake@wildcards[["RDStype"]])
-  
+
+  # contrastNames <- c('NSQ-vs-NSQsi','HSQ-vs-HSQsi')
   # ref <- 'hg38'
   # readtype <- 'PE'
   # ctype <- 'salmonAlignment'
@@ -63,16 +58,30 @@ library("edgeR")
   # LevelLog2FC <- as.double(CONFIGyaml[["diffexp"]][["log2FC"]]) 
   # contrastsList <- CONFIGyaml[["diffexp"]][['contrasts']]
 
-
-  
+  print(e1)
+  print(e2)
+  print(outDirFile)
+  print(outDir)
+  print(contrastNames)
+  print(ref)
+  print(readtype)
+  print(ctype)
+  print(RDStype)
+  print(samples)
+  print(units)
+  print(LevelSig)
+  print(LevelLog2FC)
+  print(contrastsList)
 
 # load data ---------------------------------------------------------------
 
+  print("Data is load for all [!!!] comparisons defined in snakemake@config[['diffexp']][['contrasts']] ")
+  
   DataList <- readRDS( paste0("results/quantification/counts/",ref,"/",readtype,"/",ctype,"/",RDStype,".rds") )
-  # Ctype <- DataList$Ctype
+  RDStype_DataList <- DataList$Ctype
   
   eRcontrast <- list()
-  for(j in ctype  ){
+  for(j in ctype){
     print(j)
     for(i in names(contrastsList) ){
       # print(i)
@@ -133,7 +142,7 @@ library("edgeR")
     
 # tmm --------------------------------------------------------------- 
   
-  if(Ctype == "est_count"){
+  if(RDStype_DataList == "est_count"){
     print(names(DataList[["Ge"]]))
     print(head(DataList[["Ge"]]$counts))
     
@@ -182,7 +191,6 @@ library("edgeR")
 # VENN --------------------------------------------------------------------
   
   SigGenesList <- SigGenesListFilter <- list()
-  sigName <- "res_sig_MYlog2FC"
   for(i in names(contrastsList) ){
     SigGenesListFilter[[i]] <- as.character(eRFilter  [[ i ]][[ ctype ]][[sigName]]$rn)
     SigGenesList[[i]]       <- as.character(eRcontrast[[ i ]][[ ctype ]][[sigName]]$rn)
@@ -284,7 +292,113 @@ library("edgeR")
   ggsave(paste0(outDir,'MAplot.pdf'),plot = p1MA,width = 8,height = 10)
 
 # correlation  --------------------------------------------------------------------
-
-
-# xxx --------------------------------------------------------------------
+  do.analysis <- TRUE
+  if( do.analysis ){
+    
+    outDir2 <- paste0(outDir,'Correlation/')
+    if(!dir.exists(outDir2)){ dir.create(outDir2,recursive = F) }
+    
+    corData <- log2(tmm+1)
+    # boxplot(corData,las=2)
+    dim(corData)
+    CorIpearson <- cor(t(corData))
+    # CorAll <- CorIpearson
   
+    plotCorrLines <- function(geneSet,nameSet,eRcontrastMerge,CorAll,outDir2){
+      outDir3 <- paste0(outDir2,nameSet,'/')
+      if(!dir.exists(outDir3)){ dir.create(outDir3,recursive = F) }
+      
+      print(outDir3)
+      print(nameSet)
+      
+      setkey(eRcontrastMerge,'rn')
+      tmp <- eRcontrastMerge[geneSet,]
+      
+      CorIpearsonSig <-  t(CorIpearson[,geneSet])
+      minCorr <- 0.98
+      CorIsig <- apply(CorIpearsonSig,1,function(x) if(sum(x>minCorr) > 0){ x[x>minCorr] } else { NULL }  )
+      
+      NewHit <- c()
+      for(i in names(CorIsig) ){
+        
+        subgenes <- c(names(CorIsig[[i]]))
+        gene_nameI <- as.character(tmp[i,]$gene_name)
+        
+        if (length(subgenes) > 1) {
+          tmpVenn <- f.input2(names(CorIsig[[i]]),names(CorIsig),plotVENN = F )
+          
+          if(length(tmpVenn$diffAB)>0){
+            print(i)
+            NewHit <- c(NewHit,i)
+          }  
+          
+          tmp.melt <- melt(tmm[subgenes, c(3,7,11,15,4,8,12,16,1,5,9,13,2,6,10,14)   ])
+          tmp.melt$set <- 'no'
+          
+          for(tgene in as.character(tmpVenn$inter)){
+            tmp.melt[as.character(tmp.melt$Var1) == tgene,]$set <- 'yes'
+          }
+          tmp.melt[as.character(tmp.melt$Var1) == i,]$set <- 'input'
+          
+          p1 <- ggplot(data=tmp.melt, aes(x=Var2, y=log2(value+1), group=Var1,shape=Var2,col=set)) 
+          p1 <- p1 + geom_line()
+          p1 <- p1 + geom_point(size=4)
+          p1 <- p1 + scale_shape_manual(values=c(0,0,0,0,
+                                                 15,15,15,15,
+                                                 1,1,1,1,
+                                                 16,16,16,16))
+          if(length(names(CorIsig[[i]])) < 8){ p1 <- p1 + facet_grid(Var1 ~ .)}
+          # p1 <- p1 + facet_grid(rows = round(length(names(CorIsig[[i]]))/2),cols = 2 )
+          p1 <- p1 + ylim(c(0,20)) 
+          p1 <- p1 + labs(title=paste0(i ,' ',gene_nameI,' ',nameSet), x='', y = 'log2 tmm counts')  
+          
+          ggsave(paste0(outDir3,'Cor',minCorr,'_',nameSet,'_',i,'_',gene_nameI,'.pdf'),plot = p1,width = 10,height = 12)
+          
+          tmp.melt <- melt(tmmMean[subgenes,])
+          tmp.melt$set <- 'no'
+          
+          for(tgene in as.character(tmpVenn$inter)){
+            tmp.melt[as.character(tmp.melt$Var1) == tgene,]$set <- 'yes'
+          }
+          tmp.melt[as.character(tmp.melt$Var1) == i,]$set <- 'input'
+          
+          p1 <- ggplot(data=tmp.melt, aes(x=Var2, y=log2(value+1), group=Var1,col=set,shape=Var2)) 
+          p1 <- p1 + geom_line()
+          p1 <- p1 + geom_point(size=4)
+          if(length(names(CorIsig[[i]])) < 8){ p1 <- p1 + facet_grid(Var1 ~ .)}
+          p1 <- p1 + scale_shape_manual(values=c(0,
+                                                 15,
+                                                 1,
+                                                 16))
+          # p1 <- p1 + theme_minimal()
+          p1 <- p1 + ylim(c(0,20)) 
+          p1 <- p1 + labs(title=paste(i,' - ',gene_nameI), x='', y = 'log2 tmm counts')  
+          ggsave(paste0(outDir3,'Cor',minCorr,'_',nameSet,'_',i,'_',gene_nameI,'_Mean.pdf'),plot = p1,width = 10,height = 12)
+          
+          write.csv2(eRcontrastMerge[names(CorIsig[[i]]),], paste0(outDir3,'Cor',minCorr,'_',nameSet,'_',i,'_',gene_nameI,'.csv'))
+          
+          #}
+        }
+        else {
+          print(gene_nameI)
+        } 
+      }
+      return(NewHit)
+    }
+    
+    nameSet <- contrastNames[1]
+    geneSet <- SigGenesListFilter[[nameSet]]
+    tmp1 <- plotCorrLines(geneSet,nameSet,eRcontrastMerge,CorAll=CorIpearson,outDir2)
+    print(length(tmp1) / length(geneSet))
+    
+    nameSet <- contrastNames[2]
+    geneSet <- SigGenesListFilter[[nameSet]]
+    tmp2 <- plotCorrLines(geneSet,nameSet,eRcontrastMerge,CorAll=CorIpearson,outDir2)
+    print(length(tmp2) / length(geneSet))
+    
+    nameSet <- paste0(contrastNames,collapse = '_' )
+    geneSet <- mergeSetvenn$inter
+    tmp3 <- plotCorrLines(geneSet,nameSet,eRcontrastMerge,CorAll=CorIpearson,outDir2)
+    print(length(tmp3) / length(geneSet))
+    
+  }   

@@ -1,8 +1,7 @@
 rule make_transciptome_exon_fasta:
 	input:
 		gtf = lambda wildcards: config["ref"][wildcards.ref]["annotation"],
-		genome = lambda wildcards: config["ref"][wildcards.ref]["genome"],
-		viper=rules.install_R_package_viper.output
+		genome = lambda wildcards: config["ref"][wildcards.ref]["genome"] #,viper=rules.install_R_package_viper.output
 	output:
 		outputFile= "references/{ref}/GTF_EXON.fa" #config["ref"][wildcards.ref]["transcriptome"]
 	log:
@@ -12,7 +11,8 @@ rule make_transciptome_exon_fasta:
 		# optional parameters
 		extra=""
 	conda:
-		"../../envs/r35.yaml"
+		"../../envs/r35salmon.yaml"
+		#"../../envs/r35.yaml"
 	script:
 		"../../scripts/convert_gtf_fasta.R"
 
