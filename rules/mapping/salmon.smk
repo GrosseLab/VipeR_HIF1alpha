@@ -4,7 +4,7 @@ rule make_transciptome_exon_fasta:
 		genome = lambda wildcards: config["ref"][wildcards.ref]["genome"],
 		viper=rules.install_R_package_viper.output
 	output:
-		outputFile= "references/{ref}/GTF_EXON.fa" #config["ref"][wildcards.ref]["transcriptome"] 
+		outputFile= "references/{ref}/GTF_EXON.fa" #config["ref"][wildcards.ref]["transcriptome"]
 	log:
 		"logs/salmon/{ref}/build_transcriptome_fasta.log"
 	threads: 15
@@ -66,7 +66,7 @@ rule salmon_quant_alignment:
 		quant = "results/quantification/salmonAlignment/{ref}/{sample}-{unit}/quant.sf"
 	log:
 		'logs/salmonAlignment/{ref}/{sample}-{unit}.log'
-	threads: 24
+	threads: 15
 	params:
 		# optional parameters
 		libtype ="A",

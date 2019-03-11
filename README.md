@@ -13,13 +13,13 @@ Here is the basic suggested skeleton for your project repo:
   .
   ├── data
   │   ├── qPCR 	            # qPRCR raw data
-  │	  └ *.fastq.gz 	        # all 'fastq.gz'-files from !...!
+  │   └ *.fastq.gz 	        # all 'fastq.gz'-files from !...!
   │
   ├── references
   │   └── hg38 	    				      # all data from Homo_sapiens.GRCh38.82
-  │		├ Homo_sapiens.GRCh38.82.gtf 	    				          # annotation
-  │		├ Homo_sapiens.GRCh38.dna.primary_assembly.fa 	        # genome sequence 
-  │		└ Homo_sapiens.GRCh38.82.EXON.fa 	    				      # exon sequence of all transcript of GTF
+  │   ├ Homo_sapiens.GRCh38.82.gtf 	    				          # annotation
+  │   ├ Homo_sapiens.GRCh38.dna.primary_assembly.fa 	        # genome sequence 
+  │   └ Homo_sapiens.GRCh38.82.EXON.fa 	    				      # exon sequence of all transcript of GTF
   │	
   ├── logs
   │

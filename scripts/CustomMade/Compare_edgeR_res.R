@@ -44,9 +44,7 @@ if(PAPER){
   outDir <- paste0('/home/adsvy/GitHubRepo/SnakeWF_HIF/results/plot/edegR/hg38_PE/')
   if(!dir.exists(outDir)){ dir.create(outDir) }
   
-  samples <- read.table('/home/adsvy/GitHubRepo/SnakeW
-                        
-                        F_HIF/samples.tsv', header=TRUE)
+  samples <- read.table('/home/adsvy/GitHubRepo/SnakeWF_HIF/samples.tsv', header=TRUE)
   units <- read.table('/home/adsvy/GitHubRepo/SnakeWF_HIF/units.tsv', header=TRUE)
   
   quantNamesPaper <- c('unique','salmonAlignment')

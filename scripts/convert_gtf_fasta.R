@@ -10,6 +10,7 @@ library( as.character(stringr::str_split(stringr::str_split(tmp,' ')[[1]][2],'_'
 # library("viper")
 
 threads = as.integer(snakemake@threads[[1]])
+print(paste0("used threads:",threads))
 
 # library("rtracklayer")
 # library("magrittr")
@@ -32,7 +33,6 @@ library("furrr")
   gr.db <- GenomicFeatures::makeTxDbFromGFF(anno.file,format = anno.format)
   exon.list <- GenomicFeatures::exonsBy(gr.db, "tx",use.names=T)
   
-  print(paste0("used threads:",threads))
   plan(multiprocess, workers = threads)
   tmp <- furrr::future_map(names(exon.list),function(x) unlist(Biostrings::getSeq(fa.seqs,exon.list[[x]],as.character=TRUE)),.progress = T)
   names(tmp) <- names(exon.list)
