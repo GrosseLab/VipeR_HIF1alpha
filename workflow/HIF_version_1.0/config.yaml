@@ -69,6 +69,11 @@ ref:
     # Star sjdbOverhang -> singel: readlength -1 or paired: (readlength*2)-1
     sjdbOverhang: "199"    
 
+# pca:
+#   labels:
+#     # columns of sample sheet to use for PCA
+#     - condition
+
 diffexp:
   # contrasts for the DEG results method
   contrasts:
@@ -108,3 +113,9 @@ featureCounts:
     all: "-M -O"
     fraction: "-M -O --fraction"
 
+
+# ### use with getParams()
+# parameters:
+#   gtf_adj:
+#     star: ["--sjdbGTFfeatureExon", "exon", "--sjdbGTFtagExonParentTranscript", "Parent"]
+#     salmon: ["--fldMean",  "190"]

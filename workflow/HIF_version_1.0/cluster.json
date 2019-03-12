@@ -50,7 +50,7 @@
 		"time": "02:00:00"
 	},
 	"salmon_quant_alignment": {
-		"mem": "80G",
+		"mem": "40G",
 		"time": "02:00:00"
 	},
 	"salmon_quant_reads": {

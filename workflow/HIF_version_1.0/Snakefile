@@ -18,10 +18,6 @@ min_version("5.1.2")
 
 
 ##### load config and sample sheets #####
-
-# os.system("export PATH=/home/adsvy/anaconda3/bin:$PATH")
-# print(os.system("$PATH"))
-
 configfile: "config.yaml"
 validate(config, schema="viper/schemas/config.schema.yaml")
 
@@ -38,17 +34,18 @@ rule all:
 		"results/plot/qPCR/Anova_Normoxie_Q-GLC.pdf", 
 		"results/qc/hg38/multiqc.html",
 		expand("results/deg/edegR/hg38/PE/salmonAlignment/estcount_{contrast}_edegR_Res.rds",contrast=config["diffexp"]["contrasts"]),
-		"results/annotation/DAVID/hg38_PE_salmonAlignment_estcount_DAVID68_ResSiglog2FC/NSQ-vs-NSQsi_HSQ-vs-HSQsi/ChartReportSigList.RDS"
+		"results/plot/edegR/hg38_PE_salmonAlignment_estcount_edegR_plot_MDS.png",
+		"results/annotation/DAVID/hg38_PE_salmonAlignment_estcount_DAVID68_ResSiglog2FC/NSQ-vs-NSQsi_HSQ-vs-HSQsi/ChartReportSigList.RDS",
+		"results/plot/edegR/hg38_PE/salmonAlignment_estcount_ResSiglog2FC/NSQ-vs-NSQsi_HSQ-vs-HSQsi/VennSet_Filter.pdf"
 
 ##### setup singularity #####
-
 # this container defines the underlying OS for each job when using the workflow
 # with --use-conda --use-singularity
 singularity: "docker://continuumio/miniconda3"
 
 
 ##### setup report ##### 
-# /home/adsvy/anaconda3/bin/snakemake --report report/report_2019_03_08_salmonAlignment.html
+# /home/adsvy/anaconda3/bin/snakemake --report report/report_2019_03_012_salmonAlignment.html
 report: "viper/report/workflow.rst"
 
 ### dot

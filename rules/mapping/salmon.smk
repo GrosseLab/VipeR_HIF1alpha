@@ -66,7 +66,7 @@ rule salmon_quant_alignment:
 		quant = "results/quantification/salmonAlignment/{ref}/{sample}-{unit}/quant.sf"
 	log:
 		'logs/salmonAlignment/{ref}/{sample}-{unit}.log'
-	threads: 15
+	threads: 24
 	params:
 		# optional parameters
 		libtype ="A",
