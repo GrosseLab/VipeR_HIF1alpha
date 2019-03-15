@@ -1,5 +1,3 @@
-# RBPs and Floraltransition imports:
-
 #' @title Summarize replicates in an expression matrix
 #' @description This method summarizes the replicated expression values in an expression matrix 
 #' @author Alexander Gabel,Claus Weinholdt
@@ -42,7 +40,7 @@ summarize_replicates <- function(exp_mat, groups, method=mean, changeColNames = 
 #' @param ctrow is a matrix 
 #' @param pcount is pseudocount 
 #' @export
-geoMean <-function(ctrow,pcount=0.25){ 2^mean(log2(ctrow+pcount)) }
+geoMean <- function(ctrow,pcount=0.25){ 2^mean(log2(ctrow+pcount),na.rm = T) }
 
 
 #' @title write out message 

@@ -19,8 +19,8 @@ rule star:
 		# path to STAR reference genome index
 		# index=lambda wildcards: config["ref"][wildcards.ref]["index"],
 		# optional parameters
-		extra=lambda wildcards: "--outReadsUnmapped Fastx --outSAMattributes Standard --outSAMstrandField intronMotif --outSAMprimaryFlag AllBestScore --outFilterIntronMotifs RemoveNoncanonicalUnannotated --quantMode TranscriptomeSAM GeneCounts --sjdbGTFfile {} --sjdbGTFfeatureExon {} --sjdbGTFtagExonParentTranscript {} --sjdbOverhang {} {}".format(
-			  config["ref"][wildcards.ref]["annotation"],config["ref"][wildcards.ref]["sjdbGTFfeatureExon"],config["ref"][wildcards.ref]["sjdbGTFtagExonParentTranscript"], config["ref"][wildcards.ref]["sjdbOverhang"], config["params"]["star"])
+		extra=lambda wildcards: "--outReadsUnmapped Fastx --outSAMattributes Standard --outSAMstrandField intronMotif --outSAMprimaryFlag AllBestScore --outFilterIntronMotifs RemoveNoncanonicalUnannotated --quantMode TranscriptomeSAM GeneCounts --sjdbGTFfile {} --sjdbGTFfeatureExon {} --sjdbGTFtagExonParentTranscript {} --sjdbGTFtagExonParentGene {} --sjdbOverhang {} {}".format(
+			  config["ref"][wildcards.ref]["annotation"],config["ref"][wildcards.ref]["sjdbGTFfeatureExon"],config["ref"][wildcards.ref]["sjdbGTFtagExonParentTranscript"], config["ref"][wildcards.ref]["sjdbGTFtagExonParentGene"], config["ref"][wildcards.ref]["sjdbOverhang"], config["params"]["star"])
 	threads: 24
 	wrapper:
 		"file:viper/wrapper/star_align"

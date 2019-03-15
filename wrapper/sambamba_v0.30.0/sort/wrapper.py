@@ -10,3 +10,5 @@ from snakemake.shell import shell
 shell(
     "sambamba sort {snakemake.params} -t {snakemake.threads} "
     "-o {snakemake.output[0]} {snakemake.input[0]}")
+
+shell("rm {snakemake.input[0]} ")

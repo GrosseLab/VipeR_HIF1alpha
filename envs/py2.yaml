@@ -1,0 +1,8 @@
+name: py2
+channels:
+  - bioconda
+  - conda-forge
+  - defaults
+dependencies:
+  - python=2.7.15
+  - suds-jurko=0.6

@@ -10,52 +10,52 @@ def get_deseq2_threads(wildcards=None):
     return 1 if len(samples) < 100 or few_coeffs else 6
 
 
-rule deseq2_init:
-    input:
-        counts="results/quantification/counts/{ref}/allFC.rds"#"results/quantification/counts/all.tsv"
-    output:
-        "results/deg/deseq2/{ref}/all.rds"
-    params:
-        samples=config["samples"],
-        units=config["units"]
-    conda:
-        "../../envs/r35.yaml"
-    log:
-        "logs/deseq2/{ref}/init.log"
-    threads: get_deseq2_threads()
-    script:
-        "../../scripts/deseq2-init.R"
+# rule deseq2_init:
+#     input:
+#         counts="results/quantification/counts/{ref}/allFC.rds"#"results/quantification/counts/all.tsv"
+#     output:
+#         "results/deg/deseq2/{ref}/all.rds"
+#     params:
+#         samples=config["samples"],
+#         units=config["units"]
+#     conda:
+#         "../../envs/r35.yaml"
+#     log:
+#         "logs/deseq2/{ref}/init.log"
+#     threads: get_deseq2_threads()
+#     script:
+#         "../../scripts/deseq2-init.R"
 
-rule pca:
-    input:
-        "results/deg/deseq2/{ref}/all.rds"
-    output:
-        report("results/plot/deseq2/{ref}/pca.svg", "../../report/pca.rst")
-    params:
-        pca_labels=config["pca"]["labels"]
-    conda:
-        "../../envs/r35.yaml"
-    log:
-        "logs/deseq2/{ref}/pca.log"
-    script:
-        "../../scripts/plot-pca.R"
+# rule pca:
+#     input:
+#         "results/deg/deseq2/{ref}/all.rds"
+#     output:
+#         report("results/plot/deseq2/{ref}/pca.svg", "../../report/pca.rst")
+#     params:
+#         pca_labels=config["pca"]["labels"]
+#     conda:
+#         "../../envs/r35.yaml"
+#     log:
+#         "logs/deseq2/{ref}/pca.log"
+#     script:
+#         "../../scripts/plot-pca.R"
 
 
-rule deseq2:
-    input:
-        "results/deg/deseq2/{ref}/all.rds"
-    output:
-        table=report("results/plot/deseq2/{ref}/diffexp/{contrast}.diffexp.tsv", "../../report/diffexp.rst"),
-        ma_plot=report("results/plot/deseq2/{ref}/diffexp/{contrast}.ma-plot.svg", "../../report/ma.rst"),
-    params:
-        contrast=get_contrast
-    conda:
-        "../../envs/r35.yaml"
-    log:
-        "logs/deseq2/{ref}/{contrast}.diffexp.log"
-    threads: get_deseq2_threads
-    script:
-        "../../scripts/deseq2.R"
+# rule deseq2:
+#     input:
+#         "results/deg/deseq2/{ref}/all.rds"
+#     output:
+#         table=report("results/plot/deseq2/{ref}/diffexp/{contrast}.diffexp.tsv", "../../report/diffexp.rst"),
+#         ma_plot=report("results/plot/deseq2/{ref}/diffexp/{contrast}.ma-plot.svg", "../../report/ma.rst"),
+#     params:
+#         contrast=get_contrast
+#     conda:
+#         "../../envs/r35.yaml"
+#     log:
+#         "logs/deseq2/{ref}/{contrast}.diffexp.log"
+#     threads: get_deseq2_threads
+#     script:
+#         "../../scripts/deseq2.R"
 
 ############## edegR
 
@@ -67,7 +67,9 @@ rule edegR_deg:
     output:
         "results/deg/edegR/{ref}/{readtype}/{ctype}/{RDStype}_{contrast}_edegR_ResData.rds",
         "results/deg/edegR/{ref}/{readtype}/{ctype}/{RDStype}_{contrast}_edegR_Res.csv",
-        "results/deg/edegR/{ref}/{readtype}/{ctype}/{RDStype}_{contrast}_edegR_Res.rds"
+        "results/deg/edegR/{ref}/{readtype}/{ctype}/{RDStype}_{contrast}_edegR_Res.rds",
+        "results/deg/edegR/{ref}/{readtype}/{ctype}/{RDStype}_{contrast}_edegR_Res_sig_"+config["diffexp"]["sig"]+"_MYlog2FC_"+config["diffexp"]["log2FC"]+".csv",
+        "results/deg/edegR/{ref}/{readtype}/{ctype}/{RDStype}_{contrast}_edegR_Res_sig_"+config["diffexp"]["sig"]+".csv"
     params:
         samples=config["samples"],
         units=config["units"],
@@ -101,3 +103,21 @@ rule edegR_plot_global:
     script:
         "../../scripts/edegR-plot.R"
 
+rule edegR_ResSigFC_pair_R:
+    input:
+        e1="results/deg/edegR/{ref}/{readtype}/{ctype}/{RDStype}_{contrast1}_edegR_ResData.rds",
+        e2="results/deg/edegR/{ref}/{readtype}/{ctype}/{RDStype}_{contrast2}_edegR_ResData.rds",
+        viper=rules.install_R_package_viper.output
+    output:    
+        o1="results/plot/edegR/{ref}_{readtype}/{ctype}_{RDStype}_ResSiglog2FC/{contrast1}_{contrast2}/VennSet_Filter.pdf",
+        o2="results/plot/edegR/{ref}_{readtype}/{ctype}_{RDStype}_ResSiglog2FC/{contrast1}_{contrast2}/Genes_Filter__{contrast1}__{contrast2}.rds",
+        o3="results/plot/edegR/{ref}_{readtype}/{ctype}_{RDStype}_ResSiglog2FC/{contrast1}_{contrast2}/Genes__{contrast1}__{contrast2}.rds"
+    params:
+        MeanReads=20, ### Todo move param to config
+        doCorrelationAnalysis="FALSE" ### Todo move param to config
+    conda:
+        "../../envs/r35.yaml"
+    log:
+        "logs/plot/edegR/{ref}_{readtype}_{ctype}_{RDStype}_ResSiglog2FC_{contrast1}_{contrast2}.log"
+    script:
+        "../../scripts/edegR-deg_res_pairwise.R"       

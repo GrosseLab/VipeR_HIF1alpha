@@ -17,23 +17,23 @@ properties:
     type: object
     properties:
       hg38:
-        index:
-          type: string
+        # index:
+        #   type: string
         annotation:
           type: string
       required:
-        - index
+        # - index
         - annotation
 
-  pca:
-    type: object
-    properties:
-      labels:
-        type: array
-        items:
-          type: string
-    required:
-      - labels
+  # pca:
+  #   type: object
+  #   properties:
+  #     labels:
+  #       type: array
+  #       items:
+  #         type: string
+  #   required:
+  #     - labels
 
   diffexp:
     type: object
@@ -54,14 +54,14 @@ properties:
         type: string
     required:
       - star
-      - cutadapt-se
-      - cutadapt-pe
+      # - cutadapt-se
+      # - cutadapt-pe
 
 required:
   - samples
   - units
-  - adapter
+  # - adapter
   - ref
-  - pca
+  # - pca
   - diffexp
   - params

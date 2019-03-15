@@ -10,15 +10,23 @@ from snakemake.shell import shell
 extra = snakemake.params.get("extra", "")
 log = snakemake.log_fmt_shell(stdout=True, stderr=True)
 
-n = len(snakemake.input.sample)
-assert n == 1 or n == 2, "input->sample must have 1 (single-end) or 2 (paired-end) elements."
+n = len(snakemake.input.sample) # just work if list is input -> for singleend we have to check if it is a string by isinstance(snakemake.input.sample, str)
+print(snakemake.input.sample)
+print(n)
+assert isinstance(snakemake.input.sample, str) or n == 2, "input->sample must have 1 (single-end) or 2 (paired-end) elements."
 
 if snakemake.input.sample[0].endswith(".gz"):
+    readcmd = "--readFilesCommand zcat"
+elif isinstance(snakemake.input.sample, str) and snakemake.input.sample.endswith(".gz"):
     readcmd = "--readFilesCommand zcat"
 else:
     readcmd = ""
 
 outprefix = os.path.dirname(snakemake.output[0]) + "/"
+
+print(readcmd)
+print(outprefix)
+
 
 shell(
     "STAR "

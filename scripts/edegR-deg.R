@@ -5,7 +5,7 @@ sink(log, type="message")
 fil <- file(snakemake@input[["viper"]]) #"install viper_0.1.tar.gz"
 tmp <- readLines(fil, n = -1)
 library( as.character(stringr::str_split(stringr::str_split(tmp,' ')[[1]][2],'_')[[1]][1]),character.only = T )
-# library("viper")
+library("viper")
 
 library("edgeR")
 library("data.table")
@@ -22,18 +22,17 @@ library("data.table")
 # )
 
 
-source_here <- function(x, dir = ".", ...) {
-    
-    if(sys.nframe()>0) {
-        frame <- sys.frame(1)
-        if (!is.null(frame$ofile)) {
-            dir <- dirname(frame$ofile)
-        }
-    }
-    print(file.path(dir, x))
-    source(file.path(dir, x), ...)
-}
-
+# source_here <- function(x, dir = ".", ...) {
+#     
+#     if(sys.nframe()>0) {
+#         frame <- sys.frame(1)
+#         if (!is.null(frame$ofile)) {
+#             dir <- dirname(frame$ofile)
+#         }
+#     }
+#     print(file.path(dir, x))
+#     source(file.path(dir, x), ...)
+# }
 # source_here("edegR_function.R",dir=paste0(snakemake@scriptdir,'/../R/'))
 # source_here("VennFunction.R",dir=paste0(snakemake@scriptdir,'/../R/'))
 
@@ -41,16 +40,27 @@ source_here <- function(x, dir = ".", ...) {
 # colData and countData must have the same sample order, but this is ensured
 # by the way we create the count matrix
 
-# print(snakemake@input[["counts"]])
+print(snakemake@input[["counts"]])
 
-DataList <- readRDS(snakemake@input[["counts"]])
-samples <- read.table(snakemake@params[["samples"]], header=TRUE)
-units <- read.table(as.character(snakemake@params[["units"]]), header=TRUE)
+DataList <- readRDS(snakemake@input[["counts"]]) #DataList <- readRDS("/home/adsvy/GitHubRepo/SnakeWF_HIF/results/quantification/counts/hg38/PE/salmonAlignment/estcount.rds")
+samples <- read.table(snakemake@params[["samples"]], header=TRUE)    # samples <- read.table("/home/adsvy/GitHubRepo/SnakeWF_HIF/samples.tsv", header=TRUE)
+units <- read.table(as.character(snakemake@params[["units"]]), header=TRUE, fill=TRUE) # units <- read.table("/home/adsvy/GitHubRepo/SnakeWF_HIF/units.tsv", header=TRUE,fill=TRUE)
+if ( is.na(units[1,'fq2']) ){
+  units <- units[,setdiff(colnames(units),"fq2")]
+}
+
+### build condition column for multiple condition
+condCols <- colnames(samples)[stringr::str_detect(colnames(samples),'condition')]
+if ( length(condCols) > 1 ){
+  tmp <- apply(samples[,condCols],1,function(x) paste(x,collapse = '--') )
+  colnames(samples)[which(colnames(samples) == 'condition')] <- 'conditionXXX'
+  samples$condition <- tmp
+}
 
 LevelSig <- as.double(snakemake@params[["sig"]]) # LevelSig <- 0.05
 LevelLog2FC <- as.double(snakemake@params[["log2FC"]]) # LevelLog2FC <- 1
 
-# print(DataList)
+#print(DataList)
 anno <- DataList[["Anno"]]
 annoGe <- unique(anno[,-1] )
 rownames(annoGe) <- as.character(annoGe$gene_id)
