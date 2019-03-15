@@ -2,6 +2,13 @@ PCRdata{
   require(data.table)
   "from Info für Claus bezüglich der Gene ( Beispiel für 3 Gene).xlsx"
   
+  
+  eRFilterMerge <- readRDS( '/home/adsvy/GitHubRepo/SnakeWF_HIF/results/plot/edegR/hg38_PE/salmonAlignment_estcount_ResSiglog2FC/NSQ-vs-NSQsi_HSQ-vs-HSQsi/Genes_Filter__NSQ-vs-NSQsi__HSQ-vs-HSQsi.rds' )
+  eRFilterMerge$gene_name <- toupper(as.character(eRFilterMerge$gene_name))
+  
+  eRcontrastMerge <- readRDS( '/home/adsvy/GitHubRepo/SnakeWF_HIF/results/plot/edegR/hg38_PE/salmonAlignment_estcount_ResSiglog2FC/NSQ-vs-NSQsi_HSQ-vs-HSQsi/Genes__NSQ-vs-NSQsi__HSQ-vs-HSQsi.rds' )
+  eRcontrastMerge$gene_name <- toupper(as.character(eRcontrastMerge$gene_name))
+  
   #data=fread("/Users/weinhol/Promotion/Kappler_CA9_HK2.txt",header = T)
   # data=fread(paste0(wd,"/Kappler_HIF1/Kappler_qPCR.txt"),header = T)
   # data$NDRG1=c(100.00,114.87,81.23,70.71,70.71,57.43,93.30,32.99,2425.15,200.00,1600.00,123.11,2785.76,246.23,1600.00,114.87,114.87,107.18,100.00,65.98,123.11,81.23,81.23,43.53,2425.15,282.84,1299.60,151.57,2985.71,214.35,1492.85,100.00,151.57,123.11,81.23,81.23,174.11,75.79,100.00,37.89,3939.66,263.90,2262.74,131.95,2599.21,246.23,1969.83,131.95,131.95,114.87,61.56,50.00,131.95,57.43,75.79,30.78,3200.00,303.14,1392.88,141.42,2599.21,263.90,1392.88,100.0)
@@ -9,8 +16,8 @@ PCRdata{
   # setwd('/home/adsvy/GitHubRepo/SnakeWF_HIF/')
   # config <- yaml::read_yaml('config.yaml')
   # qPCR_dir <- config[["qPCR_dir"]]
-  # qPCR_dir <- '/data/qPCR/'
-  qPCR_dir <- snakemake@config[["qPCR_dir"]]
+  qPCR_dir <- '/data/qPCR/'
+  #qPCR_dir <- snakemake@config[["qPCR_dir"]]
   
   
   # 2 Relative mRNA level of BNIP3L normalized each to RPL9–mRNA level the
@@ -21,17 +28,16 @@ PCRdata{
   # 7 of HIF 1 via glutamine and siRNA. Non-functional mitochondria can be catabolized via
   # 8 mitophagy after activated of the HIF1 targets BNIP3 and BNIP3l.
   
+  data0 <- fread(paste0('./',qPCR_dir,"Kappler_qPCR_extend3.txt"),header = T)
+  data0[32,Bezeichnung]
+  data0[32,]$Bezeichnung <- "SQsi_H_2"
+  setkey(data0,'Bezeichnung')
   
-  data <- fread(paste0('./',qPCR_dir,"Kappler_qPCR_extend3.txt"),header = T)
-  data[32,Bezeichnung]
-  data[32,]$Bezeichnung = "SQsi_H_2"
-  setkey(data,'Bezeichnung')
-  
-  data1 <- fread(paste0('./',qPCR_dir,"KopievonCA9_MDA_RNAseqbisMai2016.csv"),header = T)
-  setnames(data1,'V1','Bezeichnung')
-  data1$Bezeichnung = gsub("MDA_RNASeq_", "", data1$Bezeichnung)
-  data1[32,]$Bezeichnung = "SQsi_H_2"
-  setkey(data1,'Bezeichnung')
+  # data1 <- fread(paste0('./',qPCR_dir,"KopievonCA9_MDA_RNAseqbisMai2016.csv"),header = T)
+  # setnames(data1,'V1','Bezeichnung')
+  # data1$Bezeichnung = gsub("MDA_RNASeq_", "", data1$Bezeichnung)
+  # data1[32,]$Bezeichnung = "SQsi_H_2"
+  # setkey(data1,'Bezeichnung')
   
   data3 <- fread(paste0('./',qPCR_dir,"KopievonDatenfuerHifManuskriptnachtrag29.7.2016.csv"),header = T)
   setnames(data3,'V1','Bezeichnung')
@@ -39,43 +45,76 @@ PCRdata{
   data3[32,]$Bezeichnung = "SQsi_H_2"
   setkey(data3,'Bezeichnung')
   
-  data4=fread(paste0('./',qPCR_dir,"NDRG1alsnachzuegler copy.csv"),header = T)
-  setnames(data4,'V1','Bezeichnung')
-  data4$Bezeichnung = gsub("MDA_RNASeq_", "", data4$Bezeichnung)
-  data4[32,]$Bezeichnung = "SQsi_H_2"
-  setkey(data4,'Bezeichnung')
-  
-  # data[,PKM]
-  # data1[,PKM]
-  # data3[,PKM]
+  # data4 <- fread(paste0('./',qPCR_dir,"NDRG1alsnachzuegler copy.csv"),header = T)
+  # setnames(data4,'V1','Bezeichnung')
+  # data4$Bezeichnung = gsub("MDA_RNASeq_", "", data4$Bezeichnung)
+  # data4[32,]$Bezeichnung = "SQsi_H_2"
+  # setkey(data4,'Bezeichnung')
   # 
-  # data[,ENo2]
-  # data4[,ENo2]
-  # 
+  print(names(data0))
+  # print(names(data1))
+  print(names(data3))
+  print(setdiff(names(data3),names(data)))
+  # print(names(data4))
+  # data[,NDRG1]
+  # data3[,NDRG1]
+  # data4[,NDRG1]
+  # data[,ENo1]
+  # data1[,ENo1]
+  # data3[,ENo1]
   
-  data3b =  data3[,c('Bezeichnung',setdiff(names(data3),names(data))),with=F]
-  data = data[data3b]
   
+  data3b =  data3[,c('Bezeichnung',setdiff(names(data3),names(data0))),with=F]
+  data = data0[data3b]
+
+  NrGenes <- ncol(data)
+  GENES <- toupper(names(data)[2:NrGenes])
   
+  reName <- cbind( 
+          "OLD"=c('ANGP'  ,'CDC25'   , 'EGL3'   ,'EPH3'  ,'GLUT1'  ,'LDHA2'  ,'LDHA3'    ,'P4HA' ,'PPARGC'   ,'PPIFA4' ,'TGFBETA 2','VEGF' ),
+          # "NEW"=c('ANGPT1','CDC25C', 'MYCL'   ,'ERBB3' ,'SLC2A1' ,'ALDH2'  ,'ALDH3A1'  ,'P4HA1','PPARGC1A' ,'PPFIA4'   ,'TGFB2'    ,'VEGFA'),
+          "NEW"= c("ANGPTL4","CDC25A" ,"EGLN3"  ,"EPHA3" ,"SLC2A1" ,"LDHA2"   ,"LDHA3"     ,"P4HA1","PPARGC1B" ,"PPFIA4" ,"TGFB2"    ,"VEGFA"),
+          "take"=c('keep'   ,'keep'    ,'keep'    ,'keep'   ,'keep'   ,'out'    ,'out'      ,'kepp' , 'keep'     ,'keep'    ,'keep'     ,'keep'),
+          "Herstellerbezeichnung"=c("Hs01101127_m1","Hs00947994_m1","Hs00222966_m1","Hs00739096_m1","Hs00892681_m1","Hs03405707_g1","Hs01378794_g1","Hs00914599_m1","Hs00991676_m1","Hs00392193_m1","Hs00234244_m1","Hs00900055_m1")
+  )
+  # reName <- reName[reName[,'take']!='out',]
+  
+  for(i in 1:nrow(reName)){
+    print(c(GENES[GENES == reName[i,1] ] ,'->',reName[i,2]))
+    GENES[GENES == reName[i,1] ] <- reName[i,2]
+  }
+  colnames(data)[2:NrGenes] <- GENES
+    
   # data=fread(paste0(wd,"/Kappler_HIF1/Kappler_qPCR_extend3.txt"),header = T)
   # setkey(data,'Bezeichnung')
-  NrGenes=ncol(data)
-  GENES=colnames(data)[2:NrGenes]
-  
+
   tBez = unname(sapply(data$Bezeichnung, function(x)strsplit(x, '_')[[1]][1]))
   tBez = gsub("Ko", "C", tBez)
   # tBez = gsub("si", "Si", tBez)
   # setkey(data, key = 'Bezeichnung')
   data$Gruppe = tBez #unname(sapply(data$Bezeichnung, function(x) strsplit(x, '_')[[1]][1]))
-  data$Behandlung = unname(sapply(data$Gruppe, function(x)
-    strsplit(x, 'si')[[1]][1]))
+  data$Behandlung = unname(sapply(data$Gruppe, function(x) strsplit(x, 'si')[[1]][1]))
   data$siRNA = c(rep("NoSi", 8), rep("Si", 8))
   data$POXIE = c(rep("N", 4), rep("H", 4))
   
   data$Q = c(rep(0, 16), rep(1, 16), rep(1, 16), rep(0, 16))
   data$S = c(rep(0, 16), rep(0, 16), rep(1, 16), rep(1, 16))
   
-  data['SQsi_H_1',]
+  ExpGroup <- paste0(data[[ 'Behandlung' ]],'_',data[[ "siRNA"]],'_',data[["POXIE"]])
+  data$ExpGroup <- ExpGroup
+  
+  dataTakeOUT <- data[,c(setdiff(colnames(data),GENES),reName[reName[,3]=='out','NEW']),with=F]
+  data <- data[,c(setdiff(colnames(data),GENES),setdiff(GENES,reName[reName[,3]=='out','NEW'])),with=F]
+  GENES <- setdiff(GENES,reName[reName[,3]=='out','NEW'])
+  
+  write.csv2(data,paste0('qPCR_data.csv'))
+  write.csv2(dataTakeOUT,paste0('qPCR_dataTakeOUT.csv'))
+  write.csv2(reName,  paste0('qPCR_data_ReName.csv') )
+  
+  write.csv2(data,paste0('./',qPCR_dir,'qPCR_data.csv'))
+  write.csv2(reName,paste0('./',qPCR_dir,'qPCR_data_ReName.csv'))
+  
+  
   data[,.(Bezeichnung,Behandlung,siRNA,POXIE,Q,S)]
   data[,.(Bezeichnung,Gruppe,Behandlung,siRNA,POXIE,Q,S)]
   
@@ -83,10 +122,6 @@ PCRdata{
   dataH$POXIE
   dataN = data[!grepl("_H_", Bezeichnung),]
   dataN$POXIE
-  
-
-  ExpGroup <- paste0(data[[ 'Behandlung' ]],'_',data[[ "siRNA"]],'_',data[["POXIE"]])
-  data$ExpGroup <- ExpGroup
   
   exp <- t(as.matrix(data[,GENES,with=F]))
   colnames(exp) <- as.character(data$Bezeichnung)
@@ -101,6 +136,8 @@ PCRdata{
   CompareList[["C_NoSi_H--vs--C_Si_H"]] <- c("C_NoSi_H","C_Si_H")
   CompareList[["Q_NoSi_H--vs--Q_Si_H"]] <- c("Q_NoSi_H","Q_Si_H")
   CompareList[["S_NoSi_H--vs--S_Si_H"]] <- c("S_NoSi_H","S_Si_H")
+  CompareList[["SQ_NoSi_N--vs--SQ_Si_N"]] <- c("SQ_NoSi_N","SQ_Si_N") ## same Sapmles as RNASeq
+  CompareList[["SQ_NoSi_H--vs--SQ_Si_H"]] <- c("SQ_NoSi_H","SQ_Si_H") ## same Sapmles as RNASeq
   
   expMeanlog2FC <- c()
   for(i in names(CompareList)){
@@ -114,27 +151,28 @@ PCRdata{
   eRcontrastMergeGENES <- eRcontrastMerge[toupper(rownames(expMeanlog2FC)),]
   setkey(eRcontrastMergeGENES,'gene_name')
   
-  
-  eRcontrastMergeGENES['TGFBETA2',]
-  
+  eRcontrastMergeGENESall <- eRcontrastMergeGENES
   eRcontrastMergeGENES <- eRcontrastMergeGENES[!is.na(rn),]
-  
-  eRcontrastMergeGENES[,plot(`MYlog2FC_NSQ-vs-NSQsi`,`MYlog2FC_HSQ-vs-HSQsi`)];abline(a=0,b=1)
-  
+  # eRcontrastMergeGENES[,plot(`MYlog2FC_NSQ-vs-NSQsi`,`MYlog2FC_HSQ-vs-HSQsi`)];abline(a=0,b=1)
+  eRcontrastMergeGENESall[is.na(rn),]
+  setkey(eRcontrastMerge,'gene_name')
+
   eRlog2FC <- as.matrix(eRcontrastMergeGENES[,.(`MYlog2FC_NSQ-vs-NSQsi`,`MYlog2FC_HSQ-vs-HSQsi`)])
   rownames(eRlog2FC) <- as.character(eRcontrastMergeGENES$gene_name)
   
   MergeLog2FC <- cbind( eRlog2FC, expMeanlog2FC[rownames(eRlog2FC),])
+  pheatmap::pheatmap(MergeLog2FC,main = 'qPCR_RNAseq_log2FCheatmap' ,filename ='qPCR_RNAseq_log2FCheatmap.pdf',height = 10,width = 10)
+  pheatmap::pheatmap(cor(MergeLog2FC),main = 'qPCR_RNAseq_CorrHeatmap' ,filename ='qPCR_RNAseq_CorrHeatmap.pdf',height = 10,width = 10)
   
-  pdf('s.pdf',12,10)
+  pdf('qPCR_RNAseq_barplot.pdf',12,10)
     par(mar=c(14.1,4.1,4.1,2.1))
     for(i in rownames(MergeLog2FC)){
-      barplot(t(MergeLog2FC[i,]),beside = T,main=i,las=2,col=c(1,2,1,1,1,2,2,2))
+      barplot(t(MergeLog2FC[i,]),beside = T,main=i,las=2,col=c(1,2,1,1,1,2,2,2,2,1))
     }
     par(mar=c(5.1,4.1,4.1,2.1))
   dev.off()  
   
-  pdf('s2.pdf',8,8)
+  pdf('qPCR_RNAseq_scatter.pdf',8,8)
     plot(MergeLog2FC[,1],MergeLog2FC[,3],ylim=c(-10,2),xlim=c(-10,2),xlab = colnames(MergeLog2FC)[1], ylab=colnames(MergeLog2FC)[3] ,sub=paste0("cor: ",round(cor(MergeLog2FC[,1],MergeLog2FC[,3]),4)) );abline(a=0,b=1,col='gray')
     plot(MergeLog2FC[,1],MergeLog2FC[,4],ylim=c(-10,2),xlim=c(-10,2),xlab = colnames(MergeLog2FC)[1], ylab=colnames(MergeLog2FC)[4] ,sub=paste0("cor: ",round(cor(MergeLog2FC[,1],MergeLog2FC[,4]),4)) );abline(a=0,b=1,col='gray')
     plot(MergeLog2FC[,1],MergeLog2FC[,5],ylim=c(-10,2),xlim=c(-10,2),xlab = colnames(MergeLog2FC)[1], ylab=colnames(MergeLog2FC)[5] ,sub=paste0("cor: ",round(cor(MergeLog2FC[,1],MergeLog2FC[,5]),4)) );abline(a=0,b=1,col='gray')
@@ -142,8 +180,25 @@ PCRdata{
     plot(MergeLog2FC[,2],MergeLog2FC[,6],ylim=c(-10,2),xlim=c(-10,2),xlab = colnames(MergeLog2FC)[2], ylab=colnames(MergeLog2FC)[6] ,sub=paste0("cor: ",round(cor(MergeLog2FC[,2],MergeLog2FC[,6]),4)) );abline(a=0,b=1,col='gray')
     plot(MergeLog2FC[,2],MergeLog2FC[,7],ylim=c(-10,2),xlim=c(-10,2),xlab = colnames(MergeLog2FC)[2], ylab=colnames(MergeLog2FC)[7] ,sub=paste0("cor: ",round(cor(MergeLog2FC[,2],MergeLog2FC[,7]),4)) );abline(a=0,b=1,col='gray')
     plot(MergeLog2FC[,2],MergeLog2FC[,8],ylim=c(-10,2),xlim=c(-10,2),xlab = colnames(MergeLog2FC)[2], ylab=colnames(MergeLog2FC)[8] ,sub=paste0("cor: ",round(cor(MergeLog2FC[,2],MergeLog2FC[,8]),4)) );abline(a=0,b=1,col='gray')
+    
+    plot(MergeLog2FC[,1],MergeLog2FC[,9] ,ylim=c(-10,2),xlim=c(-10,2),xlab = colnames(MergeLog2FC)[1], ylab=colnames(MergeLog2FC)[9]  ,sub=paste0("cor: ",round(cor(MergeLog2FC[,1],MergeLog2FC[,9] ),4)) );abline(a=0,b=1,col='gray')
+    plot(MergeLog2FC[,2],MergeLog2FC[,10],ylim=c(-10,2),xlim=c(-10,2),xlab = colnames(MergeLog2FC)[2], ylab=colnames(MergeLog2FC)[10] ,sub=paste0("cor: ",round(cor(MergeLog2FC[,2],MergeLog2FC[,10]),4)) );abline(a=0,b=1,col='gray')
   dev.off()  
   
+  plot(MergeLog2FC[,1],MergeLog2FC[,9] ,ylim=c(-10,2),xlim=c(-10,2),xlab = colnames(MergeLog2FC)[1], ylab=colnames(MergeLog2FC)[9]  ,sub=paste0("cor: ",round(cor(MergeLog2FC[,1],MergeLog2FC[,9] ),4)) );abline(a=0,b=1,col='gray')
+  plot(MergeLog2FC[,2],MergeLog2FC[,10],ylim=c(-10,2),xlim=c(-10,2),xlab = colnames(MergeLog2FC)[2], ylab=colnames(MergeLog2FC)[10] ,sub=paste0("cor: ",round(cor(MergeLog2FC[,2],MergeLog2FC[,10]),4)) );abline(a=0,b=1,col='gray')
+  
+  
+  # pdf('qPCR_RNAseq_scatter_withoutRename.pdf',8,8)
+  #   plot(MergeLog2FC[setdiff(GENES,reName[,2]),1],MergeLog2FC[setdiff(GENES,reName[,2]),9] ,ylim=c(-10,2),xlim=c(-10,2),xlab = colnames(MergeLog2FC)[1], ylab=colnames(MergeLog2FC)[9]  ,sub=paste0("cor: ",round(cor(MergeLog2FC[setdiff(GENES,reName[,2]),1],MergeLog2FC[setdiff(GENES,reName[,2]),9] ),4)) );abline(a=0,b=1,col='gray')
+  #   plot(MergeLog2FC[setdiff(GENES,reName[,2]),2],MergeLog2FC[setdiff(GENES,reName[,2]),10],ylim=c(-10,2),xlim=c(-10,2),xlab = colnames(MergeLog2FC)[2], ylab=colnames(MergeLog2FC)[10] ,sub=paste0("cor: ",round(cor(MergeLog2FC[setdiff(GENES,reName[,2]),2],MergeLog2FC[setdiff(GENES,reName[,2]),10]),4)) );abline(a=0,b=1,col='gray')
+  # dev.off()  
+  
+  write.csv2(eRcontrastMergeGENES,'qPCR_RNAseq_GENES.csv')
+  write.csv2(MergeLog2FC,'qPCR_RNAseq_log2FC_data.csv')
+  
+  cbind(MergeLog2FC[,1],MergeLog2FC[,9])[reName[,2],]
+  cbind(MergeLog2FC[,2],MergeLog2FC[,10])[reName[,2],]
   
   
   # m.dt = data[, lapply(.SD, mean, na.rm = TRUE), by = .(Gruppe, POXIE), .SDcols =

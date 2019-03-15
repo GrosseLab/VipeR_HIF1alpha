@@ -24,11 +24,17 @@ library("edgeR")
   outDirFile <- c(as.character(snakemake@output[["o1"]]))
   outDir <- paste0(dirname(outDirFile),'/')
   # outDir <- paste0('/home/adsvy/GitHubRepo/SnakeWF_HIF/results/plot/edegR/hg38_PE/')
+  outFileRDSo2 <- c(as.character(snakemake@output[["o2"]]))
+  outFileRDSo3 <- c(as.character(snakemake@output[["o3"]]))
+  
   
   # ### params
   MeanReads <- as.double(snakemake@params[["MeanReads"]]) # 
   # MeanReads <- 20
   sigName <- "res_sig_MYlog2FC"
+  doCorrelationAnalysis <-  as.logical(as.character(snakemake@params[["doCorrelationAnalysis"]])) # 
+  # doCorrelationAnalysis <- as.logical(as.character("TRUE"))
+
    
   ### wildcards
   contrastNames <- c(snakemake@wildcards[["contrast1"]],snakemake@wildcards[["contrast2"]]) 
@@ -131,13 +137,16 @@ library("edgeR")
   
   setkey(eRFilterMerge,'rn')
   write.csv2(eRFilterMerge,paste0(outDir,'Genes_Filter_', paste0("_",contrastNames,collapse = '_' ),'.csv'))
-
+  saveRDS(eRFilterMerge,outFileRDSo2)
+  
+  
   eRcontrastMerge <-  merge(eRcontrast [[ contrastNames[1] ]][[ ctype ]][['res']][,c('gene_name','gene_biotype','rn',contrastsList[[contrastNames[1]]],'MYlog2FC','FDR'),with=F],
                             eRcontrast [[ contrastNames[2] ]][[ ctype ]][['res']][,c('gene_name','gene_biotype','rn',contrastsList[[contrastNames[2]]],'MYlog2FC','FDR'),with=F],
                           by.x = c('gene_name','gene_biotype','rn'),by.y = c('gene_name','gene_biotype','rn'),suffixes = paste0("_",contrastNames ) )
   
   setkey(eRcontrastMerge,'rn')
   write.csv2(eRcontrastMerge,paste0(outDir,'Genes_', paste0("_",contrastNames,collapse = '_' ),'.csv'))
+  saveRDS(eRcontrastMerge,outFileRDSo3)
   
     
 # tmm --------------------------------------------------------------- 
@@ -292,8 +301,7 @@ library("edgeR")
   ggsave(paste0(outDir,'MAplot.pdf'),plot = p1MA,width = 8,height = 10)
 
 # correlation  --------------------------------------------------------------------
-  do.analysis <- TRUE
-  if( do.analysis ){
+  if( doCorrelationAnalysis ){
     
     outDir2 <- paste0(outDir,'Correlation/')
     if(!dir.exists(outDir2)){ dir.create(outDir2,recursive = F) }
