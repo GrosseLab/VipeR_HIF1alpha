@@ -14,7 +14,7 @@ file_ext <- function(f_name) {
 }
 
 #' @title Basic row filter 
-#' A basic filter to be used.
+#' @description A basic filter to be used.
 #' 
 #' @note https://github.com/pachterlab/sleuth/blob/048f0551a31c4aee6e59b75c86cab46ae1b3ca3a/R/sleuth.R#L28
 #' @param row this is a vector of numerics that will be passedin
@@ -26,16 +26,13 @@ basic_filter <- function(row, min_reads = 5, min_prop = 0.47) {
   mean(row >= min_reads) >= min_prop
 }
 
-#' @title  row filter replicatewise
-#'
-#' @description  A basic filter to be used.
+#' @title row filter replicatewise
+#' @description A basic filter to be used.
 #' @author Claus Weinholdt
 #' @note 2016-02-08
-#' 
 #' @param exp_mat is a matrix or a data.frame, in which expression of genes are described by rows
 #' @param groups vector describing which columns should be summarized
-#' @param row this is a vector of numerics that will be passedin
-#' @param MinReads the minimum mean number of reads per replicate in 50% of all replicates of a group
+#' @param MinReads the minimum mean number of reads per replicate in 50 percent of all replicates of a group
 #' @param MeanReads the mean mean number of reads per group of replicate 
 #' @return groupBasic and groupMean as logical \code{matrix}
 #' @export

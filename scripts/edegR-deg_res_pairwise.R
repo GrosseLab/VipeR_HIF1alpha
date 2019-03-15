@@ -27,7 +27,6 @@ library("edgeR")
   outFileRDSo2 <- c(as.character(snakemake@output[["o2"]]))
   outFileRDSo3 <- c(as.character(snakemake@output[["o3"]]))
   
-  
   # ### params
   MeanReads <- as.double(snakemake@params[["MeanReads"]]) # 
   # MeanReads <- 20
@@ -35,7 +34,6 @@ library("edgeR")
   doCorrelationAnalysis <-  as.logical(as.character(snakemake@params[["doCorrelationAnalysis"]])) # 
   # doCorrelationAnalysis <- as.logical(as.character("TRUE"))
 
-   
   ### wildcards
   contrastNames <- c(snakemake@wildcards[["contrast1"]],snakemake@wildcards[["contrast2"]]) 
   ref <- as.character(snakemake@wildcards[["ref"]])

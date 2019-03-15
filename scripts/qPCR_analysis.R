@@ -34,7 +34,6 @@ thememap <- function (base_size = 12,legend_key_size=0.4, base_family = "") {
 
 # qPCR data 1 -------------------------------------------------------------
   
-  
   # ##### OLD ######
   # 
   # require(data.table)

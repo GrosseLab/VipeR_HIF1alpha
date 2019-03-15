@@ -1,5 +1,3 @@
-# RBPs and Floraltransition imports:
-
 #' @title Summarize replicates in an expression matrix
 #' @description This method summarizes the replicated expression values in an expression matrix 
 #' @author Alexander Gabel,Claus Weinholdt

@@ -1,13 +1,9 @@
 PCRdata{
+  
+  # Build qPCR data file IMPORTANT ----------------------------------------------------
+
   require(data.table)
   "from Info für Claus bezüglich der Gene ( Beispiel für 3 Gene).xlsx"
-  
-  
-  eRFilterMerge <- readRDS( '/home/adsvy/GitHubRepo/SnakeWF_HIF/results/plot/edegR/hg38_PE/salmonAlignment_estcount_ResSiglog2FC/NSQ-vs-NSQsi_HSQ-vs-HSQsi/Genes_Filter__NSQ-vs-NSQsi__HSQ-vs-HSQsi.rds' )
-  eRFilterMerge$gene_name <- toupper(as.character(eRFilterMerge$gene_name))
-  
-  eRcontrastMerge <- readRDS( '/home/adsvy/GitHubRepo/SnakeWF_HIF/results/plot/edegR/hg38_PE/salmonAlignment_estcount_ResSiglog2FC/NSQ-vs-NSQsi_HSQ-vs-HSQsi/Genes__NSQ-vs-NSQsi__HSQ-vs-HSQsi.rds' )
-  eRcontrastMerge$gene_name <- toupper(as.character(eRcontrastMerge$gene_name))
   
   #data=fread("/Users/weinhol/Promotion/Kappler_CA9_HK2.txt",header = T)
   # data=fread(paste0(wd,"/Kappler_HIF1/Kappler_qPCR.txt"),header = T)
@@ -146,6 +142,14 @@ PCRdata{
   colnames(expMeanlog2FC) <- names(CompareList)
   rownames(expMeanlog2FC) <- toupper( rownames(expMeanlog2FC))
   
+  # scatter plots -------------------------------------------------------------------
+  
+  eRFilterMerge <- readRDS( '/home/adsvy/GitHubRepo/SnakeWF_HIF/results/plot/edegR/hg38_PE/salmonAlignment_estcount_ResSiglog2FC/NSQ-vs-NSQsi_HSQ-vs-HSQsi/Genes_Filter__NSQ-vs-NSQsi__HSQ-vs-HSQsi.rds' )
+  eRFilterMerge$gene_name <- toupper(as.character(eRFilterMerge$gene_name))
+  
+  eRcontrastMerge <- readRDS( '/home/adsvy/GitHubRepo/SnakeWF_HIF/results/plot/edegR/hg38_PE/salmonAlignment_estcount_ResSiglog2FC/NSQ-vs-NSQsi_HSQ-vs-HSQsi/Genes__NSQ-vs-NSQsi__HSQ-vs-HSQsi.rds' )
+  eRcontrastMerge$gene_name <- toupper(as.character(eRcontrastMerge$gene_name))
+  
   eRcontrastMerge$gene_name <- toupper(as.character(eRcontrastMerge$gene_name))
   setkey(eRcontrastMerge,'gene_name')
   eRcontrastMergeGENES <- eRcontrastMerge[toupper(rownames(expMeanlog2FC)),]
@@ -157,6 +161,7 @@ PCRdata{
   eRcontrastMergeGENESall[is.na(rn),]
   setkey(eRcontrastMerge,'gene_name')
 
+  
   eRlog2FC <- as.matrix(eRcontrastMergeGENES[,.(`MYlog2FC_NSQ-vs-NSQsi`,`MYlog2FC_HSQ-vs-HSQsi`)])
   rownames(eRlog2FC) <- as.character(eRcontrastMergeGENES$gene_name)
   
@@ -244,8 +249,11 @@ PCRdata{
   #         beside = T,
   #         legend.text = rownames(m),
   #         main = "SLC25A43")
+
+    
   
-  ###used
+  
+  # DesignMat ---------------------------------------------------------------
   DesignMat{
     
     send{
@@ -741,7 +749,7 @@ PCRdata{
     
   }
   
-  ######   ######   ######   ######   ######   ######   ######   ######   ######   ###### 
+  # linMod ---------------------------------------------------------------
   linMod{
     
     lmCA9 <- lm(CA9 ~ Behandlung*siRNA, data=data.frame(dataN))
@@ -778,6 +786,7 @@ PCRdata{
     model.matrix((lmCA9))
   }
   
+  # ANOVA ---------------------------------------------------------------
   ANOVA{
     
     require(reshape)
@@ -886,3 +895,5 @@ PCRdata{
   }
   ######   ######   ######   ######   ######   ######   ######   ######   ######   ###### 
 }
+
+

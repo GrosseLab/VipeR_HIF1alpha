@@ -11,11 +11,9 @@ MinMeanFilterRep(exp_mat, groups, MinReads = 5, MeanReads = 5)
 
 \item{groups}{vector describing which columns should be summarized}
 
-\item{MinReads}{the minimum mean number of reads per replicate in 50% of all replicates of a group}
+\item{MinReads}{the minimum mean number of reads per replicate in 50 percent of all replicates of a group}
 
 \item{MeanReads}{the mean mean number of reads per group of replicate}
-
-\item{row}{this is a vector of numerics that will be passedin}
 }
 \value{
 groupBasic and groupMean as logical \code{matrix}

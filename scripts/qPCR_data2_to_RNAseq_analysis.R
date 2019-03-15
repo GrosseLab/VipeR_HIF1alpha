@@ -80,7 +80,7 @@ thememap <- function (base_size = 12,legend_key_size=0.4, base_family = "") {
   print(png1)
   print(png2)
 
-# 1. ---------------------------------------------------------------
+# 1. data ---------------------------------------------------------------
   
   NrGenes <- ncol(data2)
   GENES <- toupper(names(data2)[9:NrGenes])
@@ -97,7 +97,6 @@ thememap <- function (base_size = 12,legend_key_size=0.4, base_family = "") {
   
   eRcontrastMerge_log2FC <- as.matrix(eRcontrastMerge[,paste0('MYlog2FC_',contrastNames),with=F])
   rownames(eRcontrastMerge_log2FC) <- as.character(eRcontrastMerge$gene_name)
-  
   
   eRFilterMerge_log2FC_GENES <- eRFilterMerge_log2FC[intersect(rownames(eRFilterMerge_log2FC),GENES),]
   eRcontrastMerge_log2FC_GENES <- eRcontrastMerge_log2FC[intersect(rownames(eRcontrastMerge_log2FC),GENES),]
@@ -128,6 +127,8 @@ thememap <- function (base_size = 12,legend_key_size=0.4, base_family = "") {
   # df.plot <- rbind( data.frame('gene'= GENES,"A"=eRcontrastMerge_log2FC_GENES[GENES,1],"B"=eRcontrastMerge_log2FC_GENES[GENES,2],"set"="RNAseq"),
   #                   data.frame('gene'= GENES,"A"=expMeanlog2FC[GENES,1],"B"=expMeanlog2FC[GENES,2],"set"="qPCR")
   # )  
+
+# 2. plot ---------------------------------------------------------------
   
   for(i in 1:2){
   

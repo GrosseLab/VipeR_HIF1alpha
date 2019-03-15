@@ -4,7 +4,6 @@ sink(log, type="message")
 
 print(snakemake)
 
-
 fil <- file(snakemake@input[["viper"]]) #"install viper_0.1.tar.gz"
 tmp <- readLines(fil, n = -1)
 library( as.character(stringr::str_split(stringr::str_split(tmp,' ')[[1]][2],'_')[[1]][1]),character.only = T )# library("viper")
@@ -42,8 +41,6 @@ p2filename <- paste0(dirname(p2filenamePNG),'/')
 # p2filename <- stringr::str_remove(p2filenamePNG,paste0('.',file_ext(p2filenamePNG)) )
 # p2filename <- '/home/adsvy/GitHubRepo/SnakeWF_HIF/results/qPCR/'
 
-
-
 qPCRfile2 <- snakemake@input[["qPCR2"]] 
 data2 <- fread(qPCRfile2,header = T,sep =';' ,dec = ',')
 data2$V1 <- NULL
@@ -59,7 +56,7 @@ data2N$POXIE
 print(data2)
 print(GENES)
 
-#output plot
+# output plot LDHA --------------------------------------------------------------
 i='LDHA'
 TMP.data=data2
 tmp3=TMP.data[,.(as.factor(Gruppe),as.factor(Behandlung), as.factor(siRNA) ,as.factor(POXIE),as.factor(Q),as.factor(S))]
@@ -75,8 +72,7 @@ plt = pltH+facet_grid(POXIA ~ ., scales = "free", space = "free",labeller = to_s
 plt = plt + thememap(14,0.6) + theme(legend.background = element_rect(fill="grey90", size=.5, linetype="dotted"))
 ggsave(plot = plt,filename = p2filenamePNG ,width = 15 ,height = 15,device = 'png',units = 'cm') 
 
-
-# PNG
+# PNG --------------------------------------------------------------
 if(!dir.exists(paste0(p2filename,'/Barplot'))) dir.create(paste0(p2filename,'/Barplot'))
 for (i in GENES){
   print(i)
@@ -155,9 +151,8 @@ for (i in GENES){
   # dev.off()
 }
 
-# ANOVA
+# ANOVA --------------------------------------------------------------
 if(!dir.exists(paste0(p2filename,'/ANOVA'))) dir.create(paste0(p2filename,'/ANOVA'))
-
 
   print(GENES)
 
@@ -238,6 +233,7 @@ if(!dir.exists(paste0(p2filename,'/ANOVA'))) dir.create(paste0(p2filename,'/ANOV
 #ANOVA_with_Tukey{
 #https://www.researchgate.net/post/Is_it_possible_to_get_non_significant_results_in_post_hoc_test_when_we_got_the_significant_result_in_ANOVA
 
+# ANOVA with TukeyHSD--------------------------------------------------------------
 if(!dir.exists(paste0(p2filename,'/TukeyHSD'))) dir.create(paste0(p2filename,'/TukeyHSD'))
 for(TMP.Name in c('Normoxia','Hypoxia') ){
   TMP.data <- switch(TMP.Name,

@@ -8,6 +8,7 @@ library( as.character(stringr::str_split(stringr::str_split(tmp,' ')[[1]][2],'_'
 # library("viper")
 
 library("data.table")
+library("pheatmap")
 # library("tidyverse")
 
 # head  ----------------------------------------------------------------
@@ -43,9 +44,6 @@ library("data.table")
   LevelSig <- as.double(snakemake@config[["diffexp"]][["sig"]]) # 
   LevelLog2FC <- as.double(snakemake@config[["diffexp"]][["log2FC"]]) # 
   
-  
-  
-  
   # ### local ### 
   # TrGe <- readRDS("/home/adsvy/GitHubRepo/SnakeWF_HIF/results/quantification/counts/hg38/TrGe.rds")
   ## DAVIDFolder <- '/home/adsvy/GitHubRepo/SnakeWF_HIF/results/annotation/DAVID/'
@@ -62,9 +60,8 @@ library("data.table")
   # dir.create(DAVIDoutFolder)
   # ### local ### 
   
-  
-  
-  ### reprocessing input
+# reprocessing input  ----------------------------------------------------------------
+
   DAVIDoutFolder <- paste0(dirname(DAVIDoutFile),'/')
   DAVIDResInput <- c(D1,D2)
   
@@ -119,9 +116,7 @@ library("data.table")
   Categories <- c("BBID","BIOCARTA","COG_ONTOLOGY","GOTERM_BP_FAT","GOTERM_CC_FAT","GOTERM_MF_FAT","INTERPRO","KEGG_PATHWAY","OMIM_DISEASE","PIR_SUPERFAMILY","SMART","SP_PIR_KEYWORDS","UP_SEQ_FEATURE","GOTERM_BP_DIRECT","GOTERM_CC_DIRECT","GOTERM_MF_DIRECT")
   # DAVID <- DAVID)
   # setkey(DAVID,'Category') 
-  
   # Category <- "KEGG_PATHWAY"
-  
   
   ChartReportList <- list()
   ChartReportSigList <- list()
@@ -170,7 +165,6 @@ library("data.table")
   
   ### pheatmap
   print("pheatmap")
-  library("pheatmap")
   ChartReportCategorySigMatList <- list()
   # ChartReportCategory <- 'KEGG_PATHWAY'
   # ChartReportCategory <- 'GOTERM_BP_DIRECT'
@@ -267,8 +261,7 @@ library("data.table")
             
           }
         }
-        
-
+  
         # 
         # RColorBrewer::display.brewer.all()
         # 
@@ -303,8 +296,9 @@ library("data.table")
         
       }
   }
-    # saveRDS(ChartReportCategorySigMatList,paste0(DavFolder,'/ChartReportCategorySigMatList.RDS') )
+  # saveRDS(ChartReportCategorySigMatList,paste0(DavFolder,'/ChartReportCategorySigMatList.RDS') )
   
+# unused ------------------------------------------------------------------
   
 # 
 #   DAVID_cat <- list()

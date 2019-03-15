@@ -8,4 +8,4 @@ This workflow performs differential expression analysis on paired-end RNA-seq da
 After adapter removal with `Cutadapt <http://cutadapt.readthedocs.io>`_ and quality filtering with `sickle <https://github.com/najoshi/sickle>`_, reads were mapped with `STAR <https://github.com/alexdobin/STAR>`_ to the humane genome (GRCh38.82) and transcript counts were quantified with `salmon <https://github.com/COMBINE-lab/salmon>`_ . 
 These transcript counts were summarized to gene counts with `tximport <https://github.com/mikelove/tximport>`_. 
 Integrated normalization and differential expression analysis was conducted with `edegR <https://bioconductor.org/packages/release/bioc/html/edgeR.html>`_. 
-Further  we used the Database for Annotation, Visualization and Integrated Discovery (`DAVID v6_8  <https://david.ncifcrf.gov/content.jsp?file=citation.html>`_) for a functional annotation of the differential expressed genes.
+Further, we used the Database for Annotation, Visualization and Integrated Discovery (`DAVID v6_8  <https://david.ncifcrf.gov/content.jsp?file=citation.html>`_) for a functional annotation of the differential expressed genes.
