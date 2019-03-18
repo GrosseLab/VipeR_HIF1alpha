@@ -31,12 +31,14 @@ validate(units, schema="viper/schemas/units.schema.yaml")
 ### run with slurmmake [ -> alias slurmmake='snakemake -k -p --use-conda --cluster "sbatch ... ]
 rule all:
 	input:
-		"results/plot/qPCR/Anova_Normoxie_Q-GLC.pdf", 
+		"results/plot/qPCR/Normoxia/Anova_Normoxie_Q-GLC.pdf",
+		"results/plot/qPCR/Normoxia_Hypoxia/LDHA.png",  
 		"results/qc/hg38/multiqc.html",
 		expand("results/deg/edegR/hg38/PE/salmonAlignment/estcount_{contrast}_edegR_Res.rds",contrast=config["diffexp"]["contrasts"]),
 		"results/plot/edegR/hg38_PE_salmonAlignment_estcount_edegR_plot_MDS.png",
 		"results/annotation/DAVID/hg38_PE_salmonAlignment_estcount_DAVID68_ResSiglog2FC/NSQ-vs-NSQsi_HSQ-vs-HSQsi/ChartReportSigList.RDS",
-		"results/plot/edegR/hg38_PE/salmonAlignment_estcount_ResSiglog2FC/NSQ-vs-NSQsi_HSQ-vs-HSQsi/VennSet_Filter.pdf"
+		"results/plot/edegR/hg38_PE/salmonAlignment_estcount_ResSiglog2FC/NSQ-vs-NSQsi_HSQ-vs-HSQsi/VennSet_Filter.pdf",
+		"results/plot/edegR/hg38_PE/salmonAlignment_estcount_ResSiglog2FC/NSQ-vs-NSQsi_HSQ-vs-HSQsi/Genes_Filter__NSQ-vs-NSQsi__HSQ-vs-HSQsi_qPCR_scatterplot.png"
 
 ##### setup singularity #####
 # this container defines the underlying OS for each job when using the workflow
@@ -45,11 +47,11 @@ singularity: "docker://continuumio/miniconda3"
 
 
 ##### setup report ##### 
-# /home/adsvy/anaconda3/bin/snakemake --report report/report_2019_03_012_salmonAlignment.html
+# /home/adsvy/anaconda3/bin/snakemake --report report/report_2019_03_14_salmonAlignment.html
 report: "viper/report/workflow.rst"
 
 ### dot
-# snakemake --dag | dot -Tpdf > report/dag_2019_03_08_salmonAlignment.pdf
+# snakemake --dag | dot -Tpdf > report/dag_2019_03_14_salmonAlignment.pdf
 
 
 ##### load rules #####
