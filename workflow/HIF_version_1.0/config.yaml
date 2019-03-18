@@ -6,17 +6,17 @@ project_management_version: '1.0'
 path_rules: viper/rules
 
 description:
-  experiment_start: ''
-  experiment_finish: ''
-  analysis_start: 12.12.2018
-  analysis_finish: ''
+  experiment_start: 2015
+  experiment_finish: 2016
+  analysis_start: 1.1.2015
+  analysis_finish: 18.03.2019
   keep_until: ''
   pid: 'Mathias Kappler'
-  researcher: ''
+  researcher: 'Matthias Kappler, Ulrike Pabst, Claus Weinholdt ,Swetlana Rot, Helge Taubert, Tom Kaune, Johanna Kotrba, Martin Porsch, Fabian Bull, Matthias Bache, Johannes Schubert, Knut Krohn, Ivo Grosse, Dirk Vordermark and Alexander W. Eckert'
   institution: ''
-  emails: [""]
+  emails: ["claus.weinholdt@informatik.uni-halle.de"]
   text: ''
-  publication: [""]
+  publication: ["Causes and consequences of a glutamine induced normoxic HIF1 activity for the tumor metabolism"]
 
 # path or URL to sample sheet (TSV format, columns: sample, condition, ...)
 samples: samples.tsv
@@ -27,6 +27,7 @@ units: units.tsv
 
 #qPCR data
 qPCR: data/qPCR/copy.csv
+qPCR2: data/qPCR/qPCR_data.csv
 
 # the sequencing adapter
 adapter: ACGGATCGATCGATCGATCGAT
