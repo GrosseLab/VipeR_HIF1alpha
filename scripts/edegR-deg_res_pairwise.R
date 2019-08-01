@@ -12,6 +12,25 @@ library('rlist')
 library("ggplot2")
 library("edgeR")
 
+thememap <- function (base_size = 12,legend_key_size=0.4, base_family = "") {
+  theme_gray(base_size = base_size, base_family = base_family) %+replace% 
+    theme(title = element_text(face="bold", colour=1,angle=0  ,vjust=1.0, size=base_size),
+          axis.title.x = element_text(face="bold", colour=1,angle=0  ,vjust=0.3, size=base_size),
+          axis.text.x  = element_text(face="bold", colour=1,angle=0  ,vjust=0.5, size=base_size),
+          strip.text.x = element_text(face="bold", colour=1,angle=0  ,vjust=0.5, size=base_size),
+          axis.title.y = element_text(face="bold", colour=1,angle=90 ,vjust=1.1,hjust=.5, size=base_size),
+          axis.text.y  = element_text(face="bold", colour=1, size=base_size),
+          #panel.background = element_rect(fill="white"),
+          #panel.grid.minor.y = element_line(size=3),
+          #panel.grid.major = element_line(colour = "white"),
+          legend.key.size = unit(legend_key_size, "cm"),
+          legend.text = element_text(face="bold" ,colour=1, size=base_size),
+          legend.title = element_text(face="bold",colour=1, size=base_size),    
+          strip.text = element_text(face="bold",colour=, size=base_size),
+          plot.title = element_text(hjust = 0.5)
+    )
+}
+
 # load input from snakemake rule  ----------------------------------------------------------------
   
   print(snakemake)
@@ -200,15 +219,19 @@ library("edgeR")
   SigGenesList <- SigGenesListFilter <- list()
   for(i in names(contrastsList) ){
     SigGenesListFilter[[i]] <- as.character(eRFilter  [[ i ]][[ ctype ]][[sigName]]$rn)
+    write.csv2(SigGenesListFilter[[i]], paste0(outDir,i,'_',sigName,'_SigGenesListFilter_MeanReads',MeanReads,'.csv'),quote = F,row.names = F )
+    
     SigGenesList[[i]]       <- as.character(eRcontrast[[ i ]][[ ctype ]][[sigName]]$rn)
+    write.csv2(SigGenesList[[i]], paste0(outDir,i,'_',sigName,'_SigGenesList.csv') ,quote = F,row.names = F )
+    
   }   
   
-  pdf(paste0(outDir,'VennSet_Filter.pdf'),10,10)
+  pdf(paste0(outDir,'VennSet_Filter.pdf'),5,5)
     tmpV <- f.input.list.All.subVenn(SigGenesListFilter)
   dev.off()
   saveRDS(tmpV,paste0(outDir,'VennSet_Filter.rds'))
   
-  pdf(paste0(outDir,'VennSet.pdf'),10,10)
+  pdf(paste0(outDir,'VennSet.pdf'),5,5)
     tmpV <- f.input.list.All.subVenn(SigGenesList)
   dev.off()
   saveRDS(tmpV,paste0(outDir,'VennSet.rds'))
@@ -227,13 +250,13 @@ library("edgeR")
   p1 <- ggplot(df.plot, aes(log2FC, fill = Contrast)) + geom_density(alpha = 0.5)
   p1 <- p1 + theme_minimal()
   p1 <- p1 + theme(legend.position="bottom")
-  p1 <- p1 + labs(title="histogram",x='log2 foldchange')#, y = contrastNames[1])  
+  p1 <- p1 + labs(title="histogram",x='log2 fold change')#, y = contrastNames[1])  
   p1HistDens <- p1 + xlim(c(-10,10))
   
   p1 <- ggplot(df.plot, aes(log2FC, fill = Contrast)) + geom_histogram(alpha = 0.5, position = 'identity',bins=50)
   p1 <- p1 + theme_minimal()
   p1 <- p1 + theme(legend.position="bottom")
-  p1 <- p1 + labs(title="histogram",x='log2 foldchange')#, y = contrastNames[1])  
+  p1 <- p1 + labs(title="histogram",x='log2 fold change')#, y = contrastNames[1])  
   p1HistCounts <- p1 + xlim(c(-10,10))
   
   df1 <- data.frame('gene'=mergeSetvenn$inter, "A"=eRFilter[[ contrastNames[2] ]][[ ctype ]][['res']][mergeSetvenn$inter,][['MYlog2FC']] ,"B"=eRFilter[[ contrastNames[1] ]][[ ctype ]][['res']][mergeSetvenn$inter,][['MYlog2FC']])
@@ -243,13 +266,15 @@ library("edgeR")
   df2$set=contrastNames[2]
   df3$set=contrastNames[1]
   df.plot <- rbind(df1, df2, df3)
-  p1 <- ggplot(df.plot, aes(A, B,shape=set, color=set)) + geom_point(alpha=.9)
-  p1 <- p1 + scale_shape_manual(values=c(15, 16, 17))
-  p1 <- p1 + scale_color_brewer(palette="Accent") #scale_color_manual(values=c('#999999','#E69F00', '#56B4E9'))
-  p1 <- p1 + theme_minimal()
-  p1 <- p1 + theme(legend.position="bottom")
-  p1 <- p1 + labs(title="scatterplot of log2 foldchanges ", x=contrastNames[2], y = contrastNames[1])  
-  p1Scatter <- p1 + ylim(c(-10,10)) + xlim(c(-10,10))
+  p1 <- ggplot(df.plot, aes(A, B, color=set))  #shape = set
+  p1 <- p1 + geom_point(alpha=.8,show.legend = T,size=1.5) 
+  # p1 <- p1 + scale_shape_manual(values=c(15, 16, 17))
+  p1 <- p1 + scale_color_brewer(name = "Significant",palette="Accent") #scale_color_manual(values=c('#999999','#E69F00', '#56B4E9'))
+  #p1 <- p1 + theme_minimal()
+  p1 <- p1 + thememap(12)
+  p1 <- p1 + theme(legend.position="bottom",legend.background = element_rect(fill = "lightgray"),legend.key = element_rect(fill = "white", color = NA))#,legend.text = element_text(color = "black",size=11) )
+  p1 <- p1 + labs( x=paste0('log2 fold change of ',contrastNames[2]), y = paste0('log2 fold change of ',contrastNames[1]) ) #+ scale_color_discrete(name = "Significant") #title="scatterplot of log2 fold changes ",
+  p1Scatter <- p1 + ylim(c(-10,5)) + xlim(c(-10,5))
   plot(p1Scatter)  
   ggsave(paste0(outDir,'Scatter.pdf'),plot = p1Scatter,width = 6,height = 6)
   ggsave(paste0(outDir,'HistDens.pdf'),plot = p1HistDens,width = 6,height = 6)

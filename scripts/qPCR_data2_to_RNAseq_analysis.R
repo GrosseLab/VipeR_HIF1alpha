@@ -159,14 +159,14 @@ thememap <- function (base_size = 12,legend_key_size=0.4, base_family = "") {
     # p1 <- p1 + theme_minimal()
     p1 <- p1 + thememap(14,0.6) 
     # p1 <- p1 + theme(legend.background = element_rect(fill="grey90", size=.5, linetype="dotted"))
-    p1 <- p1 + labs(title="Scatter plot of log2 foldchanges", x='RNAseq', y = 'qPCR')  
+    p1 <- p1 + labs( x='log2 fold change of RNAseq', y = 'log2 fold change of qPCR')  #title="Scatter plot of log2 foldchanges",
     p1 <- p1 + ylim(c(-10,5)) + xlim(c(-10,5))
     p1 <- p1 + geom_abline(intercept = 0, slope = 1, color="gray", linetype="dashed", size=0.3)
     p1Scatter <- p1 + facet_grid(set ~ .)
     
     dat_text <- data.frame(
-      label = c(paste0("cor= ", formatC(cor(df.plot[df.plot$set==contrastNames[1] ,'A'],df.plot[df.plot$set==contrastNames[1] ,'B']), 3, format="f")), 
-                paste0("cor= ", formatC(cor(df.plot[df.plot$set==contrastNames[2] ,'A'],df.plot[df.plot$set==contrastNames[2] ,'B']), 3, format="f"))
+      label = c(paste0("cor = ", formatC(cor(df.plot[df.plot$set==contrastNames[1] ,'A'],df.plot[df.plot$set==contrastNames[1] ,'B']), 3, format="f")), 
+                paste0("cor = ", formatC(cor(df.plot[df.plot$set==contrastNames[2] ,'A'],df.plot[df.plot$set==contrastNames[2] ,'B']), 3, format="f"))
                 ),
       set   = contrastNames, x     = c( -9.5, -9.5), y     = c(  5, 5)
     )
@@ -175,8 +175,26 @@ thememap <- function (base_size = 12,legend_key_size=0.4, base_family = "") {
     # plot(p1Scatter    )
     
     ggsave(p1Scatter,filename = pngFile,device = 'png',width = 8,height = 10)
-  
     write.csv2(scatterRAW,stringr::str_replace(string = pngFile, pattern = file_ext(pngFile) , 'csv'))
+    
+    for(j in contrastNames){
+      p1 <- ggplot(df.plot[df.plot$set==j,], aes(A, B,label = gene)) + geom_abline(intercept = 0, slope = 1, color="gray", linetype="dashed", size=0.3) + geom_point(size=2,alpha=.7)
+      p1 <- p1 + thememap(14,0.6) 
+      p1 <- p1 + labs( title=j, x='log2 fold change of RNAseq', y = 'log2 fold change of qPCR') 
+      p1 <- p1 + ylim(c(-10,5)) + xlim(c(-10,5))
+      p1 <- p1 + geom_abline(intercept = 0, slope = 1, color="gray", linetype="dashed", size=0.3)
+      p1Scatter <- p1 
+      
+      dat_text <- data.frame(
+        label = paste0("cor= ", formatC(cor(df.plot[df.plot$set==j ,'A'],df.plot[df.plot$set==j ,'B']), 3, format="f")),
+        set   = contrastNames, x     = c( -9.5, -9.5), y     = c(  5, 5)
+      )
+      
+      p1Scatter <- p1Scatter + geom_text(data    = dat_text, mapping = aes(x = x, y = y, label = label) )
+      
+      ggsave(p1Scatter,filename = stringr::str_replace(pngFile,pattern = paste0('.',file_ext(pngFile)),replacement = paste0('_only_',j,'.',file_ext(pngFile))),device = 'png',width = 7,height = 7)
+      
+    }
     
     
   }

@@ -23,8 +23,30 @@ pheatmap::pheatmap(t(LDHAabu),color = RColorBrewer::brewer.pal(9,'Blues'),cluste
 
 LDHAct <- DataList$Tr$counts[as.character(LDHAanno$transcript_id),]
 LDHAct <- LDHAct[names(sort(rowMeans(LDHAct),decreasing = T)),]
-pheatmap::pheatmap(t(LDHAct),color = RColorBrewer::brewer.pal(9,'Blues'),cluster_rows = T,cluster_cols = F,main = 'LDHA',filename = '/home/adsvy/GitHubRepo/SnakeWF_HIF/results/LDHA.pdf')
+
+colnames(LDHAct) <- units$unit
+
+output_order <- c(3,7,11,15,4,8,12,16,1,5,9,13,2,6,10,14)
+LDHAct <- LDHAct[,output_order]
 write.csv(LDHAct,file = '/home/adsvy/GitHubRepo/SnakeWF_HIF/results/LDHAct.csv')
+
+pheatmap::pheatmap(t(LDHAct),color = RColorBrewer::brewer.pal(9,'Blues'),cluster_rows = F,cluster_cols = F,main = 'LDHA'
+                   ,filename = '/home/adsvy/GitHubRepo/SnakeWF_HIF/results/LDHA.pdf'
+                    )
+
+pheatmap::pheatmap(t(log2(LDHAct+1)),color = RColorBrewer::brewer.pal(9,'Blues'),cluster_rows = F,cluster_cols = F,main = 'LDHA'
+                   ,filename = '/home/adsvy/GitHubRepo/SnakeWF_HIF/results/LDHA_log2.pdf'
+                   )
+
+LDHA_mean <- summarize_replicates(LDHAct,groups = samples$condition[output_order],method = function(x) mean(log2(x+1)) )
+pheatmap::pheatmap(t(2^LDHA_mean),color = RColorBrewer::brewer.pal(9,'Blues'),cluster_rows = F,cluster_cols = F,main = 'LDHA'
+                   ,filename = '/home/adsvy/GitHubRepo/SnakeWF_HIF/results/LDHA_Mean.pdf'
+)
+
+pheatmap::pheatmap(t(LDHA_mean),color = RColorBrewer::brewer.pal(9,'Blues'),cluster_rows = F,cluster_cols = F,main = 'LDHA'
+                   ,filename = '/home/adsvy/GitHubRepo/SnakeWF_HIF/results/LDHA_Mean_log2.pdf'
+)
+
 
 DataList$Tr$counts[as.character(LDHAanno$transcript_id),]
 # http://www.ensembl.org/Homo_sapiens/Gene/Summary?db=core;g=ENSG00000134333;r=11:18394388-18408425

@@ -21,7 +21,7 @@ Further, we used the Database for Annotation, Visualization and Integrated Disco
 
 Assuming that snakemake and conda are installed (and your system has the necessary libraries to compile R packages), you can use the following commands on a test dataset:
 
-### 0. Step - clone the gitup repo
+### 0. Step - clone the githup repository
 ```
 git clone https://github.com/GrosseLab/ViperWF.git
 ```
