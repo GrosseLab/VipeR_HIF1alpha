@@ -9,6 +9,7 @@ library( as.character(stringr::str_split(stringr::str_split(tmp,' ')[[1]][2],'_'
 
 library("edgeR")
 library("data.table")
+library("ggplot2")
 
 thememap <- function (base_size = 12,legend_key_size=0.4, base_family = "") {
   theme_gray(base_size = base_size, base_family = base_family) %+replace% 

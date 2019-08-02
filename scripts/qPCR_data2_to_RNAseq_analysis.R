@@ -40,14 +40,14 @@ thememap <- function (base_size = 12,legend_key_size=0.4, base_family = "") {
   data2$V1 <- NULL
   # data2 <- fread('qPCR_data.csv',header = T,sep =';' ,dec = ',')
   
-  eRFilterMerge <- readRDS( snakemake@input[["rds1"]] )
-  eRFilterMerge$gene_name <- toupper(as.character(eRFilterMerge$gene_name))
+  # eRFilterMerge <- readRDS( snakemake@input[["rds1"]] )
+  # eRFilterMerge$gene_name <- toupper(as.character(eRFilterMerge$gene_name))
   
   eRcontrastMerge <- readRDS( snakemake@input[["rds2"]] )
   eRcontrastMerge$gene_name <- toupper(as.character(eRcontrastMerge$gene_name))
   
-  # eRFilterMerge <- readRDS( '/home/adsvy/GitHubRepo/SnakeWF_HIF/results/plot/edegR/hg38_PE/salmonAlignment_estcount_ResSiglog2FC/NSQ-vs-NSQsi_HSQ-vs-HSQsi/Genes_Filter__NSQ-vs-NSQsi__HSQ-vs-HSQsi.rds' )
-  # eRFilterMerge$gene_name <- toupper(as.character(eRFilterMerge$gene_name))
+  ## eRFilterMerge <- readRDS( '/home/adsvy/GitHubRepo/SnakeWF_HIF/results/plot/edegR/hg38_PE/salmonAlignment_estcount_ResSiglog2FC/NSQ-vs-NSQsi_HSQ-vs-HSQsi/Genes_Filter__NSQ-vs-NSQsi__HSQ-vs-HSQsi.rds' )
+  ## eRFilterMerge$gene_name <- toupper(as.character(eRFilterMerge$gene_name))
   # eRcontrastMerge <- readRDS( '/home/adsvy/GitHubRepo/SnakeWF_HIF/results/plot/edegR/hg38_PE/salmonAlignment_estcount_ResSiglog2FC/NSQ-vs-NSQsi_HSQ-vs-HSQsi/Genes__NSQ-vs-NSQsi__HSQ-vs-HSQsi.rds' )
   # eRcontrastMerge$gene_name <- toupper(as.character(eRcontrastMerge$gene_name))
    
@@ -65,19 +65,19 @@ thememap <- function (base_size = 12,legend_key_size=0.4, base_family = "") {
   # RDStype <- 'estcount'
   
   ### out 
-  png1 <- c(as.character(snakemake@output[["png1"]]))
-  # png1 <- "/home/adsvy/GitHubRepo/SnakeWF_HIF/results/plot/edegR/hg38_PE/salmonAlignment_estcount_ResSiglog2FC/NSQ-vs-NSQsi_HSQ-vs-HSQsi/Genes__NSQ-vs-NSQsi__HSQ-vs-HSQsi.png"
+  # png1 <- c(as.character(snakemake@output[["png1"]]))
+  # # png1 <- "/home/adsvy/GitHubRepo/SnakeWF_HIF/results/plot/edegR/hg38_PE/salmonAlignment_estcount_ResSiglog2FC/NSQ-vs-NSQsi_HSQ-vs-HSQsi/Genes__NSQ-vs-NSQsi__HSQ-vs-HSQsi.png"
   png2 <- c(as.character(snakemake@output[["png2"]]))
   # png2 <- "/home/adsvy/GitHubRepo/SnakeWF_HIF/results/plot/edegR/hg38_PE/salmonAlignment_estcount_ResSiglog2FC/NSQ-vs-NSQsi_HSQ-vs-HSQsi/Genes_Filter__NSQ-vs-NSQsi__HSQ-vs-HSQsi.png"
   
   print(data2)
-  print(eRFilterMerge)
+  # print(eRFilterMerge)
   print(eRcontrastMerge)
   print(contrastNames)
   print(ref)
   print(readtype)
   print(ctype)
-  print(png1)
+  # print(png1)
   print(png2)
 
 # 1. data ---------------------------------------------------------------
@@ -92,16 +92,16 @@ thememap <- function (base_size = 12,legend_key_size=0.4, base_family = "") {
   print(data2)
   print(GENES)
   
-  eRFilterMerge_log2FC <- as.matrix(eRFilterMerge[,paste0('MYlog2FC_',contrastNames),with=F])
-  rownames(eRFilterMerge_log2FC) <- as.character(eRFilterMerge$gene_name)
+  # eRFilterMerge_log2FC <- as.matrix(eRFilterMerge[,paste0('MYlog2FC_',contrastNames),with=F])
+  # rownames(eRFilterMerge_log2FC) <- as.character(eRFilterMerge$gene_name)
   
   eRcontrastMerge_log2FC <- as.matrix(eRcontrastMerge[,paste0('MYlog2FC_',contrastNames),with=F])
   rownames(eRcontrastMerge_log2FC) <- as.character(eRcontrastMerge$gene_name)
   
-  eRFilterMerge_log2FC_GENES <- eRFilterMerge_log2FC[intersect(rownames(eRFilterMerge_log2FC),GENES),]
+  # eRFilterMerge_log2FC_GENES <- eRFilterMerge_log2FC[intersect(rownames(eRFilterMerge_log2FC),GENES),]
   eRcontrastMerge_log2FC_GENES <- eRcontrastMerge_log2FC[intersect(rownames(eRcontrastMerge_log2FC),GENES),]
   
-  colnames(eRFilterMerge_log2FC_GENES) <- stringr::str_replace(colnames(eRFilterMerge_log2FC_GENES),pattern = 'MYlog2FC_',replacement = 'RNAseq_')
+  # colnames(eRFilterMerge_log2FC_GENES) <- stringr::str_replace(colnames(eRFilterMerge_log2FC_GENES),pattern = 'MYlog2FC_',replacement = 'RNAseq_')
   colnames(eRcontrastMerge_log2FC_GENES) <- stringr::str_replace(colnames(eRcontrastMerge_log2FC_GENES),pattern = 'MYlog2FC_',replacement = 'RNAseq_')
   
   ExpGroup <- paste0(data2[[ 'Behandlung' ]],'_',data2[[ "siRNA"]],'_',data2[["POXIE"]])
@@ -130,23 +130,26 @@ thememap <- function (base_size = 12,legend_key_size=0.4, base_family = "") {
 
 # 2. plot ---------------------------------------------------------------
   
-  for(i in 1:2){
+  for(i in 2){
   
     if(i == 1){
-      GENES2 <- rownames(eRFilterMerge_log2FC_GENES)
-      df.plot <- rbind( data.frame('gene'= GENES2,"A"=eRFilterMerge_log2FC_GENES[GENES2,1],"B"=expMeanlog2FC[GENES2,1],"set"=contrastNames[1]),
-                        data.frame('gene'= GENES2,"A"=eRFilterMerge_log2FC_GENES[GENES2,2],"B"=expMeanlog2FC[GENES2,2],"set"=contrastNames[2])
-      )  
-      scatterRAW <- cbind(eRFilterMerge_log2FC_GENES[GENES2,],expMeanlog2FC[GENES2,])
-      pngFile <- png1
       
-      print(cor(scatterRAW))
+      # GENES2 <- rownames(eRFilterMerge_log2FC_GENES)
+      # df.plot <- rbind( data.frame('gene'= GENES2,"A"=eRFilterMerge_log2FC_GENES[GENES2,1],"B"=expMeanlog2FC[GENES2,1],"set"=contrastNames[1]),
+      #                   data.frame('gene'= GENES2,"A"=eRFilterMerge_log2FC_GENES[GENES2,2],"B"=expMeanlog2FC[GENES2,2],"set"=contrastNames[2])
+      # )  
+      # scatterRAW <- cbind(eRFilterMerge_log2FC_GENES[GENES2,],expMeanlog2FC[GENES2,])
+      # pngFile <- png1
+      # 
+      # print(cor(scatterRAW))
       
     } else {
-      df.plot <- rbind( data.frame('gene'= GENES,"A"=eRcontrastMerge_log2FC_GENES[GENES,1],"B"=expMeanlog2FC[GENES,1],"set"=contrastNames[1]),
-                        data.frame('gene'= GENES,"A"=eRcontrastMerge_log2FC_GENES[GENES,2],"B"=expMeanlog2FC[GENES,2],"set"=contrastNames[2])
+      tmpGENES <- intersect(GENES,rownames(eRcontrastMerge_log2FC_GENES))
+      
+      df.plot <- rbind( data.frame('gene'= tmpGENES,"A"=eRcontrastMerge_log2FC_GENES[tmpGENES,1],"B"=expMeanlog2FC[tmpGENES,1],"set"=contrastNames[1]),
+                        data.frame('gene'= tmpGENES,"A"=eRcontrastMerge_log2FC_GENES[tmpGENES,2],"B"=expMeanlog2FC[tmpGENES,2],"set"=contrastNames[2])
       )  
-      scatterRAW <- cbind(eRcontrastMerge_log2FC_GENES[GENES,],expMeanlog2FC[GENES,])
+      scatterRAW <- cbind(eRcontrastMerge_log2FC_GENES[tmpGENES,],expMeanlog2FC[tmpGENES,])
       pngFile <- png2
       
       print(cor(scatterRAW))
