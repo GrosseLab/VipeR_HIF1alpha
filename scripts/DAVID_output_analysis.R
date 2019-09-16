@@ -17,7 +17,9 @@ library("pheatmap")
   
   ### input 
   D1 <- as.character(snakemake@input[["D1"]]) # 
-  D2 <- as.character(snakemake@input[["D2"]]) # 
+  D2 <- as.character(snakemake@input[["D2"]]) #
+  D1sig <- as.character(snakemake@input[["D1sig"]]) # 
+  D2sig <- as.character(snakemake@input[["D2sig"]]) # 
   TrGe <- readRDS(snakemake@input[["TrGe"]]) # 
   # DAVID <- fread(snakemake@input[["DAVID"]]) # 
   # 
@@ -44,21 +46,23 @@ library("pheatmap")
   LevelSig <- as.double(snakemake@config[["diffexp"]][["sig"]]) # 
   LevelLog2FC <- as.double(snakemake@config[["diffexp"]][["log2FC"]]) # 
   
-  # ### local ### 
+  ### local ###
   # TrGe <- readRDS("/home/adsvy/GitHubRepo/SnakeWF_HIF/results/quantification/counts/hg38/TrGe.rds")
-  ## DAVIDFolder <- '/home/adsvy/GitHubRepo/SnakeWF_HIF/results/annotation/DAVID/'
-  ## DAVIDtypeInput <- 'hg38_PE_salmonAlignment_estcount'
-  ## DAVIDtypeVersion <- 'DAVID68_ResSiglog2FC'
-  # D1 <- as.character(snakemake@input[["D1"]]) # 
-  # D2 <- as.character(snakemake@input[["D2"]]) # 
-  # # contrastNames <- c('NSQ-vs-NSQsi','HSQ-vs-HSQsi')
+  # DAVIDFolder <- '/home/adsvy/GitHubRepo/SnakeWF_HIF/results/annotation/DAVID/'
+  # DAVIDtypeInput <- 'hg38_PE_salmonAlignment_estcount'
+  # DAVIDtypeVersion <- 'DAVID68_ResSiglog2FC'
+  # D2 <- "/home/adsvy/GitHubRepo/SnakeWF_HIF/results/annotation/DAVID/hg38_PE_salmonAlignment_estcount_HSQ-vs-HSQsi_DAVID68_ResSiglog2FC/DAVID68_chartReport_T1.txt"
+  # D1 <- "/home/adsvy/GitHubRepo/SnakeWF_HIF/results/annotation/DAVID/hg38_PE_salmonAlignment_estcount_NSQ-vs-NSQsi_DAVID68_ResSiglog2FC/DAVID68_chartReport_T1.txt"
+  # contrastNames <- c('NSQ-vs-NSQsi','HSQ-vs-HSQsi')
+  # D1sig <- paste0('/home/adsvy/GitHubRepo/SnakeWF_HIF/results/deg/edegR/hg38/PE/salmonAlignment/estcount_',contrastNames[1],'_edegR_Res_sig_0.05_MYlog2FC_1.csv')
+  # D2sig <- paste0('/home/adsvy/GitHubRepo/SnakeWF_HIF/results/deg/edegR/hg38/PE/salmonAlignment/estcount_',contrastNames[2],'_edegR_Res_sig_0.05_MYlog2FC_1.csv')
   # samples <- read.table("/home/adsvy/GitHubRepo/SnakeWF_HIF/samples.tsv", header=TRUE)
   # units <- read.table("/home/adsvy/GitHubRepo/SnakeWF_HIF/units.tsv", header=TRUE,fill=TRUE)
   # LevelLog2FC <- 1
   # LevelSig <- 0.05
   # DAVIDoutFolder <- paste0(DAVIDFolder,DAVIDtypeInput,'_',DAVIDtypeVersion,'/',paste0(contrastNames,collapse = '_'),'/');
-  # dir.create(DAVIDoutFolder)
-  # ### local ### 
+  dir.create(DAVIDoutFolder)
+  ### local ###
   
 # reprocessing input  ----------------------------------------------------------------
 
@@ -440,7 +444,102 @@ library("pheatmap")
 #                      main = Category, filename = paste0(TmpResFolder,'/DAVID_6_7/',Category,'_heatmap.pdf'),width = 25,height = 10)
   
 
+testingSpace <- function(){
+  library(biomaRt)
   
+  ensembl = useMart("ensembl",dataset="hsapiens_gene_ensembl")
+  martgenes <- getBM(attributes=c("ensembl_gene_id",'entrezgene_id'),mart = ensembl) #"kegg_enzyme",
+  martgenes <- data.table(martgenes,key = 'ensembl_gene_id')
+  
+  martgenesKEGG <- getBM(attributes=c("kegg_enzyme","ensembl_gene_id",'entrezgene_id'),mart = ensembl) #"
+  martgenesKEGG <- data.table(martgenesKEGG,key = 'ensembl_gene_id')
+  martgenesKEGG$KEGGid <-  paste0("hsa",sapply(stringr::str_split(martgenesKEGG$kegg_enzyme,"\\+"),function(x) x[1]))
+  
+
+  DEGsig <- list()
+  DEGsig[[contrastNames[1]]] <- data.table(read.csv2(D1sig)[,-1],keep.rownames = F);setkey(DEGsig[[contrastNames[1]]],'rn')
+  DEGsig[[contrastNames[2]]] <- data.table(read.csv2(D2sig)[,-1],keep.rownames = F);setkey(DEGsig[[contrastNames[2]]],'rn')
+  
+  ChartReportCategory <- 'KEGG_PATHWAY'
+  # ChartReportCategory <- 'GOTERM_BP_DIRECT'
+  library("pathview")
+  library("KEGG.db")
+  
+  # for(ChartReportCategory in names(ChartReportSigList)){
+  for(cN in 1:2){   
+    KEGGfolder <- paste0( DAVIDoutFolder,'KEGGpathway_',contrastNames[cN] )
+    if(!dir.exists( KEGGfolder )) dir.create( KEGGfolder ) 
+    
+    print(ChartReportCategory)
+    print(contrastNames[cN])
+    tmp <- ChartReportSigList[[ChartReportCategory]][[contrastNames[cN]]]
+    
+    tmpGenes <- lapply(tmp$Genes,function(x) stringr::str_split(x,pattern = ', ')[[1]])
+    tmpGene_name <- lapply(tmp$gene_name,function(x) stringr::str_split(x,pattern = ', ')[[1]])
+    names(tmpGenes) <- sapply(tmp$Term,function(x) stringr::str_split(x,pattern = ':')[[1]][1])
+
+    for(ke in 1:length(names(tmpGenes)) ){
+      
+      tmp.gene.data <- DEGsig[[contrastNames[cN]]][tmpGenes[[ke]],][["MYlog2FC"]]
+      names(tmp.gene.data) <- as.character(tmpGenes[[ke]])
+      
+      tmp_martgenes <-  martgenes[tmpGenes[ke],]
+      tmp_martgenes$logFC <- tmp.gene.data[tmp_martgenes$ensembl_gene_id]
+      
+      tmp.gene.data <- tmp_martgenes$logFC
+      names(tmp.gene.data) <- as.character(tmp_martgenes$entrezgene_id)
+      
+      tmpWD <- getwd()
+      pv.out2 <- pathview(gene.data=tmp.gene.data, pathway.id = names(tmpGenes)[ke] ,species = "hsa",limit = list(gene=4,cds=4),kegg.native = FALSE)#,gene.idtype = "entrez" ,out.suffix = contrastNames[cN],kegg.native = FALSE)
+      pv.out <- pathview(gene.data=tmp.gene.data, pathway.id = names(tmpGenes)[ke] ,species = "hsa",limit = list(gene=4,cds=4))#,gene.idtype = "entrez" ,out.suffix = contrastNames[cN],kegg.native = FALSE)
+      if(is(pv.out)[1] == 'list'){
+        tmp_Kegg_files <- list.files(tmpWD)[stringr::str_detect(list.files(tmpWD),names(tmpGenes)[ke])]
+        for( tmpF in tmp_Kegg_files){
+          file.copy(paste0(tmpWD,'/',tmpF), KEGGfolder,overwrite = T)
+          file.remove(paste0(tmpWD,'/',tmpF))
+        }
+        write.csv2(pv.out$plot.data.gene,file = paste0(KEGGfolder,'/',names(tmpGenes)[ke],'_PlotDataGene.csv'))
+        write.csv2(pv.out$plot.data.cpd,file = paste0(KEGGfolder,'/',names(tmpGenes)[ke],'_PlotDataCPD.csv'))
+        write.csv2(pv.out2$plot.data.gene,file = paste0(KEGGfolder,'/',names(tmpGenes)[ke],'_PlotDataGene_pdf.csv'))
+        write.csv2(pv.out2$plot.data.cpd,file = paste0(KEGGfolder,'/',names(tmpGenes)[ke],'_PlotDataCPD_pdf.csv'))
+      }
+      
+    }
+    
+    
+    
+    grid::grid.newpage()
+    grid.raster(png::readPNG("mmu04668.pathview.png"))
+  
+  }
+  
+  tmp1 <- ChartReportSigList[[ChartReportCategory]][[contrastNames[1]]]
+  tmp2 <- ChartReportSigList[[ChartReportCategory]][[contrastNames[2]]]
+  tmp_Term_inter <- intersect(tmp1$Term,tmp2$Term)
+  tmp_Term_inter <- sapply(tmp_Term_inter,function(x) stringr::str_split(x,pattern = ':')[[1]][1])
+  
+  for(ke in 1:length(names(tmp_Term_inter)) ){
+    png1 <- paste0( DAVIDoutFolder,'KEGGpathway_',contrastNames[1],'/',tmp_Term_inter[ke],".pathview.png")
+    png2 <- paste0( DAVIDoutFolder,'KEGGpathway_',contrastNames[2],'/',tmp_Term_inter[ke],".pathview.png")
+    
+    if( file.exists(png2) & file.exists(png2) ){
+      img1 <-  grid::rasterGrob(as.raster( png::readPNG(png1)), interpolate = FALSE,name = contrastNames[1])
+      img2 <-  grid::rasterGrob(as.raster( png::readPNG(png2)), interpolate = FALSE,name = contrastNames[2])
+      # t1 <- grid::textGrob(contrastNames[1],  )
+      # t2 <- grid::textGrob(contrastNames[2])
+      bottom_text <- names(tmp_Term_inter)[ke]
+      
+      # grid::grid.newpage()
+      # gridExtra::grid.arrange(img1, img2,t1,t2,widths = 2:1, nrow = 2, bottom = bottom_text)
+      
+      ggplot2::ggsave(gridExtra::grid.arrange(img1, img2, ncol = 2, bottom = bottom_text,top= paste0(contrastNames[1] ,'\t\t\t',contrastNames[2])),
+                      filename = paste0(DAVIDoutFolder,'ChartReportSigCount_',ChartReportCategory,'_identical__KEGG_',tmp_Term_inter[ke],'.pdf'),width = 10,height = 6)
+    }              
+  }
+  
+  
+}  
+
   
   
   
