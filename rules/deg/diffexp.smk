@@ -75,7 +75,8 @@ rule edegR_deg:
         units=config["units"],
         contrast=get_contrast,
         sig=config["diffexp"]["sig"],
-        log2FC=config["diffexp"]["log2FC"]
+        log2FC=config["diffexp"]["log2FC"],
+        MinGeneReads=config["diffexp"]["MinGeneReads"] #if 0 then the filter is disabled  
     conda:
         "../../envs/r35.yaml"
     log:
@@ -109,11 +110,12 @@ rule edegR_ResSigFC_pair_R:
         e2="results/deg/edegR/{ref}/{readtype}/{ctype}/{RDStype}_{contrast2}_edegR_ResData.rds",
         viper=rules.install_R_package_viper.output
     output:    
-        o1="results/plot/edegR/{ref}_{readtype}/{ctype}_{RDStype}_ResSiglog2FC/{contrast1}_{contrast2}/VennSet_Filter.pdf",
-        o2="results/plot/edegR/{ref}_{readtype}/{ctype}_{RDStype}_ResSiglog2FC/{contrast1}_{contrast2}/Genes_Filter__{contrast1}__{contrast2}.rds",
+        o1="results/plot/edegR/{ref}_{readtype}/{ctype}_{RDStype}_ResSiglog2FC/{contrast1}_{contrast2}/VennSet.pdf",
+        # o2="results/plot/edegR/{ref}_{readtype}/{ctype}_{RDStype}_ResSiglog2FC/{contrast1}_{contrast2}/Genes_Filter__{contrast1}__{contrast2}.rds",
         o3="results/plot/edegR/{ref}_{readtype}/{ctype}_{RDStype}_ResSiglog2FC/{contrast1}_{contrast2}/Genes__{contrast1}__{contrast2}.rds"
     params:
-        MeanReads=20, ### Todo move param to config
+        MinGeneReads=config["diffexp"]["MinGeneReads"],
+        MeanReads=1, ### Todo move param to config
         doCorrelationAnalysis="FALSE" ### Todo move param to config
     conda:
         "../../envs/r35.yaml"
