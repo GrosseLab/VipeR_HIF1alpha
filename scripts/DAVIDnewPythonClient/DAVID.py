@@ -7,6 +7,7 @@ import sys, getopt
 sys.path.append('../')
 import os
 import logging
+import argparse
 import traceback as tb
 import suds.metrics as metrics
 from tests import *
@@ -15,52 +16,91 @@ from suds.client import Client
 from datetime import datetime
 import csv
 
-#
-# input and output files.
-#
-#https://www.tutorialspoint.com/python/python_command_line_arguments.html
-inputfile = ''
-outputDIR = '../'
-argv = sys.argv[1:]
-try:
-  opts, args = getopt.getopt(argv,"hi:o:d:t:",["iFILE=","oDIR=","DAVID=","idType="])
-except getopt.GetoptError:
-  print 'python2 chartReport.py -i <inputfile> -o <outputDIR> -d <DAVID version> -t <Identifier>'
-  sys.exit(2)
-for opt, arg in opts:
-  if opt == '-h':
-     print 'python2 chartReport.py -i <inputfile> -o <outputDIR> -d <DAVID version> -t <Identifier>'
-     sys.exit()
-  elif opt == '--help':
-     print 'python2 chartReport.py -i <inputfile> -o <outputDIR> -d <DAVID version> -t <Identifier>'
-     sys.exit()
-  elif opt in ("-i", "--iFILE"):
-     inputfile = arg
-  elif opt in ("-o", "--oDIR"):
-    if os.path.isdir(arg):  
-      print("--oDIR is a directory")
-      outputDIR = arg  
-    else :  
-      print("--oDIR is a normal file -> directory is used") 
-      outputDIR = os.path.dirname(arg)
-      print 'Output Dir is :', outputDIR
-    
-  elif opt in ("-d", "--DAVID"):
-     DAVID = arg     
-  elif opt in ("-t", "--idType"):
-     idT = arg    
-     # print client.service.getConversionTypes()
+
 ### call 
-# python2 DAVID.py -i geneList.csv -o "./testRES" -d DAVID68 -t "ENSEMBL_GENE_ID"
+# python2 DAVID.py -i geneList.csv -o "./testRES" -d DAVID68 -t "ENSEMBL_GENE_ID" -r "getChartReport"
 
 # /home/adsvy/GitHubRepo/SnakeWF_HIF/viper/scripts/DAVIDnewPythonClient
 # python2 DAVID.py -i geneList.csv -o /home/adsvy/GitHubRepo/SnakeWF_HIF/viper/scripts/DAVIDnewPythonClient/TEST/a.txt -d DAVID68 -t "ENSEMBL_GENE_ID"
 # python2 DAVID.py -i /home/adsvy/GitHubRepo/SnakeWF_HIF/results/deg/edegR/hg38/PE/salmonAlignment/estcount_HSQ-vs-NSQsi_edegR_Res_sig_0.05_MYlog2FC_1.csv -o /home/adsvy/GitHubRepo/SnakeWF_HIF/viper/scripts/DAVIDnewPythonClient/TEST/ -d DAVID68 -t "ENSEMBL_GENE_ID"
 
+
+#
+# input and output files.
+#
+
+# #https://www.tutorialspoint.com/python/python_command_line_arguments.html
+# rtype = ''
+# inputfile = ''
+# outputDIR = '../'
+# argv = sys.argv[1:]
+# try:
+#   opts, args = getopt.getopt(argv,"hi:o:d:t:r",["iFILE=","oDIR=","DAVID=","idType=","Report="])
+# except getopt.GetoptError:
+#   print 'python2 chartReport.py -i <inputfile> -o <outputDIR> -d <DAVID version> -t <Identifier> -r <Identifier>'
+#   sys.exit(2)
+# for opt, arg in opts:
+#   if opt == '-h':
+#      print 'python2 chartReport.py -i <inputfile> -o <outputDIR> -d <DAVID version> -t <Identifier> -r <Identifier>'
+#      sys.exit()
+#   elif opt == '--help':
+#      print 'python2 chartReport.py -i <inputfile> -o <outputDIR> -d <DAVID version> -t <Identifier> -r <Identifier>'
+#      sys.exit()
+#   elif opt in ("-i", "--iFILE"):
+#      inputfile = arg
+#   elif opt in ("-o", "--oDIR"):
+#     if os.path.isdir(arg):  
+#       print("--oDIR is a directory")
+#       outputDIR = arg  
+#     else :  
+#       print("--oDIR is a normal file -> directory is used") 
+#       outputDIR = os.path.dirname(arg)
+#       print 'Output Dir is :', outputDIR
+#   elif opt in ("-d", "--DAVID"):
+#      DAVID = arg     
+#   elif opt in ("-t", "--idType"):
+#      idT = arg    
+#      # print client.service.getConversionTypes()
+#   elif opt in ("-r", "--Report"):
+#      rtype = arg    
+
+parser = argparse.ArgumentParser(description='Run DAVID analysis', prog='DAVID.py')
+parser.add_argument('-i', '--iFILE', required=True, help = "input file") 
+parser.add_argument('-o', '--oDIR', required=True, help = "path of output directory", default = '../')
+parser.add_argument('-d', '--DAVID', required=True, help = "DAVID version DAVID67 or DAVID68")
+parser.add_argument('-t', '--idType', required=True, help = "DAVID gene id type")
+parser.add_argument('-r', '--Report', required=False, help = "report type (currently only getChartReport supported)",default = 'all')
+
+parameter_input = vars(parser.parse_args())
+
+inputfile = parameter_input['iFILE']
+tmpoutputDIR = parameter_input['oDIR']
+if os.path.isdir(tmpoutputDIR):  
+      print("--oDIR is a directory")
+      outputDIR = tmpoutputDIR  
+else :  
+  print("--oDIR is file -> file directory is used") 
+  outputDIR = os.path.dirname(tmpoutputDIR)
+  print 'Output Dir is :', outputDIR
+
+DAVID = parameter_input['DAVID']
+idT = parameter_input['idType']
+rtype = parameter_input['Report']
+
+
 print 'Input file is :', inputfile
 print 'Output Dir is :', outputDIR
 print 'DAVID version is :', DAVID    
 print 'idType is :', idT    
+print 'Report is :', rtype    
+
+if rtype == "getChartReport" :
+  rALL = False
+  print 'run only ChartReport'    
+else :
+  rALL = True
+  print 'run all Reports'
+
 
 # print 'Number of arguments:', len(sys.argv), 'arguments.'
 # print 'Argument List:', str(sys.argv)
@@ -156,7 +196,7 @@ with open(inputfile, 'rb') as csvfile:
       tmp_list.append(row[1])         #second column with geneID !!!
       ResCSV = True
     else:     
-      # print ','.join(row)
+      # print ','.join(row)           #for GeneId file with only one column 
       tmp_list.append(''.join(row))
 
 if(ResCSV):
@@ -255,179 +295,179 @@ print 'write file:', resFt, 'finished!'
 
 # print chartReport
 
-
-#
-# getGeneClusterReport
-#
-print "run getGeneClusterReport"
-
-
-if DAVID == "DAVID68":
-  ### Classification Stringency => Medium
-  overlap = 3 # Similarity Term Overlap
-  linkage = 0.5 # Similarity Threshold
-  initialSeed = 3 # Initial Group Membership
-  finalSeed = 3 # Final Group Membership
-  kappa = 50 #Multiple Linkage Threshold
-
-elif DAVID == "DAVID67":
-  ### David 6.7
-  # ### Classification Stringency => Low
-  # overlap = 4 # Similarity Term Overlap
-  # linkage = 0.3 # Similarity Threshold
-  # initialSeed = 3 # Initial Group Membership
-  # finalSeed = 3 # Final Group Membership
-  # kappa = 50 #Multiple Linkage Threshold
-
-  ### Classification Stringency => Medium
-  overlap = 4 # Similarity Term Overlap
-  linkage = 0.35 # Similarity Threshold
-  initialSeed = 4 # Initial Group Membership
-  finalSeed = 4 # Final Group Membership
-  kappa = 50 #Multiple Linkage Threshold
-
-  # ### Classification Stringency => high
-  # overlap = 4 # Similarity Term Overlap
-  # linkage = 0.4 # Similarity Threshold
-  # initialSeed = 5 # Initial Group Membership
-  # finalSeed = 5 # Final Group Membership
-  # kappa = 50 #Multiple Linkage Threshold
+if(rALL):
+  #
+  # getGeneClusterReport
+  #
+  print "run getGeneClusterReport"
 
 
-geneClusterReport = client.service.getGeneClusterReport(overlap, initialSeed, finalSeed, linkage, kappa)
+  if DAVID == "DAVID68":
+    ### Classification Stringency => Medium
+    overlap = 3 # Similarity Term Overlap
+    linkage = 0.5 # Similarity Threshold
+    initialSeed = 3 # Initial Group Membership
+    finalSeed = 3 # Final Group Membership
+    kappa = 50 #Multiple Linkage Threshold
 
-totalClusters = len(geneClusterReport)
-print 'Total groups:',totalClusters
-resF2 = outputDIR+"/"+DAVID+"_"+'geneClusterReport.txt'
+  elif DAVID == "DAVID67":
+    ### David 6.7
+    # ### Classification Stringency => Low
+    # overlap = 4 # Similarity Term Overlap
+    # linkage = 0.3 # Similarity Threshold
+    # initialSeed = 3 # Initial Group Membership
+    # finalSeed = 3 # Final Group Membership
+    # kappa = 50 #Multiple Linkage Threshold
 
-print 'type:', type(geneClusterReport[0])
-ttt = str(type(geneClusterReport[0]))
-if "NoneType" in ttt:
-# if str(type(geneClusterReport[0])) == 'NoneType':
-  print 'NoneType'
-  with open(resF2, 'w') as fOut:
-    fOut.write('NULL\n')
+    ### Classification Stringency => Medium
+    overlap = 4 # Similarity Term Overlap
+    linkage = 0.35 # Similarity Threshold
+    initialSeed = 4 # Initial Group Membership
+    finalSeed = 4 # Final Group Membership
+    kappa = 50 #Multiple Linkage Threshold
+
+    # ### Classification Stringency => high
+    # overlap = 4 # Similarity Term Overlap
+    # linkage = 0.4 # Similarity Threshold
+    # initialSeed = 5 # Initial Group Membership
+    # finalSeed = 5 # Final Group Membership
+    # kappa = 50 #Multiple Linkage Threshold
+
+
+  geneClusterReport = client.service.getGeneClusterReport(overlap, initialSeed, finalSeed, linkage, kappa)
+
+  totalClusters = len(geneClusterReport)
+  print 'Total groups:',totalClusters
+  resF2 = outputDIR+"/"+DAVID+"_"+'geneClusterReport.txt'
+
+  print 'type:', type(geneClusterReport[0])
+  ttt = str(type(geneClusterReport[0]))
+  if "NoneType" in ttt:
+  # if str(type(geneClusterReport[0])) == 'NoneType':
+    print 'NoneType'
+    with open(resF2, 'w') as fOut:
+      fOut.write('NULL\n')
+    # sys.exit(2)
+  else:
+    # resF2 = 'list1.geneClusterReport.txt'
+    # print geneClusterReport
+    with open(resF2, 'w') as fOut:
+        for simpleGeneClusterRecord in geneClusterReport:
+            #EnrichmentScore = simpleGeneClusterRecord.score
+            fOut.write( simpleGeneClusterRecord.name + '\tEnrichmentScore: ' + str(simpleGeneClusterRecord.score) + '\n')
+            fOut.write(idType+'\tGene Name\n')
+            for listRecord in simpleGeneClusterRecord.listRecords:
+                gene_id = ','.join(listRecord.values)
+                fOut.write(gene_id + '\t' + listRecord.name + '\n')   
+                
+    print 'write file:', resF2, 'finished!'
   # sys.exit(2)
-else:
-  # resF2 = 'list1.geneClusterReport.txt'
-  # print geneClusterReport
-  with open(resF2, 'w') as fOut:
-      for simpleGeneClusterRecord in geneClusterReport:
-          #EnrichmentScore = simpleGeneClusterRecord.score
-          fOut.write( simpleGeneClusterRecord.name + '\tEnrichmentScore: ' + str(simpleGeneClusterRecord.score) + '\n')
-          fOut.write(idType+'\tGene Name\n')
-          for listRecord in simpleGeneClusterRecord.listRecords:
-              gene_id = ','.join(listRecord.values)
-              fOut.write(gene_id + '\t' + listRecord.name + '\n')   
-              
-  print 'write file:', resF2, 'finished!'
-# sys.exit(2)
 
-#
-# getTermClusteringReport
-#
-print "run getTermClusteringReport"
+  #
+  # getTermClusteringReport
+  #
+  print "run getTermClusteringReport"
 
 
-overlap=3
-initialSeed = 3
-finalSeed = 3
-linkage = 0.5
-kappa = 50
-termClusteringReport = client.service.getTermClusterReport(overlap, initialSeed, finalSeed, linkage, kappa)
+  overlap=3
+  initialSeed = 3
+  finalSeed = 3
+  linkage = 0.5
+  kappa = 50
+  termClusteringReport = client.service.getTermClusterReport(overlap, initialSeed, finalSeed, linkage, kappa)
 
-#parse and print report
-totalRows = len(termClusteringReport)
-print 'Total clusters:',totalRows
-# resF3 = 'list1.termClusteringReport.txt'
-resF3 = outputDIR+"/"+DAVID+"_"+'termClusteringReport.txt'
+  #parse and print report
+  totalRows = len(termClusteringReport)
+  print 'Total clusters:',totalRows
+  # resF3 = 'list1.termClusteringReport.txt'
+  resF3 = outputDIR+"/"+DAVID+"_"+'termClusteringReport.txt'
 
-print 'type:', type(termClusteringReport[0])
-ttt = str(type(termClusteringReport[0]))
-if "NoneType" in ttt:
-  print 'NoneType'
-  with open(resF3, 'w') as fOut:
-    fOut.write('NULL\n')
-  # sys.exit(2)
-else:
-  with open(resF3, 'w') as fOut:
-    i = 0
-    for simpleTermClusterRecord in termClusteringReport:
-      i = i+1
-      EnrichmentScore = simpleTermClusterRecord.score
-      fOut.write('Annotation Cluster '+str(i) + '\tEnrichmentScore:'+str(EnrichmentScore)+'\n')
-      # fOut.write('Category\tTerm\tCount\t%\tPvalue\tGenes\tList Total\tPop Hits\tPop Total\tFold Enrichment\tBonferroni\tBenjamini\tFDR\n')
-      fOut.write('Category\tTerm\tCount\t%\tPvalue\tGenes\tList Total\tPop Hits\tPop Total\tFold Enrichment\tBonferroni\tBenjamini\taFDR\trFDR\tFisherExact\n')
-      for simpleChartRecord in  simpleTermClusterRecord.simpleChartRecords:
-        categoryName = simpleChartRecord.categoryName
-        termName = simpleChartRecord.termName
-        listHits = simpleChartRecord.listHits
-        percent = simpleChartRecord.percent
-        ease = simpleChartRecord.ease
-        Genes = simpleChartRecord.geneIds
-        listTotals = simpleChartRecord.listTotals
-        popHits = simpleChartRecord.popHits
-        popTotals = simpleChartRecord.popTotals
-        foldEnrichment = simpleChartRecord.foldEnrichment
-        bonferroni = simpleChartRecord.bonferroni
-        benjamini = simpleChartRecord.benjamini
-        # FDR = simpleChartRecord.afdr
-        # rowList = [categoryName,termName,str(listHits),str(percent),str(ease),Genes,str(listTotals),str(popHits),str(popTotals),str(foldEnrichment),str(bonferroni),str(benjamini),str(FDR)]
-        aFDR = simpleChartRecord.afdr
-        rFDR = simpleChartRecord.rfdr
-        Fisher = simpleChartRecord.fisher
-        rowList = [categoryName,termName,str(listHits),str(percent),str(ease),Genes,str(listTotals),str(popHits),str(popTotals),str(foldEnrichment),str(bonferroni),str(benjamini),str(aFDR),str(rFDR),str(Fisher)]
-        fOut.write('\t'.join(rowList)+'\n')
-  print 'write file:', resF3, 'finished!'
+  print 'type:', type(termClusteringReport[0])
+  ttt = str(type(termClusteringReport[0]))
+  if "NoneType" in ttt:
+    print 'NoneType'
+    with open(resF3, 'w') as fOut:
+      fOut.write('NULL\n')
+    # sys.exit(2)
+  else:
+    with open(resF3, 'w') as fOut:
+      i = 0
+      for simpleTermClusterRecord in termClusteringReport:
+        i = i+1
+        EnrichmentScore = simpleTermClusterRecord.score
+        fOut.write('Annotation Cluster '+str(i) + '\tEnrichmentScore:'+str(EnrichmentScore)+'\n')
+        # fOut.write('Category\tTerm\tCount\t%\tPvalue\tGenes\tList Total\tPop Hits\tPop Total\tFold Enrichment\tBonferroni\tBenjamini\tFDR\n')
+        fOut.write('Category\tTerm\tCount\t%\tPvalue\tGenes\tList Total\tPop Hits\tPop Total\tFold Enrichment\tBonferroni\tBenjamini\taFDR\trFDR\tFisherExact\n')
+        for simpleChartRecord in  simpleTermClusterRecord.simpleChartRecords:
+          categoryName = simpleChartRecord.categoryName
+          termName = simpleChartRecord.termName
+          listHits = simpleChartRecord.listHits
+          percent = simpleChartRecord.percent
+          ease = simpleChartRecord.ease
+          Genes = simpleChartRecord.geneIds
+          listTotals = simpleChartRecord.listTotals
+          popHits = simpleChartRecord.popHits
+          popTotals = simpleChartRecord.popTotals
+          foldEnrichment = simpleChartRecord.foldEnrichment
+          bonferroni = simpleChartRecord.bonferroni
+          benjamini = simpleChartRecord.benjamini
+          # FDR = simpleChartRecord.afdr
+          # rowList = [categoryName,termName,str(listHits),str(percent),str(ease),Genes,str(listTotals),str(popHits),str(popTotals),str(foldEnrichment),str(bonferroni),str(benjamini),str(FDR)]
+          aFDR = simpleChartRecord.afdr
+          rFDR = simpleChartRecord.rfdr
+          Fisher = simpleChartRecord.fisher
+          rowList = [categoryName,termName,str(listHits),str(percent),str(ease),Genes,str(listTotals),str(popHits),str(popTotals),str(foldEnrichment),str(bonferroni),str(benjamini),str(aFDR),str(rFDR),str(Fisher)]
+          fOut.write('\t'.join(rowList)+'\n')
+    print 'write file:', resF3, 'finished!'
 
 
 
-#
-# getTableReport
-#
-print "run getTableReport"
+  #
+  # getTableReport
+  #
+  print "run getTableReport"
 
-# #print client.service.getDefaultCategoryNames()
-# categoryString = str(client.service.setCategories('BBID,BIOCARTA,COG_ONTOLOGY,GOTERM_BP_FAT,GOTERM_CC_FAT,GOTERM_MF_FAT,INTERPRO,KEGG_PATHWAY,OMIM_DISEASE,PIR_SUPERFAMILY,SMART,SP_PIR_KEYWORDS,UP_SEQ_FEATURE'))
-categories = categoryString.split(',')
+  # #print client.service.getDefaultCategoryNames()
+  # categoryString = str(client.service.setCategories('BBID,BIOCARTA,COG_ONTOLOGY,GOTERM_BP_FAT,GOTERM_CC_FAT,GOTERM_MF_FAT,INTERPRO,KEGG_PATHWAY,OMIM_DISEASE,PIR_SUPERFAMILY,SMART,SP_PIR_KEYWORDS,UP_SEQ_FEATURE'))
+  categories = categoryString.split(',')
 
-tableReport = client.service.getTableReport()
-tableRow = len(tableReport)
-print 'Total table records:',tableRow
-# resF4 = 'list1.tableReport.txt'
-resF4 = outputDIR+"/"+DAVID+"_"+'tableReport.txt'
+  tableReport = client.service.getTableReport()
+  tableRow = len(tableReport)
+  print 'Total table records:',tableRow
+  # resF4 = 'list1.tableReport.txt'
+  resF4 = outputDIR+"/"+DAVID+"_"+'tableReport.txt'
 
-print 'type:', type(tableReport[0])
-ttt = str(type(tableReport[0]))
-if "NoneType" in ttt:
-  print 'NoneType'
-  with open(resF4, 'w') as fOut:
-    fOut.write('NULL\n')
-  # sys.exit(2)
-else:
-  with open(resF4, 'w') as fOut:
-    categoryConcat = '\t'.join(categories);
-    fOut.write('ID\tGene Name\tSpecies\t'+categoryConcat) 
-    for tableRecord in tableReport:
-      name = tableRecord.name
-      species = tableRecord.species
-      for arrayString in tableRecord.values:
-        gene_id = ','.join(x for x in arrayString.array)
-        rowList = [gene_id,name,species]
-        fOut.write('\n'+'\t'.join(rowList))
-      for annotationRecord in tableRecord.annotationRecords:
-        default_value = ''
-        category_dict = dict.fromkeys(categories,default_value)     
-        termsConcat = '';
-      for term in annotationRecord.terms:
-        termString = term.split("$")[1]
-        termList = [termString,termsConcat]
-        termsConcat = ','.join(termList)    
-        category_dict[str(annotationRecord.category)] = termsConcat;
-      for key in category_dict:
-        fOut.write('\t'+category_dict[key])
+  print 'type:', type(tableReport[0])
+  ttt = str(type(tableReport[0]))
+  if "NoneType" in ttt:
+    print 'NoneType'
+    with open(resF4, 'w') as fOut:
+      fOut.write('NULL\n')
+    # sys.exit(2)
+  else:
+    with open(resF4, 'w') as fOut:
+      categoryConcat = '\t'.join(categories);
+      fOut.write('ID\tGene Name\tSpecies\t'+categoryConcat) 
+      for tableRecord in tableReport:
+        name = tableRecord.name
+        species = tableRecord.species
+        for arrayString in tableRecord.values:
+          gene_id = ','.join(x for x in arrayString.array)
+          rowList = [gene_id,name,species]
+          fOut.write('\n'+'\t'.join(rowList))
+        for annotationRecord in tableRecord.annotationRecords:
+          default_value = ''
+          category_dict = dict.fromkeys(categories,default_value)     
+          termsConcat = '';
+        for term in annotationRecord.terms:
+          termString = term.split("$")[1]
+          termList = [termString,termsConcat]
+          termsConcat = ','.join(termList)    
+          category_dict[str(annotationRecord.category)] = termsConcat;
+        for key in category_dict:
+          fOut.write('\t'+category_dict[key])
 
-  print 'write file:', resF4, 'finished!'
+    print 'write file:', resF4, 'finished!'
 
 
 

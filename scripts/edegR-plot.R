@@ -9,6 +9,27 @@ library( as.character(stringr::str_split(stringr::str_split(tmp,' ')[[1]][2],'_'
 
 library("edgeR")
 library("data.table")
+library("ggplot2")
+
+thememap <- function (base_size = 12,legend_key_size=0.4, base_family = "") {
+  theme_gray(base_size = base_size, base_family = base_family) %+replace% 
+    theme(title = element_text(face="bold", colour=1,angle=0  ,vjust=1.0, size=base_size),
+          axis.title.x = element_text(face="bold", colour=1,angle=0  ,vjust=0.3, size=base_size),
+          axis.text.x  = element_text(face="bold", colour=1,angle=0  ,vjust=0.5, size=base_size),
+          strip.text.x = element_text(face="bold", colour=1,angle=0  ,vjust=0.5, size=base_size),
+          axis.title.y = element_text(face="bold", colour=1,angle=90 ,vjust=1.1,hjust=.5, size=base_size),
+          axis.text.y  = element_text(face="bold", colour=1, size=base_size),
+          #panel.background = element_rect(fill="white"),
+          #panel.grid.minor.y = element_line(size=3),
+          #panel.grid.major = element_line(colour = "white"),
+          legend.key.size = unit(legend_key_size, "cm"),
+          legend.text = element_text(face="bold" ,colour=1, size=base_size),
+          legend.title = element_text(face="bold",colour=1, size=base_size),    
+          strip.text = element_text(face="bold",colour=, size=base_size),
+          plot.title = element_text(hjust = 0.5)
+    )
+}
+
 
 # Input data  ------------------------------------------------------------
   DataList <- readRDS(snakemake@input[["counts"]])
@@ -48,13 +69,15 @@ library("data.table")
   rownames(samples) <- colnames(ct)
   rownames(units) <- colnames(ct)
 
+  colnames(tmm) <- as.character(units$unit)
 
 # 1. MDS plot  ------------------------------------------------------------
-  # p1filename <- '/home/adsvy/GitHubRepo/SnakeWF_HIF/results/plot/edegR/hg38/PE/salmonReads/estcount_edegR_plot_MDS.png'
+  # p1filename <- '/home/adsvy/GitHubRepo/SnakeWF_HIF/results/plot/edegR/hg38_PE_salmonAlignment_estcount_edegR_plot_MDS.png'
   p1filename <- snakemake@output[[1]][1]
   p1filenamePDF <- stringr::str_replace(string = p1filename, pattern = file_ext(p1filename) , 'pdf')
   
   p1 <- plotPCA(tmm,groups = as.character(samples$condition),log = T,do.MDS = T,plot_label = T,do.legend = T,plot_title = 'MDS of tmm normalized counts')$plot
+  p1 <- p1 + thememap()
   ggplot2::ggsave(plot = p1,filename = p1filenamePDF ,width = 10 ,height = 10,device = 'pdf') 
   ggplot2::ggsave(plot = p1,filename = p1filename    ,width = 15 ,height = 15,device = 'png',units = 'cm') 
   
@@ -63,7 +86,7 @@ library("data.table")
   p1filenamePDF <- stringr::str_replace(string = p1filename, pattern = file_ext(p1filename) , 'pdf')
   
   p1 <- plotPCA(tmm,groups = as.character(samples$condition),log = T,do.MDS = T,plot_label = T,do.legend = T,plot_title = 'PCA of tmm normalized counts')$plot
-  ggplot2::ggsave(plot = p1,filename = p1filenamePDF ,width = 10 ,height = 10,device = 'pdf') 
+  ggplot2::ggsave(plot = p1+thememap(),filename = p1filenamePDF ,width = 10 ,height = 10,device = 'pdf') 
   ggplot2::ggsave(plot = p1,filename = p1filename    ,width = 15 ,height = 15,device = 'png',units = 'cm') 
 
 

@@ -5,7 +5,7 @@ sink(log, type="message")
 fil <- file(snakemake@input[["viper"]]) #"install viper_0.1.tar.gz"
 tmp <- readLines(fil, n = -1)
 library( as.character(stringr::str_split(stringr::str_split(tmp,' ')[[1]][2],'_')[[1]][1]),character.only = T )
-library("viper")
+# library("viper")
 
 library("edgeR")
 library("data.table")
@@ -59,13 +59,35 @@ if ( length(condCols) > 1 ){
 
 LevelSig <- as.double(snakemake@params[["sig"]]) # LevelSig <- 0.05
 LevelLog2FC <- as.double(snakemake@params[["log2FC"]]) # LevelLog2FC <- 1
-
+MinReads <- as.double(snakemake@params[["MinGeneReads"]])
+# MinReads <- 1
+ 
 #print(DataList)
 anno <- DataList[["Anno"]]
 annoGe <- unique(anno[,-1] )
 rownames(annoGe) <- as.character(annoGe$gene_id)
 annoGe.dt <- data.table(annoGe,key='gene_id')
 
+# filter data by minimal number of reads --------------------------------------------------------------- 
+  MeanReads <- 1
+  MeanReadsFilter <- MeanReads
+  
+  MinMeanFilterRepCounts <- MinMeanFilterRep(exp_mat = DataList[["Ge"]]$counts,groups = samples$condition,MinReads = MinReads,MeanReads = MeanReadsFilter)
+  
+  # print(sum(rowSums(MinMeanFilterRepCounts$groupMean)>1))
+  # MinMeanFilterRepCounts_groupMean_Genes <- rowSums(MinMeanFilterRepCounts$groupMean)>1
+  print(sum(rowSums(MinMeanFilterRepCounts$groupBasic)>1))
+  MinMeanFilterRepCounts_groupBasic_Genes <- rowSums(MinMeanFilterRepCounts$groupBasic)>1
+
+  DataList[["Ge"]]$counts <- DataList[["Ge"]]$counts[names(MinMeanFilterRepCounts_groupBasic_Genes)[MinMeanFilterRepCounts_groupBasic_Genes],] 
+  DataList[["Ge"]]$length <- DataList[["Ge"]]$length[names(MinMeanFilterRepCounts_groupBasic_Genes)[MinMeanFilterRepCounts_groupBasic_Genes],] 
+  DataList[["Ge"]]$abundance <- DataList[["Ge"]]$abundance[names(MinMeanFilterRepCounts_groupBasic_Genes)[MinMeanFilterRepCounts_groupBasic_Genes],] 
+
+  print(dim(DataList[["Ge"]]$counts))
+  print(dim(DataList[["Ge"]]$length))
+  print(dim(DataList[["Ge"]]$abundance))
+  
+  
 Ctype <- DataList[["Ctype"]]
 print(Ctype)
 if(Ctype == "est_count"){

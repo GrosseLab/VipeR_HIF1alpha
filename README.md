@@ -1,10 +1,10 @@
 # Viper workflow
 
-**Viper** is a [Snakemake workflow](https://snakemake.readthedocs.io/en/stable/index.html), aimed at performing the RNA-seq workflow of the paper [*'Causes and consequences of a glutamine induced normoxic HIF1 activity for the tumor metabolism'*, Kappler et al. (2019)](https://github.com/GrosseLab/ViperWF) in a reproducible, automated, and partially contained manner. It is implemented such that alternative or similar analysis can be added or removed. 
+**Viper** is a [Snakemake workflow](https://snakemake.readthedocs.io/en/stable/index.html), aimed at performing the RNA-seq workflow of the paper [*'Causes and Consequences of A Glutamine Induced Normoxic HIF1 Activity for the Tumor Metabolism'*, Kappler et al. (2019)](https://github.com/GrosseLab/ViperWF) in a reproducible, automated, and partially contained manner. It is implemented such that alternative or similar analysis can be added or removed. 
 
 Viper consists of a `Snakefile` (`workflow/HIF_version_1.0/snakefile`), [`conda`](https://conda.io/docs/) environment files (`envs/*.yaml`), a configuration file (`workflow/HIF_version_1.0/config.yaml`), a set of `R` functions (`R/*R`), and a set of `R` scripts (`scripts/*.R`), to perform quality control, preprocessing, differential expression analysis, and functional annotation of RNA-seq data.
 
-By default, the pipeline performs all the steps shown in the [diagram](img/report_2019_03_14_salmonAlignment_visualization.png) below. However, advanced user, you caneasily modify the `Snakefile` and the `config.yaml` and/or add "custom rules" to enable additional functions. Currently, transcript quantification with `Salmon` at the read-level or gene quantification by [`featureCounts`](http://subread.sourceforge.net) can be activated.
+By default, the pipeline performs all the steps shown in the [diagram](img/report_2019_03_14_salmonAlignment_visualization.png) below. However, advanced user, you can easily modify the `Snakefile` and the `config.yaml` and/or add "custom rules" to enable additional functions. Currently, transcript quantification with `Salmon` at the read-level or gene quantification by [`featureCounts`](http://subread.sourceforge.net) can be activated.
 
 ## Workflow graph
 This workflow performs differential expression analysis on paired-end RNA-seq data.
@@ -21,7 +21,7 @@ Further, we used the Database for Annotation, Visualization and Integrated Disco
 
 Assuming that snakemake and conda are installed (and your system has the necessary libraries to compile R packages), you can use the following commands on a test dataset:
 
-### 0. Step - clone the gitup repo
+### 0. Step - clone the githup repository
 ```
 git clone https://github.com/GrosseLab/ViperWF.git
 ```
@@ -78,8 +78,8 @@ cp ./viper/workflow/HIF_version_1.0/copy.csv ./data/qPCR/
 cp ./viper/workflow/HIF_version_1.0/qPCR_data.csv ./data/qPCR/
 ```
 
-### 2. Step - Downlaod data 
-Downlaod data from Gene Expression Omnibus (GEO) project [GSExxx](https://www.ncbi.nlm.nih.gov/geo/) using the [NCBI SRA Toolkit](https://trace.ncbi.nlm.nih.gov/Traces/sra/sra.cgi?view=software)
+### 2. Step - Download data -- will be soon available
+Download data from Gene Expression Omnibus (GEO) project [GSExxx](https://www.ncbi.nlm.nih.gov/geo/) using the [NCBI SRA Toolkit](https://trace.ncbi.nlm.nih.gov/Traces/sra/sra.cgi?view=software)
 ```
 download sra-files using the 'SRA Run Selector' or SRA Toolkit from https://www.ncbi.nlm.nih.gov/geo/query/XXXX
 convert *.sra fiels to *.fastq.gz files usnig fastq-dump form SRA Toolkit 
@@ -109,12 +109,6 @@ new Folder `results`
   └── samples.tsv 	    				     
 ```
 
-
-
-
-######### useful
-[Markdown-Cheatsheet](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet)
-[folder](https://github.com/aerobatic/markdown-content/blob/master/docs/directory-structure.md)
 
 
 

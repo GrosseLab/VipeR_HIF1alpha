@@ -37,12 +37,12 @@ rule qPCR_Normoxia_Hypoxia:
 rule qPCR_Normoxia_Hypoxia_RNAseq:
     input:
         qPCR2=config["qPCR2"],
-        rds1="results/plot/edegR/{ref}_{readtype}/{ctype}_{RDStype}_ResSiglog2FC/{contrast1}_{contrast2}/Genes_Filter__{contrast1}__{contrast2}.rds",
+        # rds1="results/plot/edegR/{ref}_{readtype}/{ctype}_{RDStype}_ResSiglog2FC/{contrast1}_{contrast2}/Genes_Filter__{contrast1}__{contrast2}.rds",
         rds2="results/plot/edegR/{ref}_{readtype}/{ctype}_{RDStype}_ResSiglog2FC/{contrast1}_{contrast2}/Genes__{contrast1}__{contrast2}.rds",
         viper=rules.install_R_package_viper.output
     output:
-        png1=report("results/plot/edegR/{ref}_{readtype}/{ctype}_{RDStype}_ResSiglog2FC/{contrast1}_{contrast2}/Genes_Filter__{contrast1}__{contrast2}_qPCR_scatterplot.png", caption="../../report/qPCR_RNAseq.rst", category="pPCR"),
-        png2="results/plot/edegR/{ref}_{readtype}/{ctype}_{RDStype}_ResSiglog2FC/{contrast1}_{contrast2}/Genes__{contrast1}__{contrast2}_qPCR_scatterplot.png"
+        # png1=report("results/plot/edegR/{ref}_{readtype}/{ctype}_{RDStype}_ResSiglog2FC/{contrast1}_{contrast2}/Genes_Filter__{contrast1}__{contrast2}_qPCR_scatterplot.png", caption="../../report/qPCR_RNAseq.rst", category="pPCR filter"),
+        png2=report("results/plot/edegR/{ref}_{readtype}/{ctype}_{RDStype}_ResSiglog2FC/{contrast1}_{contrast2}/Genes__{contrast1}__{contrast2}_qPCR_scatterplot.png", caption="../../report/qPCR_RNAseq.rst", category="pPCR")
     conda:
         "../../envs/r35.yaml"
     log:

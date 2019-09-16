@@ -37,6 +37,8 @@ rule david_ResSigFC_pair_R:
         TrGe="results/quantification/counts/{ref}/TrGe.rds",
         D1="results/annotation/DAVID/{ref}_{readtype}_{ctype}_{RDStype}_{contrast1}_{davidVersion}_ResSiglog2FC/{davidVersion}_chartReport_T1.txt",
         D2="results/annotation/DAVID/{ref}_{readtype}_{ctype}_{RDStype}_{contrast2}_{davidVersion}_ResSiglog2FC/{davidVersion}_chartReport_T1.txt",
+        D1sig="results/deg/edegR/{ref}/{readtype}/{ctype}/{RDStype}_{contrast1}_edegR_Res_sig_"+config["diffexp"]["sig"]+".csv",
+        D2sig="results/deg/edegR/{ref}/{readtype}/{ctype}/{RDStype}_{contrast2}_edegR_Res_sig_"+config["diffexp"]["sig"]+".csv",
         viper=rules.install_R_package_viper.output
     output:    
         o1="results/annotation/DAVID/{ref}_{readtype}_{ctype}_{RDStype}_{davidVersion}_ResSiglog2FC/{contrast1}_{contrast2}/ChartReportSigList.RDS"
