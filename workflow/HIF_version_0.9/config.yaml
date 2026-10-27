@@ -97,6 +97,7 @@ diffexp:
       - HSQsi
   sig: "0.05"
   log2FC: "1"
+  MinGeneReads: "5"  # at least 5 counts in at least 2 of 4 replicates, in at least 2 conditions (0 disables the filter)
 
 params:
   star: "--alignIntronMin 20 --alignIntronMax 4000 --outFilterMismatchNmax 3 --outFilterMultimapNmax 1000"
